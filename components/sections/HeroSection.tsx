@@ -93,15 +93,15 @@ export default function HeroSection() {
 
           {/* Main Headline */}
           <h1 className="text-hero font-bold mb-8 leading-[0.95] text-forest-800 px-2">
-            <div className="overflow-visible">
+            <div className="overflow-hidden md:overflow-visible">
               <AnimatedText delay={0.5}>SHAPING</AnimatedText>
             </div>
-            <div className="overflow-visible">
+            <div className="overflow-hidden md:overflow-visible">
               <AnimatedText delay={0.65}>
                 <span className="gradient-text">TOMORROW&apos;S</span>
               </AnimatedText>
             </div>
-            <div className="overflow-visible">
+            <div className="overflow-hidden md:overflow-visible">
               <AnimatedText delay={0.8}>EARTH</AnimatedText>
             </div>
           </h1>

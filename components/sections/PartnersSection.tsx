@@ -290,15 +290,15 @@ export default function PartnersSection() {
       >
         <div className="flex flex-wrap justify-center gap-8 md:gap-16">
           <div className="text-center">
-            <div className="text-4xl font-bold gradient-text">8+</div>
+            <div className="text-2xl md:text-4xl font-bold gradient-text">8+</div>
             <div className="text-text-muted text-sm">Global Partners</div>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold gradient-text">96+</div>
+            <div className="text-2xl md:text-4xl font-bold gradient-text">96+</div>
             <div className="text-text-muted text-sm">Joint Projects</div>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold gradient-text">15+</div>
+            <div className="text-2xl md:text-4xl font-bold gradient-text">15+</div>
             <div className="text-text-muted text-sm">Years Partnership</div>
           </div>
         </div>

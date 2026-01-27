@@ -60,6 +60,12 @@ html {
   overflow-x: hidden;
 }
 
+@media (max-width: 767px) {
+  body {
+    overflow-x: hidden;
+  }
+}
+
 body {
   background-color: var(--color-mist);
   color: #2D3B31;
