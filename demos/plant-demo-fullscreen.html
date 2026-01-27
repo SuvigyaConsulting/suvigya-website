@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Screen Plant Growth Animation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(to bottom, #fefdfb, #f6f7f4);
+            color: #1f2a33;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        /* Full-screen plant overlay */
+        .plant-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .plant-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Content sections - must be above plant */
+        .section {
+            min-height: 100vh;
+            padding: 80px 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 1; /* Above plant */
+            background: rgba(254, 253, 251, 0.95);
+            margin-bottom: 2px;
+        }
+
+        .section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #1f2a33;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        .section p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            color: #3d5266;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        /* Debug info */
+        .debug {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 10000;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Debug info -->
+    <div class="debug" id="debug">
+        Scroll: 0%<br>
+        Paths: 0
+    </div>
+
+    <!-- Full-Screen Plant Overlay -->
+    <div class="plant-overlay" id="plantOverlay">
+        <svg class="plant-svg" id="plantSvg" viewBox="0 0 1920 1080"></svg>
+    </div>
+
+    <!-- Content Sections -->
+    <section class="section">
+        <h1>🌱 Full-Screen Plant Growth</h1>
+        <p>Scroll down to see the plant grow across the entire screen!</p>
+        <p style="margin-top: 20px; font-size: 1rem; color: #6d755e;">The plant will cover the whole viewport with organic growth.</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 2</h1>
+        <p>Watch as multiple stems and branches grow across the screen.</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 3</h1>
+        <p>Vines and branches connecting throughout the viewport.</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 4</h1>
+        <p>Leaves appearing at different scroll positions.</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 5</h1>
+        <p>The entire screen is being covered by organic growth.</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 6</h1>
+        <p>Multiple paths growing simultaneously.</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 7</h1>
+        <p>Full coverage of the viewport!</p>
+    </section>
+
+    <section class="section" style="min-height: 50vh;">
+        <h1>End</h1>
+        <p>Scroll back to see it all reverse.</p>
+    </section>
+
+    <script>
+        // Register ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        const plantSvg = document.getElementById('plantSvg');
+        const debug = document.getElementById('debug');
+        const scrollTriggers = [];
+
+        // Generate multiple paths covering the screen
+        function generateFullScreenPaths(width, height) {
+            const paths = [];
+            
+            // Main vertical stems (4-5 across)
+            const stemCount = 5;
+            const stemSpacing = width / (stemCount + 1);
+            
+            for (let i = 0; i < stemCount; i++) {
+                const x = stemSpacing * (i + 1);
+                const variation = (Math.random() - 0.5) * 60;
+                const startX = x + variation;
+                const endX = x + (Math.random() - 0.5) * 80;
+                
+                const midX1 = startX + (Math.random() - 0.5) * 50;
+                const midX2 = endX + (Math.random() - 0.5) * 50;
+                
+                paths.push({
+                    id: `stem-${i}`,
+                    d: `M ${startX} 0 C ${midX1} ${height * 0.3}, ${midX2} ${height * 0.7}, ${endX} ${height}`,
+                    progress: i * 0.12,
+                });
+            }
+            
+            // Horizontal branches
+            const branchCount = 10;
+            for (let i = 0; i < branchCount; i++) {
+                const y = (height / (branchCount + 1)) * (i + 1);
+                const startX = Math.random() * width * 0.2;
+                const endX = width * 0.8 + Math.random() * width * 0.2;
+                const midY = y + (Math.random() - 0.5) * 80;
+                
+                paths.push({
+                    id: `branch-h-${i}`,
+                    d: `M ${startX} ${y} Q ${(startX + endX) / 2} ${midY}, ${endX} ${y}`,
+                    progress: 0.15 + (i * 0.08),
+                });
+            }
+            
+            // Diagonal vines
+            const vineCount = 8;
+            for (let i = 0; i < vineCount; i++) {
+                const startX = Math.random() * width;
+                const startY = Math.random() * height * 0.6;
+                const endX = startX + (Math.random() - 0.5) * width * 0.7;
+                const endY = startY + 300 + Math.random() * 400;
+                const midX = (startX + endX) / 2 + (Math.random() - 0.5) * 60;
+                const midY = (startY + endY) / 2 + (Math.random() - 0.5) * 60;
+                
+                paths.push({
+                    id: `vine-${i}`,
+                    d: `M ${startX} ${startY} Q ${midX} ${midY}, ${endX} ${endY}`,
+                    progress: 0.25 + (i * 0.07),
+                });
+            }
+            
+            return paths;
+        }
+
+        function generateLeafPath() {
+            return `M 10 4 Q 13 7, 11 10 Q 12 12, 10 12 Q 8 12, 9 10 Q 7 7, 10 4`;
+        }
+
+        function initPlant() {
+            const width = window.innerWidth;
+            const height = Math.max(document.documentElement.scrollHeight, window.innerHeight * 7);
+            
+            plantSvg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            plantSvg.setAttribute('width', width);
+            plantSvg.setAttribute('height', height);
+            
+            // Clear existing paths
+            while (plantSvg.firstChild) {
+                plantSvg.removeChild(plantSvg.firstChild);
+            }
+            
+            // Generate paths
+            const paths = generateFullScreenPaths(width, height);
+            
+            // Create and animate paths
+            paths.forEach((pathData) => {
+                const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                pathElement.setAttribute('id', pathData.id);
+                pathElement.setAttribute('d', pathData.d);
+                pathElement.setAttribute('fill', 'none');
+                pathElement.setAttribute('stroke', 'rgba(34, 139, 34, 0.9)');
+                pathElement.setAttribute('stroke-width', '3');
+                pathElement.setAttribute('stroke-linecap', 'round');
+                pathElement.setAttribute('stroke-linejoin', 'round');
+                pathElement.setAttribute('opacity', '0');
+                
+                plantSvg.appendChild(pathElement);
+                
+                const pathLength = pathElement.getTotalLength();
+                
+                gsap.set(pathElement, {
+                    strokeDasharray: pathLength,
+                    strokeDashoffset: pathLength,
+                });
+                
+                const trigger = ScrollTrigger.create({
+                    trigger: 'body',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: true,
+                    onUpdate: (self) => {
+                        const progress = self.progress;
+                        const pathStart = pathData.progress;
+                        
+                        if (progress >= pathStart) {
+                            const pathProgress = Math.min(1, (progress - pathStart) / (1 - pathStart));
+                            const easedProgress = gsap.parseEase('power2.out')(pathProgress);
+                            const offset = pathLength * (1 - easedProgress);
+                            
+                            gsap.set(pathElement, {
+                                strokeDashoffset: offset,
+                                opacity: 0.5 + (easedProgress * 0.5),
+                            });
+                        } else {
+                            gsap.set(pathElement, {
+                                strokeDashoffset: pathLength,
+                                opacity: 0,
+                            });
+                        }
+                    },
+                });
+                
+                scrollTriggers.push(trigger);
+            });
+            
+            // Add leaves
+            const milestones = [0.14, 0.28, 0.42, 0.56, 0.70, 0.85];
+            milestones.forEach((progress, index) => {
+                const leafX = (width / (milestones.length + 1)) * (index + 1) + (Math.random() - 0.5) * 150;
+                const leafY = height * progress;
+                
+                const leafGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                leafGroup.setAttribute('id', `leaf-${index}`);
+                leafGroup.setAttribute('transform', `translate(${leafX}, ${leafY}) rotate(${(index % 2 === 0 ? 1 : -1) * 25})`);
+                leafGroup.setAttribute('opacity', '0');
+                
+                const leafPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                leafPath.setAttribute('d', generateLeafPath());
+                leafPath.setAttribute('fill', 'none');
+                leafPath.setAttribute('stroke', 'rgba(34, 139, 34, 0.9)');
+                leafPath.setAttribute('stroke-width', '2.5');
+                leafPath.setAttribute('stroke-linecap', 'round');
+                leafPath.setAttribute('stroke-linejoin', 'round');
+                
+                leafGroup.appendChild(leafPath);
+                plantSvg.appendChild(leafGroup);
+                
+                const leafTrigger = ScrollTrigger.create({
+                    trigger: 'body',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: true,
+                    onUpdate: (self) => {
+                        const scrollProgress = self.progress;
+                        const revealStart = progress;
+                        const revealEnd = Math.min(1, revealStart + 0.03);
+                        
+                        if (scrollProgress >= revealStart) {
+                            const leafProgress = Math.min(1, (scrollProgress - revealStart) / (revealEnd - revealStart));
+                            const easedProgress = gsap.parseEase('power2.out')(leafProgress);
+                            
+                            gsap.set(leafGroup, {
+                                opacity: easedProgress * 0.9,
+                                scale: 0.6 + (easedProgress * 0.4),
+                                transformOrigin: 'center center',
+                            });
+                        } else {
+                            gsap.set(leafGroup, {
+                                opacity: 0,
+                                scale: 0.6,
+                            });
+                        }
+                    },
+                });
+                
+                scrollTriggers.push(leafTrigger);
+            });
+            
+            debug.innerHTML = `Scroll: 0%<br>Paths: ${paths.length}`;
+        }
+
+        // Initialize
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initPlant);
+        } else {
+            setTimeout(initPlant, 100);
+        }
+        
+        setTimeout(initPlant, 500);
+        
+        // Handle resize
+        window.addEventListener('resize', () => {
+            scrollTriggers.forEach(t => t.kill());
+            scrollTriggers.length = 0;
+            ScrollTrigger.refresh();
+            initPlant();
+        });
+    </script>
+</body>
+</html>

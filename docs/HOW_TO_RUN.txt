@@ -1,0 +1,74 @@
+═══════════════════════════════════════════════════════════════
+  🚀 HOW TO RUN & SHARE THE WEBSITE
+═══════════════════════════════════════════════════════════════
+
+✅ EASIEST WAY (Windows):
+   → Double-click: START.bat
+   → Website opens automatically in your browser!
+
+✅ EASIEST WAY (Mac/Linux):
+   → Open terminal in this folder
+   → Type: node serve.js
+   → Open http://localhost:3000 in browser
+
+═══════════════════════════════════════════════════════════════
+
+📦 TO SHARE WITH OTHERS:
+
+Method 1 - Share Everything (Recommended):
+  1. Zip the ENTIRE folder (including node_modules and out)
+  2. Send the zip file
+  3. Recipient extracts and double-clicks START.bat
+
+Method 2 - Share Only Built Files (Smaller):
+  1. Zip ONLY these:
+     - "out" folder (the built website)
+     - "serve.js" file
+     - "START.bat" file (Windows) or "serve.py" (Mac/Linux)
+  2. Recipient needs Node.js installed
+  3. They run: node serve.js
+
+═══════════════════════════════════════════════════════════════
+
+🔧 REQUIREMENTS:
+
+  • Node.js (download from nodejs.org)
+     OR
+  • Python 3 (for serve.py - usually pre-installed)
+
+═══════════════════════════════════════════════════════════════
+
+📁 IMPORTANT FILES:
+
+  START.bat          → Windows launcher (double-click)
+  serve.js           → Node.js server
+  serve.py           → Python server (alternative)
+  BUILD_AND_START.bat → Builds then starts (if needed)
+  out/               → The built website (created after build)
+
+═══════════════════════════════════════════════════════════════
+
+❓ TROUBLESHOOTING:
+
+Problem: "out folder not found"
+Solution: Run "npm run build" first
+
+Problem: "Node.js not found"
+Solution: Install from https://nodejs.org/
+
+Problem: Port 3000 is busy
+Solution: Edit serve.js, change PORT = 3000 to another number
+
+Problem: Website won't load
+Solution: Make sure you built it: npm run build
+
+═══════════════════════════════════════════════════════════════
+
+💡 TIPS:
+
+  • The website runs on http://localhost:3000
+  • Keep the terminal/command window open while using
+  • Press Ctrl+C to stop the server
+  • Works offline - no internet needed after building!
+
+═══════════════════════════════════════════════════════════════

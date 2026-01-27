@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Growth Animation Demo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(to bottom, #fefdfb, #f6f7f4);
+            color: #1f2a33;
+            line-height: 1.6;
+        }
+
+        /* Plant container - HIGH z-index to be on top */
+        .plant-container {
+            position: fixed;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            pointer-events: none;
+            z-index: 9999; /* Very high z-index */
+            background: rgba(255, 0, 0, 0.1); /* Temporary red background to see container */
+        }
+
+        .plant-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Content sections */
+        .section {
+            min-height: 100vh;
+            padding: 80px 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #1f2a33;
+        }
+
+        .section p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            color: #3d5266;
+        }
+
+        .section:nth-child(even) {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Debug info */
+        .debug {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 10000;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Debug info -->
+    <div class="debug" id="debug">
+        Scroll: 0%<br>
+        Path Length: 0
+    </div>
+
+    <!-- Plant Container -->
+    <div class="plant-container" id="plantContainer">
+        <svg class="plant-svg" id="plantSvg" viewBox="0 0 100 1000">
+            <path id="stemPath" 
+                  d="M 50 0 C 50 250, 50 750, 50 1000"
+                  fill="none"
+                  stroke="rgba(34, 139, 34, 0.9)"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  style="stroke-dasharray: 1000; stroke-dashoffset: 1000;" />
+        </svg>
+    </div>
+
+    <!-- Content Sections -->
+    <section class="section" style="background: #fefdfb;">
+        <h1>🌱 Plant Growth Animation</h1>
+        <p>Scroll down to see the plant grow organically!</p>
+        <p style="margin-top: 20px; font-size: 1rem; color: #6d755e;">The green line on the left should grow as you scroll.</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 2</h1>
+        <p>Keep scrolling to see the plant continue growing.</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 3</h1>
+        <p>The plant should be visible on the left side.</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 4</h1>
+        <p>Scroll back up to see it reverse!</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 5</h1>
+        <p>The animation is fully reversible.</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 6</h1>
+        <p>Keep scrolling to see more growth.</p>
+    </section>
+
+    <section class="section">
+        <h1>Section 7</h1>
+        <p>Almost at the end!</p>
+    </section>
+
+    <section class="section" style="min-height: 50vh;">
+        <h1>End</h1>
+        <p>Scroll back to the top to see the plant shrink.</p>
+    </section>
+
+    <script>
+        // Register ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Get elements
+        const plantContainer = document.getElementById('plantContainer');
+        const plantSvg = document.getElementById('plantSvg');
+        const stemPath = document.getElementById('stemPath');
+        const debug = document.getElementById('debug');
+
+        // Calculate document height
+        function updateDimensions() {
+            const docHeight = Math.max(
+                document.documentElement.scrollHeight,
+                window.innerHeight * 7 // Ensure enough height
+            );
+            
+            // Update SVG viewBox and dimensions
+            plantSvg.setAttribute('viewBox', `0 0 100 ${docHeight}`);
+            plantSvg.setAttribute('width', '100');
+            plantSvg.setAttribute('height', docHeight.toString());
+            
+            // Update stem path
+            const path = `M 50 0 C 50 ${docHeight * 0.25}, 50 ${docHeight * 0.75}, 50 ${docHeight}`;
+            stemPath.setAttribute('d', path);
+            
+            // Calculate path length
+            const pathLength = stemPath.getTotalLength();
+            
+            // Set initial state
+            gsap.set(stemPath, {
+                strokeDasharray: pathLength,
+                strokeDashoffset: pathLength
+            });
+
+            // Create ScrollTrigger
+            ScrollTrigger.create({
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: true,
+                onUpdate: (self) => {
+                    const progress = self.progress;
+                    const easedProgress = gsap.parseEase('power2.out')(progress);
+                    const offset = pathLength * (1 - easedProgress);
+                    
+                    gsap.set(stemPath, {
+                        strokeDashoffset: offset
+                    });
+
+                    // Update debug
+                    debug.innerHTML = `
+                        Scroll: ${Math.round(progress * 100)}%<br>
+                        Path Length: ${Math.round(pathLength)}<br>
+                        Offset: ${Math.round(offset)}
+                    `;
+                }
+            });
+
+            // Refresh on resize
+            window.addEventListener('resize', () => {
+                ScrollTrigger.refresh();
+            });
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', updateDimensions);
+        } else {
+            // DOM already ready
+            setTimeout(updateDimensions, 100);
+        }
+
+        // Also update after a short delay to ensure everything is loaded
+        setTimeout(updateDimensions, 500);
+    </script>
+</body>
+</html>

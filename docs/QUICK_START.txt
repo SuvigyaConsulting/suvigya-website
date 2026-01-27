@@ -1,0 +1,49 @@
+═══════════════════════════════════════════════════════════════
+  SUVIGYA CONSULTING - Quick Start Guide
+═══════════════════════════════════════════════════════════════
+
+🚀 TO RUN THE WEBSITE:
+
+Windows:
+  → Double-click: START.bat
+  → Website opens automatically!
+
+Mac/Linux:
+  → Open terminal in this folder
+  → Run: node serve.js
+  → Open http://localhost:3000
+
+═══════════════════════════════════════════════════════════════
+
+📦 TO SHARE WITH OTHERS:
+
+Option 1 (Easiest):
+  1. Zip the entire folder
+  2. Send to recipient
+  3. They double-click START.bat (Windows) or run: node serve.js
+
+Option 2 (Smaller):
+  1. Zip only: "out" folder + "serve.js" + "START.bat"
+  2. Recipient needs Node.js installed
+  3. They run: node serve.js
+
+═══════════════════════════════════════════════════════════════
+
+⚠️  REQUIREMENTS:
+  - Node.js (download from nodejs.org)
+  - OR Python 3 (for serve.py)
+
+═══════════════════════════════════════════════════════════════
+
+❓ TROUBLESHOOTING:
+
+"out folder not found"
+  → Run: npm run build
+
+"Node.js not found"
+  → Install from: https://nodejs.org/
+
+Port 3000 busy
+  → Edit serve.js, change PORT = 3000
+
+═══════════════════════════════════════════════════════════════

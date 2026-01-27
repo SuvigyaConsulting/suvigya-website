@@ -1,0 +1,537 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   SUVIGYA Consulting - Fresh Nature Design System
+   ============================================ */
+
+:root {
+  /* Typography */
+  --font-inter: 'Inter', system-ui, sans-serif;
+  --font-display: 'Inter', system-ui, sans-serif;
+
+  /* Fresh Nature Color Tokens */
+  --color-sage: #4A7C59;
+  --color-sage-dark: #2D5A3D;
+  --color-sage-light: #8FC4A3;
+  --color-eucalyptus: #8CB369;
+  --color-eucalyptus-dark: #72994F;
+  --color-mint: #A8D5BA;
+  --color-amber: #C4A77D;
+  --color-sky: #7EB8C9;
+  --color-forest: #1a2f1e;
+  --color-cream: #FAFBF8;
+  --color-mist: #F4F7F5;
+
+  /* Spacing */
+  --section-padding-y: 6rem;
+  --container-padding-x: 1.5rem;
+
+  /* Transitions */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+  --transition-fast: 200ms var(--ease-out-expo);
+  --transition-medium: 400ms var(--ease-out-expo);
+  --transition-slow: 800ms var(--ease-out-expo);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --section-padding-y: 8rem;
+    --container-padding-x: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --section-padding-y: 10rem;
+    --container-padding-x: 3rem;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--color-mist);
+  color: #2D3B31;
+  overflow-x: hidden;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  line-height: 1.75;
+  /* Subtle organic texture */
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(74, 124, 89, 0.03) 1px, transparent 0),
+    linear-gradient(180deg, #F4F7F5 0%, #E8F5ED 50%, #F4F7F5 100%);
+  background-size: 24px 24px, 100% 200vh;
+  background-attachment: fixed;
+}
+
+/* ============================================
+   Typography
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-forest);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 600;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+}
+
+p {
+  line-height: 1.75;
+  color: #2D3B31;
+}
+
+/* ============================================
+   Custom Scrollbar
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(244, 247, 245, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-sage) 0%, var(--color-eucalyptus) 100%);
+  border-radius: 5px;
+  border: 2px solid var(--color-mist);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--color-sage-dark) 0%, var(--color-sage) 100%);
+}
+
+/* ============================================
+   Accessibility
+   ============================================ */
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* High Contrast */
+.high-contrast {
+  --tw-text-opacity: 1;
+}
+
+.high-contrast .glass {
+  background: rgba(250, 251, 248, 0.98);
+  border: 2px solid var(--color-sage);
+}
+
+.high-contrast .glass-dark {
+  background: rgba(26, 47, 30, 0.98);
+  border: 2px solid var(--color-eucalyptus);
+}
+
+/* Selection */
+::selection {
+  background: rgba(140, 179, 105, 0.3);
+  color: var(--color-forest);
+}
+
+/* Focus Visible */
+:focus-visible {
+  outline: 2px solid var(--color-sage);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ============================================
+   Layout Utilities
+   ============================================ */
+
+.text-balance {
+  text-wrap: balance;
+}
+
+section {
+  padding-top: var(--section-padding-y);
+  padding-bottom: var(--section-padding-y);
+  position: relative;
+}
+
+.container {
+  padding-left: var(--container-padding-x);
+  padding-right: var(--container-padding-x);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   Glass Morphism Effects
+   ============================================ */
+
+.glass {
+  background: rgba(250, 251, 248, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(74, 124, 89, 0.1);
+  box-shadow:
+    0 4px 20px rgba(45, 90, 61, 0.08),
+    0 1px 3px rgba(45, 90, 61, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  transition: all var(--transition-medium);
+}
+
+.glass:hover {
+  background: rgba(250, 251, 248, 0.85);
+  box-shadow:
+    0 8px 30px rgba(45, 90, 61, 0.12),
+    0 2px 6px rgba(45, 90, 61, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+}
+
+.glass-dark {
+  background: rgba(26, 47, 30, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(140, 179, 105, 0.15);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(140, 179, 105, 0.1);
+  border-radius: 16px;
+}
+
+/* ============================================
+   Gradient Text Effects
+   ============================================ */
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-sage-dark) 0%, var(--color-sage) 50%, var(--color-eucalyptus) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--color-forest); /* Fallback */
+}
+
+.gradient-text-light {
+  background: linear-gradient(135deg, var(--color-mint) 0%, var(--color-eucalyptus) 50%, var(--color-sky) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(135deg, var(--color-sage) 0%, var(--color-amber) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ============================================
+   Button Styles
+   ============================================ */
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-sage) 0%, var(--color-sage-dark) 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  box-shadow: 0 4px 15px rgba(74, 124, 89, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(74, 124, 89, 0.4);
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-sage);
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  border: 2px solid var(--color-sage);
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.btn-secondary:hover {
+  background: var(--color-sage);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(74, 124, 89, 0.25);
+}
+
+/* ============================================
+   Card Styles
+   ============================================ */
+
+.card {
+  background: var(--color-cream);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid rgba(74, 124, 89, 0.08);
+  box-shadow: 0 4px 20px rgba(45, 90, 61, 0.06);
+  transition: all var(--transition-medium);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(45, 90, 61, 0.12);
+  border-color: rgba(74, 124, 89, 0.15);
+}
+
+.card-interactive {
+  cursor: pointer;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+/* ============================================
+   Section Backgrounds
+   ============================================ */
+
+.section-light {
+  background: var(--color-mist);
+}
+
+.section-cream {
+  background: var(--color-cream);
+}
+
+.section-dark {
+  background: linear-gradient(180deg, var(--color-forest) 0%, #0f1f14 100%);
+  color: var(--color-mist);
+}
+
+.section-dark h1,
+.section-dark h2,
+.section-dark h3,
+.section-dark h4,
+.section-dark h5,
+.section-dark h6 {
+  color: var(--color-mist);
+}
+
+.section-dark p {
+  color: rgba(244, 247, 245, 0.8);
+}
+
+/* ============================================
+   Decorative Elements
+   ============================================ */
+
+.topographic-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 25 Q 25 10, 40 25 T 70 25 T 100 25' stroke='%234A7C59' stroke-width='0.5' fill='none' opacity='0.1'/%3E%3Cpath d='M0 50 Q 15 35, 30 50 T 60 50 T 90 50' stroke='%238CB369' stroke-width='0.5' fill='none' opacity='0.08'/%3E%3Cpath d='M10 75 Q 25 60, 40 75 T 70 75 T 100 75' stroke='%234A7C59' stroke-width='0.5' fill='none' opacity='0.06'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+.grain-overlay {
+  position: relative;
+}
+
+.grain-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* ============================================
+   Loading & Animation Utilities
+   ============================================ */
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    rgba(74, 124, 89, 0.08) 0%,
+    rgba(140, 179, 105, 0.15) 50%,
+    rgba(74, 124, 89, 0.08) 100%
+  );
+  background-size: 1000px 100%;
+  border-radius: 8px;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.pulse-ring {
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* ============================================
+   Three.js Canvas Container
+   ============================================ */
+
+.canvas-container {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.canvas-container canvas {
+  display: block;
+}
+
+/* ============================================
+   Custom Cursor Styles
+   ============================================ */
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--color-sage);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: transform 0.1s ease;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--color-sage);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transition: all 0.15s ease-out;
+}
+
+.cursor-ring.hover {
+  width: 60px;
+  height: 60px;
+  background: rgba(74, 124, 89, 0.1);
+  border-color: var(--color-eucalyptus);
+}
+
+/* Hide custom cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+}
+
+/* ============================================
+   Responsive Utilities
+   ============================================ */
+
+.hide-mobile {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile {
+    display: block;
+  }
+}
+
+.hide-desktop {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .hide-desktop {
+    display: none;
+  }
+}
