@@ -288,38 +288,6 @@ export default function AboutSection() {
           ))}
         </motion.div>
 
-        {/* About Text */}
-        <motion.div
-          className="mt-20 max-w-4xl mx-auto text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-        >
-          <p className="text-lg text-text-body leading-generous mb-8">
-            SUVIGYA CONSULTING combines cutting-edge GIS technology with deep expertise in
-            environmental systems and community dynamics. We partner with leading international
-            organizations to deliver solutions that are both scientifically rigorous and
-            practically implementable.
-          </p>
-
-          {/* Expertise tags */}
-          <div className="flex flex-wrap justify-center gap-3">
-            {['GIS & Remote Sensing', 'Policy Development', 'Community Engagement', 'Climate Adaptation', 'Sustainable Development'].map((tag, i) => (
-              <motion.span
-                key={tag}
-                className="px-5 py-2.5 glass rounded-full text-sm font-medium text-sage-700 hover:bg-sage-50 transition-colors cursor-default"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.6 + i * 0.05 }}
-                whileHover={{ scale: 1.05 }}
-              >
-                {tag}
-              </motion.span>
-            ))}
-          </div>
-        </motion.div>
       </div>
     </section>
   )

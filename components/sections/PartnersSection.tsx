@@ -272,9 +272,6 @@ export default function PartnersSection() {
             Collaborating with the world&apos;s leading development organizations
             to create lasting change
           </p>
-          <p className="text-sm text-text-muted mt-4">
-            Drag to scroll through our partners
-          </p>
         </motion.div>
       </div>
 

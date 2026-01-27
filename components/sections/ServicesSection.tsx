@@ -1,86 +1,121 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { usePersonalizationStore } from '@/store/personalization'
 
 const services = [
   {
-    title: 'GIS & Spatial Analysis',
-    description: 'Advanced geospatial analysis and mapping solutions for natural resources management.',
-    icon: '🗺️',
+    title: 'Forestry, Biodiversity & Landscape Management',
+    description: 'Restoration, conservation, and sustainable ecosystem management strategies.',
+    icon: '🌳',
     gradient: 'from-sage-500 to-eucalyptus-400',
     details: [
-      'Remote sensing & satellite imagery',
-      'Spatial data modeling',
-      'Land use mapping',
-      'Real-time monitoring systems',
+      'Integrated landscape & watershed management',
+      'Sustainable forestry & agroforestry (REDD+)',
+      'Biodiversity conservation & eco-tourism',
+      'Payment for ecosystem services (PES)',
     ],
   },
   {
-    title: 'Policy Development',
-    description: 'Evidence-based policy frameworks for sustainable resource management.',
-    icon: '📋',
-    gradient: 'from-sky-400 to-sage-400',
-    details: [
-      'Environmental policy analysis',
-      'Regulatory frameworks',
-      'Stakeholder engagement',
-      'Impact assessment',
-    ],
-  },
-  {
-    title: 'Natural Resources',
-    description: 'Comprehensive solutions for sustainable resource utilization.',
-    icon: '🌿',
-    gradient: 'from-eucalyptus-400 to-mint-400',
-    details: [
-      'Water management',
-      'Forest conservation',
-      'Climate adaptation',
-      'Ecosystem services',
-    ],
-  },
-  {
-    title: 'Grassroots Actions',
-    description: 'Community-driven initiatives for sustainable development.',
-    icon: '🤝',
+    title: 'Agribusiness & Value Chain Development',
+    description: 'Strengthening market linkages and value addition for agricultural products.',
+    icon: '🌾',
     gradient: 'from-amber-400 to-sage-400',
     details: [
-      'Community capacity building',
-      'Participatory planning',
-      'Local governance support',
-      'Knowledge transfer',
+      'Value chain strengthening for crops & NTFPs',
+      'Farmer-industry productive alliances',
+      'Organic certification & branding support',
+      'Market access strategies for regional products',
     ],
   },
   {
-    title: 'International Development',
-    description: 'Partnerships with global organizations for lasting impact.',
+    title: 'Rural Development & Livelihoods',
+    description: 'Community-driven enterprise promotion and skill development.',
+    icon: '🤝',
+    gradient: 'from-eucalyptus-400 to-mint-400',
+    details: [
+      'MSME development & rural enterprises',
+      'Skill development & employment generation',
+      'Strengthening SHGs & cooperatives',
+      'Community-based development models',
+    ],
+  },
+  {
+    title: 'Climate Adaptation & Natural Resource Management',
+    description: 'Climate-smart interventions and sustainable land and water management.',
     icon: '🌍',
+    gradient: 'from-sky-400 to-sage-400',
+    details: [
+      'Watershed & catchment management',
+      'Climate-resilient agriculture & agroforestry',
+      'Disaster risk reduction & early warning systems',
+      'Carbon sequestration & sustainable financing',
+    ],
+  },
+  {
+    title: 'Infrastructure & Investment Mobilization',
+    description: 'Sustainable infrastructure planning and private sector engagement.',
+    icon: '🏗️',
     gradient: 'from-sage-500 to-sky-400',
     details: [
-      'Project management',
-      'Donor coordination',
-      'Multi-stakeholder engagement',
-      'Capacity development',
+      'Climate-resilient infrastructure development',
+      'Public-private partnerships (PPP)',
+      'Blended finance & fund mobilization',
+      'Smart villages & green infrastructure',
     ],
   },
   {
-    title: 'Research & Analysis',
-    description: 'Rigorous research methodologies for informed decisions.',
-    icon: '🔬',
+    title: 'Monitoring, Evaluation & Learning',
+    description: 'Result-based frameworks for program evaluation and continuous improvement.',
+    icon: '📊',
     gradient: 'from-mint-400 to-sage-500',
     details: [
-      'Impact assessments',
-      'Baseline surveys',
-      'Scientific reporting',
-      'Data analytics',
+      'M&E frameworks with digital tracking',
+      'Baseline studies & impact assessments',
+      'Third-party evaluations & audits',
+      'Knowledge management & learning dissemination',
+    ],
+  },
+  {
+    title: 'Capacity Building & Governance',
+    description: 'Institutional strengthening and participatory governance models.',
+    icon: '🏛️',
+    gradient: 'from-sage-500 to-eucalyptus-400',
+    details: [
+      'Training for government & implementing agencies',
+      'SOPs & governance frameworks',
+      'Participatory planning & decentralized governance',
+      'Regulatory & compliance advisory',
+    ],
+  },
+  {
+    title: 'Digital Transformation & GIS',
+    description: 'Data-driven decision making through geospatial analytics and digital solutions.',
+    icon: '🗺️',
+    gradient: 'from-sky-400 to-mint-400',
+    details: [
+      'GIS & remote sensing for planning',
+      'E-governance & digital rural solutions',
+      'Decision support systems (DSS)',
+      'Real-time analytics for policy & projects',
+    ],
+  },
+  {
+    title: 'Research, Documentation & Strategy',
+    description: 'Technical writing, market research, and stakeholder engagement.',
+    icon: '📋',
+    gradient: 'from-amber-400 to-eucalyptus-400',
+    details: [
+      'Technical reports, DPRs & policy briefs',
+      'Grant & proposal writing (GCF, GEF, World Bank)',
+      'Feasibility studies & business planning',
+      'Stakeholder engagement & communication strategy',
     ],
   },
 ]
 
-// Service Card component with uniform sizing and smooth reveal
 function ServiceCard({
   service,
   index,
@@ -92,36 +127,8 @@ function ServiceCard({
   isExpanded: boolean
   onToggle: () => void
 }) {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [isHovered, setIsHovered] = useState(false)
-
-  // Mouse position for 3D tilt effect
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-
-  // Smooth spring animation for tilt
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), { stiffness: 300, damping: 30 })
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), { stiffness: 300, damping: 30 })
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-    const x = (e.clientX - rect.left) / rect.width - 0.5
-    const y = (e.clientY - rect.top) / rect.height - 0.5
-    mouseX.set(x)
-    mouseY.set(y)
-  }
-
-  const handleMouseLeave = () => {
-    mouseX.set(0)
-    mouseY.set(0)
-    setIsHovered(false)
-  }
-
   return (
     <motion.div
-      ref={cardRef}
-      className="perspective-1000"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -129,56 +136,30 @@ function ServiceCard({
     >
       <motion.div
         className="h-full glass rounded-panel p-6 md:p-8 cursor-pointer overflow-hidden relative group"
-        style={{
-          rotateX: isHovered ? rotateX : 0,
-          rotateY: isHovered ? rotateY : 0,
-          transformStyle: 'preserve-3d',
-        }}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={handleMouseLeave}
         onClick={onToggle}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         layout
       >
         {/* Gradient background on hover */}
-        <motion.div
-          className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 transition-opacity duration-500`}
-          animate={{ opacity: isHovered ? 0.1 : 0 }}
-        />
-
-        {/* Spotlight effect */}
-        <motion.div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-          style={{
-            background: `radial-gradient(600px circle at ${mouseX.get() * 100 + 50}% ${mouseY.get() * 100 + 50}%, rgba(140, 179, 105, 0.15), transparent 40%)`,
-          }}
+        <div
+          className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
         />
 
         {/* Content */}
         <div className="relative z-10 flex flex-col">
           {/* Icon */}
-          <motion.div
-            className="text-4xl md:text-5xl mb-4"
-            style={{ transform: 'translateZ(30px)' }}
-          >
+          <div className="text-4xl md:text-5xl mb-4">
             {service.icon}
-          </motion.div>
+          </div>
 
           {/* Title */}
-          <h3
-            className="text-xl md:text-2xl font-bold mb-3 text-text-heading"
-            style={{ transform: 'translateZ(20px)' }}
-          >
+          <h3 className="text-xl md:text-2xl font-bold mb-3 text-text-heading">
             {service.title}
           </h3>
 
           {/* Description */}
-          <p
-            className="text-text-body mb-4 leading-relaxed"
-            style={{ transform: 'translateZ(15px)' }}
-          >
+          <p className="text-text-body mb-4 leading-relaxed">
             {service.description}
           </p>
 
@@ -296,8 +277,8 @@ export default function ServicesSection() {
             Our <span className="gradient-text">Expertise</span>
           </h2>
           <p className="text-xl text-text-body max-w-2xl mx-auto leading-relaxed">
-            Comprehensive consulting solutions for sustainable development
-            and natural resources management
+            Comprehensive consulting across development sectors,
+            from policy and governance to community impact
           </p>
         </motion.div>
 

@@ -11,7 +11,6 @@ import ContactSection from '@/components/sections/ContactSection'
 import ScrollProgress from '@/components/ScrollProgress'
 import LoadingScreen from '@/components/LoadingScreen'
 import SkeletonLoader from '@/components/SkeletonLoader'
-import Footer from '@/app/footer'
 import { usePersonalizationStore } from '@/store/personalization'
 
 export default function Home() {
@@ -33,7 +32,6 @@ export default function Home() {
         <PartnersSection />
         <ImpactSection />
         <ContactSection />
-        <Footer />
       </Suspense>
     </>
   )
