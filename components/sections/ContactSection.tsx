@@ -774,7 +774,7 @@ export default function ContactSection() {
                 </a>
                 <span className="text-sage-200">|</span>
                 <a
-                  href="tel:+15551234567"
+                  href="tel:+919900393800"
                   className="text-text-muted hover:text-sage-600 transition-colors"
                 >
                   +919900393800
