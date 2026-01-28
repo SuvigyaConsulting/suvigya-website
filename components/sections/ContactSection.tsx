@@ -616,11 +616,12 @@ export default function ContactSection() {
     })
   }
 
-  const inputClasses = "w-full px-4 md:px-5 py-3 md:py-4 min-h-[44px] bg-background-card border-2 border-sage-100 rounded-button text-text-body placeholder-text-muted focus:outline-none focus:border-sage-400 transition-all duration-300"
+  const inputClasses = "w-full px-4 md:px-5 py-3 md:py-4 min-h-[44px] bg-background-card border-2 border-sage-100 rounded-button text-text-body placeholder-text-muted focus-visible:border-sage-400 transition-all duration-300"
 
   return (
     <section
       id="contact"
+      aria-label="Contact us"
       className="relative py-16 md:py-24 lg:py-32 section-cream overflow-hidden"
     >
       {/* Background decoration */}
@@ -707,7 +708,7 @@ export default function ContactSection() {
                   </p>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="glass rounded-panel p-5 md:p-8 lg:p-10 space-y-5 md:space-y-6">
+                <form onSubmit={handleSubmit} aria-label="Contact form" className="glass rounded-panel p-5 md:p-8 lg:p-10 space-y-5 md:space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-text-body mb-2">
