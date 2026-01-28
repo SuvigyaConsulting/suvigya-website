@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { usePersonalizationStore } from '@/store/personalization'
@@ -530,6 +530,18 @@ function GrowingPlant({ progress }: { progress: number }) {
   )
 }
 
+/** Encode HTML entities to neutralize script tags and HTML in user input */
+function sanitizeInput(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+}
+
+type FormStatus = 'idle' | 'submitting' | 'success'
+
 export default function ContactSection() {
   const [formData, setFormData] = useState({
     name: '',
@@ -537,9 +549,18 @@ export default function ContactSection() {
     organization: '',
     message: '',
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
+  const [formStatus, setFormStatus] = useState<FormStatus>('idle')
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { getContextualCTA } = usePersonalizationStore()
+
+  // Cleanup reset timer on unmount
+  useEffect(() => {
+    return () => {
+      if (resetTimerRef.current) {
+        clearTimeout(resetTimerRef.current)
+      }
+    }
+  }, [])
 
   const [ref, inView] = useInView({
     threshold: 0.1,
@@ -556,22 +577,37 @@ export default function ContactSection() {
     return count
   }, [formData])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
+    if (formStatus !== 'idle') return
 
-    // Simulate form submission
+    // Sanitize all inputs before processing
+    const sanitizedData = {
+      name: sanitizeInput(formData.name),
+      email: sanitizeInput(formData.email),
+      organization: sanitizeInput(formData.organization),
+      message: sanitizeInput(formData.message),
+    }
+
+    setFormStatus('submitting')
+
+    // Simulate form submission with sanitized data
+    void sanitizedData // Will be sent to backend in v2
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
-    setIsSubmitting(false)
-    setSubmitted(true)
+    setFormStatus('success')
 
-    // Reset form after 5 seconds
-    setTimeout(() => {
-      setSubmitted(false)
+    // Clear any pending reset timer before setting a new one
+    if (resetTimerRef.current) {
+      clearTimeout(resetTimerRef.current)
+    }
+
+    resetTimerRef.current = setTimeout(() => {
+      setFormStatus('idle')
       setFormData({ name: '', email: '', organization: '', message: '' })
+      resetTimerRef.current = null
     }, 5000)
-  }
+  }, [formStatus, formData])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -612,7 +648,7 @@ export default function ContactSection() {
               Let&apos;s <span className="gradient-text">Grow</span> Together
             </h2>
             <p className="text-xl text-text-body leading-relaxed max-w-2xl mx-auto">
-              {getContextualCTA()} Ready to make an impact? We&apos;d love to hear about your project.
+              Ready to transform your project? Ready to make an impact? We&apos;d love to hear about it.
             </p>
           </div>
 
@@ -643,7 +679,7 @@ export default function ContactSection() {
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              {submitted ? (
+              {formStatus === 'success' ? (
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -738,12 +774,12 @@ export default function ContactSection() {
 
                   <motion.button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={formStatus !== 'idle'}
                     className="w-full btn-primary py-4 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    {isSubmitting ? (
+                    {formStatus === 'submitting' ? (
                       <span className="flex items-center justify-center gap-2">
                         <motion.span
                           className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
