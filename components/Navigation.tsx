@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import Link from 'next/link'
 
@@ -46,9 +46,14 @@ export default function Navigation() {
     setIsScrolled(latest > 50)
   })
 
-  // Track active section
-  useEffect(() => {
-    const handleScroll = () => {
+  // Track active section (throttled via requestAnimationFrame)
+  const ticking = useRef(false)
+
+  const handleScroll = useCallback(() => {
+    if (ticking.current) return
+    ticking.current = true
+
+    requestAnimationFrame(() => {
       const sections = navItems.map(item => item.href.slice(1))
       const scrollPosition = window.scrollY + 100
 
@@ -59,20 +64,23 @@ export default function Navigation() {
           break
         }
       }
-    }
+      ticking.current = false
+    })
+  }, [])
 
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [handleScroll])
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault()
-    const element = document.querySelector(href)
+    const id = href.replace('#', '')
+    const element = document.getElementById(id)
     if (element) {
-      // Account for fixed navbar height
       const navbarOffset = 80
       const elementPosition = element.getBoundingClientRect().top
-      const offsetPosition = elementPosition + window.pageYOffset - navbarOffset
+      const offsetPosition = elementPosition + window.scrollY - navbarOffset
       window.scrollTo({
         top: offsetPosition,
         behavior: 'smooth'
