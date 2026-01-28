@@ -16,7 +16,7 @@ function AnimatedText({ children, delay = 0, reducedMotion = false }: { children
       transition={{ delay: reducedMotion ? 0 : delay, duration: reducedMotion ? 0 : 0.01 }}
     >
       <motion.span
-        className="inline-block"
+        className="inline-block pr-[0.1em]"
         initial={reducedMotion ? false : { y: '100%' }}
         animate={{ y: 0 }}
         transition={{
