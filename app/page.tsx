@@ -7,11 +7,11 @@ import AboutSection from '@/components/sections/AboutSection'
 
 const ServicesSection = dynamic(() => import('@/components/sections/ServicesSection'), {
   ssr: false,
-  loading: () => <div className="min-h-[50vh]" />,
+  loading: () => <div id="services" className="min-h-[50vh]" />,
 })
 const ProjectsSection = dynamic(() => import('@/components/sections/ProjectsSection'), {
   ssr: false,
-  loading: () => <div className="min-h-[50vh]" />,
+  loading: () => <div id="projects" className="min-h-[50vh]" />,
 })
 const PartnersSection = dynamic(() => import('@/components/sections/PartnersSection'), {
   ssr: false,
@@ -19,11 +19,11 @@ const PartnersSection = dynamic(() => import('@/components/sections/PartnersSect
 })
 const ImpactSection = dynamic(() => import('@/components/sections/ImpactSection'), {
   ssr: false,
-  loading: () => <div className="min-h-[50vh]" />,
+  loading: () => <div id="impact" className="min-h-[50vh]" />,
 })
 const ContactSection = dynamic(() => import('@/components/sections/ContactSection'), {
   ssr: false,
-  loading: () => <div className="min-h-[50vh]" />,
+  loading: () => <div id="contact" className="min-h-[50vh]" />,
 })
 import ScrollProgress from '@/components/ScrollProgress'
 import LoadingScreen from '@/components/LoadingScreen'
