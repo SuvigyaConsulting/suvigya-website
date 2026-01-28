@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 const projects = [
   {
@@ -206,6 +207,7 @@ export default function ProjectsSection() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [direction, setDirection] = useState(0)
   const [autoPlay, setAutoPlay] = useState(true)
+  const { reducedMotion } = useAccessibility()
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -253,6 +255,7 @@ export default function ProjectsSection() {
     <section
       id="projects"
       ref={sectionRef}
+      aria-label="Projects"
       className="relative min-h-screen py-16 md:py-24 lg:py-32 overflow-hidden"
     >
       {/* Background with parallax */}

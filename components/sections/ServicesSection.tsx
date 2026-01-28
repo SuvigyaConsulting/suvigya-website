@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { usePersonalizationStore } from '@/store/personalization'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 const services = [
   {
@@ -121,18 +122,20 @@ function ServiceCard({
   index,
   isExpanded,
   onToggle,
+  reducedMotion = false,
 }: {
   service: typeof services[0]
   index: number
   isExpanded: boolean
   onToggle: () => void
+  reducedMotion?: boolean
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={reducedMotion ? false : { opacity: 0, y: 50 }}
+      whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 0.6 }}
+      transition={reducedMotion ? { duration: 0 } : { delay: index * 0.1, duration: 0.6 }}
     >
       <motion.div
         className="h-full glass rounded-panel p-6 md:p-8 cursor-pointer overflow-hidden relative group"
@@ -146,6 +149,7 @@ function ServiceCard({
         role="button"
         tabIndex={0}
         aria-expanded={isExpanded}
+        aria-label={`${service.title} - ${isExpanded ? 'collapse' : 'expand'} details`}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         layout
@@ -235,6 +239,7 @@ export default function ServicesSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
   const { addInteraction } = usePersonalizationStore()
+  const { reducedMotion } = useAccessibility()
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -263,7 +268,7 @@ export default function ServicesSection() {
       {/* Background pattern */}
       <motion.div
         className="absolute inset-0 topographic-bg opacity-20 pointer-events-none"
-        style={{ y: backgroundY }}
+        style={reducedMotion ? {} : { y: backgroundY }}
       />
 
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
@@ -271,15 +276,15 @@ export default function ServicesSection() {
         <motion.div
           ref={ref}
           className="text-center mb-12 md:mb-16"
-          initial={{ opacity: 0, y: 30 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
+          transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
         >
           <motion.span
             className="text-sage-600 font-medium tracking-widest uppercase text-sm mb-4 block"
-            initial={{ opacity: 0 }}
+            initial={reducedMotion ? false : { opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.2 }}
+            transition={reducedMotion ? { duration: 0 } : { delay: 0.2 }}
           >
             What We Do
           </motion.span>
@@ -301,6 +306,7 @@ export default function ServicesSection() {
               index={index}
               isExpanded={expandedIndex === index}
               onToggle={() => handleToggle(index)}
+              reducedMotion={reducedMotion}
             />
           ))}
         </div>
@@ -308,16 +314,16 @@ export default function ServicesSection() {
         {/* CTA */}
         <motion.div
           className="text-center mt-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
+          whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
+          transition={reducedMotion ? { duration: 0 } : { delay: 0.5 }}
         >
           <motion.a
             href="#contact"
             className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-lg"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={reducedMotion ? {} : { scale: 1.05 }}
+            whileTap={reducedMotion ? {} : { scale: 0.98 }}
           >
             Discuss Your Project
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

@@ -187,6 +187,7 @@ export default function ImpactSection() {
     <section
       id="impact"
       ref={sectionRef}
+      aria-label="Our impact"
       className="relative py-16 md:py-24 lg:py-32 overflow-hidden"
     >
       {/* Background with parallax */}

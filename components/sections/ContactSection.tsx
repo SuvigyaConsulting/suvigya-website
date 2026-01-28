@@ -682,6 +682,8 @@ export default function ContactSection() {
             >
               {formStatus === 'success' ? (
                 <motion.div
+                  role="status"
+                  aria-live="polite"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   className="glass rounded-panel p-12 text-center"

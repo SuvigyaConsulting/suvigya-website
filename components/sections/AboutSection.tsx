@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform, useInView, useSpring } from 'framer-motion'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 // Timeline milestones data
 const milestones = [
@@ -46,11 +47,15 @@ const stats = [
 ]
 
 // Animated counter component
-function AnimatedCounter({ value, suffix = '', inView }: { value: number; suffix?: string; inView: boolean }) {
+function AnimatedCounter({ value, suffix = '', inView, reducedMotion = false }: { value: number; suffix?: string; inView: boolean; reducedMotion?: boolean }) {
   const [displayValue, setDisplayValue] = useState(0)
 
   useEffect(() => {
     if (!inView) return
+    if (reducedMotion) {
+      setDisplayValue(value)
+      return
+    }
 
     let startTime: number
     let animationFrame: number
@@ -71,7 +76,7 @@ function AnimatedCounter({ value, suffix = '', inView }: { value: number; suffix
     animationFrame = requestAnimationFrame(animate)
 
     return () => cancelAnimationFrame(animationFrame)
-  }, [value, inView])
+  }, [value, inView, reducedMotion])
 
   return (
     <span>
@@ -85,20 +90,22 @@ function TimelineItem({
   milestone,
   index,
   isActive,
+  reducedMotion = false,
 }: {
   milestone: typeof milestones[0]
   index: number
   isActive: boolean
+  reducedMotion?: boolean
 }) {
   return (
     <motion.div
       className={`relative flex-shrink-0 w-72 md:w-80 p-6 rounded-panel transition-all duration-500 ${
         isActive ? 'glass scale-105 shadow-elevated' : 'bg-background-card/50 scale-100'
       }`}
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={reducedMotion ? false : { opacity: 0, y: 50 }}
+      whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 0.6 }}
+      transition={reducedMotion ? { duration: 0 } : { delay: index * 0.1, duration: 0.6 }}
     >
       {/* Year badge */}
       <div className={`inline-flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-full mb-4 ${
@@ -124,6 +131,7 @@ export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const timelineRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
+  const { reducedMotion } = useAccessibility()
 
   // Drag-to-scroll state
   const [isDragging, setIsDragging] = useState(false)
@@ -184,29 +192,30 @@ export default function AboutSection() {
     <section
       id="about"
       ref={sectionRef}
+      aria-label="About us"
       className="relative min-h-screen py-16 md:py-24 lg:py-32 overflow-hidden"
     >
       {/* Background decoration */}
       <motion.div
         className="absolute inset-0 topographic-bg opacity-30 pointer-events-none"
-        style={{ y: backgroundY }}
+        style={reducedMotion ? {} : { y: backgroundY }}
       />
 
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           className="text-center mb-12 md:mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
+          whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
         >
           <motion.span
             className="text-sage-600 font-medium tracking-widest uppercase text-sm mb-4 block"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={reducedMotion ? false : { opacity: 0 }}
+            whileInView={reducedMotion ? {} : { opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
+            transition={reducedMotion ? { duration: 0 } : { delay: 0.2 }}
           >
             Our Journey
           </motion.span>
@@ -246,6 +255,7 @@ export default function AboutSection() {
                   milestone={milestone}
                   index={index}
                   isActive={index === activeIndex}
+                  reducedMotion={reducedMotion}
                 />
               </div>
             ))}
@@ -259,23 +269,23 @@ export default function AboutSection() {
         {/* Stats Grid */}
         <motion.div
           className="grid grid-cols-2 lg:grid-cols-4 gap-6"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 50 }}
+          whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          transition={reducedMotion ? { duration: 0 } : { duration: 0.8, delay: 0.3 }}
         >
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
               className="glass p-8 text-center group cursor-default"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={reducedMotion ? false : { opacity: 0, scale: 0.9 }}
+              whileInView={reducedMotion ? {} : { opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
-              whileHover={{ y: -8, scale: 1.02 }}
+              transition={reducedMotion ? { duration: 0 } : { delay: 0.4 + index * 0.1, duration: 0.5 }}
+              whileHover={reducedMotion ? {} : { y: -8, scale: 1.02 }}
             >
               <div className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 gradient-text">
-                <AnimatedCounter value={stat.value} suffix={stat.suffix} inView={isInView} />
+                <AnimatedCounter value={stat.value} suffix={stat.suffix} inView={isInView} reducedMotion={reducedMotion} />
               </div>
               <div className="text-text-muted font-medium">{stat.label}</div>
 
