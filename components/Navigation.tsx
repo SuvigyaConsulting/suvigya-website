@@ -92,6 +92,7 @@ export default function Navigation() {
   return (
     <>
       <motion.nav
+        aria-label="Main navigation"
         className={`fixed top-0 left-0 right-0 z-nav transition-all duration-500 ${
           isScrolled
             ? 'glass py-3 shadow-soft'
@@ -176,7 +177,7 @@ export default function Navigation() {
               <div className="absolute bottom-20 right-10 w-40 h-40 bg-eucalyptus-200/30 rounded-full blur-3xl" />
 
               {/* Navigation Items */}
-              <nav className="flex flex-col items-center gap-6">
+              <nav aria-label="Mobile navigation" className="flex flex-col items-center gap-6">
                 {navItems.map((item, index) => (
                   <motion.a
                     key={item.name}

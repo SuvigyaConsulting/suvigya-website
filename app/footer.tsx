@@ -40,7 +40,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="relative overflow-hidden">
+    <footer aria-label="Site footer" className="relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background-page to-sage-50/30" />
       <div className="absolute inset-0 topographic-bg opacity-10" />
