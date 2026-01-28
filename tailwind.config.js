@@ -197,6 +197,16 @@ module.exports = {
         'out-expo': 'cubic-bezier(0.22, 1, 0.36, 1)',
         'in-out-expo': 'cubic-bezier(0.87, 0, 0.13, 1)',
       },
+      zIndex: {
+        'content': '0',
+        'section': '10',
+        'sticky': '20',
+        'nav': '50',
+        'overlay': '60',
+        'cursor': '70',
+        'loading': '90',
+        'modal': '100',
+      },
       backdropBlur: {
         'xs': '2px',
       },

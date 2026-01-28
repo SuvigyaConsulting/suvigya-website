@@ -59,7 +59,7 @@ export const defaultPlantConfig: PlantGrowthConfig = {
   scrollEnd: 0, // Will be calculated dynamically based on document height
   position: 'left',
   offsetX: 24, // 6 * 4px = 24px (left-6 in Tailwind)
-  zIndex: 9999, // Very high z-index to ensure visibility
+  zIndex: 70, // z-cursor token from design system
   enableBranches: true,
   mobileBreakpoint: 1024,
   reducedMotionFallback: 'static',

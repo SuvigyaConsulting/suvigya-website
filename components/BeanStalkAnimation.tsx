@@ -49,7 +49,7 @@ export default function BeanStalkAnimation() {
 
   return (
     <div
-      className="fixed left-6 top-0 bottom-0 w-0.5 pointer-events-none z-10 hidden lg:block"
+      className="fixed left-6 top-0 bottom-0 w-0.5 pointer-events-none z-section hidden lg:block"
       aria-hidden="true"
       style={{ willChange: 'transform' }}
     >

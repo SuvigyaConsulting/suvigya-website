@@ -9,7 +9,7 @@ export default function AccessibilityControls() {
   const { reducedMotion, highContrast, toggleReducedMotion, toggleHighContrast } = useAccessibility()
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-nav">
       <AnimatePresence>
         {isOpen && (
           <motion.div

@@ -57,7 +57,7 @@ export default function HeroSection() {
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
       {/* Parallax Mountains Background */}
-      <div className="absolute inset-0 -z-10">
+      <div className="absolute inset-0 -z-section">
         <ParallaxMountains />
       </div>
 
@@ -67,11 +67,11 @@ export default function HeroSection() {
       </ErrorBoundary>
 
       {/* Top gradient for smooth nav transition */}
-      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background-page/60 to-transparent z-[1] pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background-page/60 to-transparent z-content pointer-events-none" />
 
       {/* Content Overlay */}
       <motion.div
-        className="relative z-10 container mx-auto px-6 text-center"
+        className="relative z-section container mx-auto px-6 text-center"
         style={{
           y: contentY,
           opacity: contentOpacity,

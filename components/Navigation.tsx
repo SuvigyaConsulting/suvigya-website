@@ -92,7 +92,7 @@ export default function Navigation() {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-nav transition-all duration-500 ${
           isScrolled
             ? 'glass py-3 shadow-soft'
             : 'py-5 bg-transparent'
@@ -128,7 +128,7 @@ export default function Navigation() {
           {/* Mobile Menu Button */}
           <motion.button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden relative w-10 h-10 flex flex-col justify-center items-center gap-1.5 z-50"
+            className="md:hidden relative w-10 h-10 flex flex-col justify-center items-center gap-1.5 z-nav"
             aria-label="Toggle menu"
             whileTap={{ scale: 0.9 }}
           >
@@ -155,7 +155,7 @@ export default function Navigation() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 z-30 md:hidden"
+            className="fixed inset-0 z-overlay md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

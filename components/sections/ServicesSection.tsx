@@ -147,7 +147,7 @@ function ServiceCard({
         />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col">
+        <div className="relative z-section flex flex-col">
           {/* Icon */}
           <div className="text-4xl md:text-5xl mb-4">
             {service.icon}

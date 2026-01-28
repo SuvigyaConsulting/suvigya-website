@@ -261,7 +261,7 @@ export default function ProjectsSection() {
         style={{ opacity: backgroundOpacity }}
       />
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-6 relative z-section">
         {/* Section Header */}
         <motion.div
           ref={ref}

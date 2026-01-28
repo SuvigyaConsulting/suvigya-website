@@ -24,6 +24,16 @@
   --color-cream: #FAFBF8;
   --color-mist: #F4F7F5;
 
+  /* Z-Index Scale */
+  --z-content: 0;
+  --z-section: 10;
+  --z-sticky: 20;
+  --z-nav: 50;
+  --z-overlay: 60;
+  --z-cursor: 70;
+  --z-loading: 90;
+  --z-modal: 100;
+
   /* Spacing */
   --section-padding-y: 6rem;
   --container-padding-x: 1.5rem;
@@ -465,7 +475,7 @@ section {
 .canvas-container {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: var(--z-content);
 }
 
 .canvas-container canvas {
@@ -485,7 +495,7 @@ section {
   background: var(--color-sage);
   border-radius: 50%;
   pointer-events: none;
-  z-index: 9999;
+  z-index: var(--z-cursor);
   mix-blend-mode: difference;
   transition: transform 0.1s ease;
 }
@@ -499,7 +509,7 @@ section {
   border: 2px solid var(--color-sage);
   border-radius: 50%;
   pointer-events: none;
-  z-index: 9998;
+  z-index: var(--z-cursor);
   transition: all 0.15s ease-out;
 }
 
