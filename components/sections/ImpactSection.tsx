@@ -55,10 +55,10 @@ function ProgressRing({
   const offset = circumference - (progress / 100) * circumference
 
   const colorClasses: Record<string, string> = {
-    sage: '#4A7C59',
-    eucalyptus: '#8CB369',
-    amber: '#C4A77D',
-    sky: '#7EB8C9',
+    sage: 'var(--color-sage)',
+    eucalyptus: 'var(--color-eucalyptus)',
+    amber: 'var(--color-amber)',
+    sky: 'var(--color-sky)',
   }
 
   return (

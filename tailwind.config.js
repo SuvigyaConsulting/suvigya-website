@@ -74,6 +74,8 @@ module.exports = {
         },
         // Sky Blue for secondary accent
         sky: {
+          'mist': '#B8D4E3',
+          'haze': '#D4E5ED',
           50: '#F3F9FB',
           100: '#E3F1F5',
           200: '#C7E3EB',

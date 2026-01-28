@@ -23,12 +23,12 @@ export default function LoadingScreen() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="absolute inset-0 bg-[#F4F7F5]" />
+          <div className="absolute inset-0 bg-background-page" />
           <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-sage-100/30" />
 
           <div className="relative h-full flex flex-col items-center justify-center">
             <motion.h1
-              className="font-bold text-[#2D5A3D] tracking-[8px] text-4xl md:text-5xl"
+              className="font-bold text-sage-700 tracking-[8px] text-4xl md:text-5xl"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}

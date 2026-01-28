@@ -165,10 +165,10 @@ export default function ParallaxMountains({ className = '' }: ParallaxMountainsP
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-full overflow-hidden bg-gradient-to-b from-[#B8D4E3] to-[#F4F7F5] ${className}`}
+      className={`relative w-full h-full overflow-hidden bg-gradient-to-b from-sky-mist to-background-page ${className}`}
     >
       {/* Sky gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#B8D4E3] via-[#D4E5ED] to-[#F4F7F5]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-sky-mist via-sky-haze to-background-page" />
 
       {/* Sun glow */}
       <SunGlow />
