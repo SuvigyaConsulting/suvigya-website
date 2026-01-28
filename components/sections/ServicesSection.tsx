@@ -248,7 +248,7 @@ export default function ServicesSection() {
     <section
       id="services"
       ref={sectionRef}
-      className="relative py-24 overflow-hidden section-cream"
+      className="relative py-16 md:py-24 lg:py-32 overflow-hidden section-cream"
     >
       {/* Background pattern */}
       <motion.div
@@ -256,11 +256,11 @@ export default function ServicesSection() {
         style={{ y: backgroundY }}
       />
 
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           ref={ref}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
@@ -283,7 +283,7 @@ export default function ServicesSection() {
         </motion.div>
 
         {/* Services Grid - uniform cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {services.map((service, index) => (
             <ServiceCard
               key={service.title}

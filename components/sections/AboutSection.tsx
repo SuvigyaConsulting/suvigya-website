@@ -92,7 +92,7 @@ function TimelineItem({
 }) {
   return (
     <motion.div
-      className={`relative flex-shrink-0 w-[300px] md:w-[350px] p-6 rounded-panel transition-all duration-500 ${
+      className={`relative flex-shrink-0 w-72 md:w-80 p-6 rounded-panel transition-all duration-500 ${
         isActive ? 'glass scale-105 shadow-elevated' : 'bg-background-card/50 scale-100'
       }`}
       initial={{ opacity: 0, y: 50 }}
@@ -145,7 +145,7 @@ export default function AboutSection() {
     const handleScroll = () => {
       if (timelineRef.current) {
         const scrollLeft = timelineRef.current.scrollLeft
-        const itemWidth = 380 // approximate width + gap
+        const itemWidth = 320 // approximate width (w-72/w-80) + gap
         const newIndex = Math.round(scrollLeft / itemWidth)
         setActiveIndex(Math.min(newIndex, milestones.length - 1))
       }
@@ -184,7 +184,7 @@ export default function AboutSection() {
     <section
       id="about"
       ref={sectionRef}
-      className="relative min-h-screen py-24 overflow-hidden"
+      className="relative min-h-screen py-16 md:py-24 lg:py-32 overflow-hidden"
     >
       {/* Background decoration */}
       <motion.div
@@ -192,10 +192,10 @@ export default function AboutSection() {
         style={{ y: backgroundY }}
       />
 
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -238,7 +238,7 @@ export default function AboutSection() {
             onMouseLeave={handleMouseLeave}
           >
             {/* Spacer for centering first item */}
-            <div className="flex-shrink-0 w-[calc(50vw-200px)] hidden md:block" />
+            <div className="flex-shrink-0 w-48 lg:w-64 hidden md:block" />
 
             {milestones.map((milestone, index) => (
               <div key={milestone.year} className="snap-center">
@@ -251,7 +251,7 @@ export default function AboutSection() {
             ))}
 
             {/* Spacer for centering last item */}
-            <div className="flex-shrink-0 w-[calc(50vw-200px)] hidden md:block" />
+            <div className="flex-shrink-0 w-48 lg:w-64 hidden md:block" />
           </div>
 
         </div>

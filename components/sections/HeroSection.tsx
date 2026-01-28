@@ -54,7 +54,7 @@ export default function HeroSection() {
     <section
       id="home"
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 md:px-6 lg:px-8"
     >
       {/* Parallax Mountains Background */}
       <div className="absolute inset-0 -z-section">
@@ -71,7 +71,7 @@ export default function HeroSection() {
 
       {/* Content Overlay */}
       <motion.div
-        className="relative z-section container mx-auto px-6 text-center"
+        className="relative z-section container mx-auto text-center"
         style={{
           y: contentY,
           opacity: contentOpacity,
