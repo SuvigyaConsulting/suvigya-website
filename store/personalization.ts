@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 
+const MAX_INTERACTIONS = 100
+
 interface PersonalizationState {
   sessionStartTime: number
   scrollDepth: number
@@ -34,7 +36,7 @@ export const usePersonalizationStore = create<PersonalizationState>()(
       },
       addInteraction: (interaction: string) => {
         set((state) => ({
-          interactions: [...state.interactions, interaction],
+          interactions: [...state.interactions, interaction].slice(-MAX_INTERACTIONS),
         }))
       },
       updatePreferences: (prefs) => {
