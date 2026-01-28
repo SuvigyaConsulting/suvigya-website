@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { ParallaxMountains, FloatingElements } from '@/components/hero'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 // Animated text reveal component
 function AnimatedText({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -61,7 +62,9 @@ export default function HeroSection() {
       </div>
 
       {/* Floating Elements (particles, leaves, birds) */}
-      <FloatingElements particleCount={20} leafCount={6} showBirds />
+      <ErrorBoundary componentName="FloatingElements" fallback={null}>
+        <FloatingElements particleCount={20} leafCount={6} showBirds />
+      </ErrorBoundary>
 
       {/* Top gradient for smooth nav transition */}
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background-page/60 to-transparent z-[1] pointer-events-none" />

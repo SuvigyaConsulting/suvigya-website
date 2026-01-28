@@ -6,6 +6,7 @@ import MotionProvider from '@/components/MotionProvider'
 import AccessibilityProvider from '@/components/AccessibilityProvider'
 import KeyboardNavigation from '@/components/KeyboardNavigation'
 import OrganicPlantGrowth from '@/features/plant-growth/OrganicPlantGrowth'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -29,7 +30,9 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <AccessibilityProvider>
           <MotionProvider>
-            <OrganicPlantGrowth />
+            <ErrorBoundary componentName="OrganicPlantGrowth" fallback={null}>
+              <OrganicPlantGrowth />
+            </ErrorBoundary>
             <Navigation />
             <KeyboardNavigation />
             <main className="relative">

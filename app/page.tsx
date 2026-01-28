@@ -10,6 +10,7 @@ import ImpactSection from '@/components/sections/ImpactSection'
 import ContactSection from '@/components/sections/ContactSection'
 import ScrollProgress from '@/components/ScrollProgress'
 import LoadingScreen from '@/components/LoadingScreen'
+import ErrorBoundary from '@/components/ErrorBoundary'
 import SkeletonLoader from '@/components/SkeletonLoader'
 import { usePersonalizationStore } from '@/store/personalization'
 
@@ -22,7 +23,9 @@ export default function Home() {
 
   return (
     <>
-      <LoadingScreen />
+      <ErrorBoundary componentName="LoadingScreen" fallback={null}>
+        <LoadingScreen />
+      </ErrorBoundary>
       <ScrollProgress />
       <Suspense fallback={<SkeletonLoader className="h-screen" />}>
         <HeroSection />
