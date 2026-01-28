@@ -31,6 +31,7 @@ function Particle({
         bottom: `${startY}%`,
         backgroundColor: color,
         boxShadow: `0 0 ${size * 2}px ${color}`,
+        willChange: 'transform, opacity',
       }}
       initial={{ opacity: 0, y: 0, x: 0 }}
       animate={{
@@ -67,6 +68,7 @@ function Leaf({
       style={{
         left: `${startX}%`,
         bottom: '10%',
+        willChange: 'transform, opacity',
       }}
       initial={{ opacity: 0, y: 0, x: 0, rotate: rotation }}
       animate={{
@@ -115,6 +117,7 @@ function FlappingBird({
         left: direction === 1 ? '-5%' : 'auto',
         right: direction === -1 ? '-5%' : 'auto',
         transform: `scale(${size}) scaleX(${direction})`,
+        willChange: 'transform, opacity',
       }}
       initial={{ opacity: 0 }}
       animate={{
@@ -180,6 +183,7 @@ function BirdFlock({
         top: `${startY}%`,
         left: direction === 1 ? '-5%' : 'auto',
         right: direction === -1 ? '-5%' : 'auto',
+        willChange: 'transform, opacity',
       }}
       initial={{ opacity: 0 }}
       animate={{
@@ -252,7 +256,7 @@ function Butterfly({
   return (
     <motion.div
       className="absolute pointer-events-none"
-      style={{ left: `${startX}%`, top: `${startY}%` }}
+      style={{ left: `${startX}%`, top: `${startY}%`, willChange: 'transform, opacity' }}
       initial={{ opacity: 0 }}
       animate={{
         opacity: [0, 0.8, 0.8, 0],
@@ -309,6 +313,7 @@ function MistLayer({
       style={{
         top: `${yPosition}%`,
         left: reverse ? '0%' : '-100%',
+        willChange: 'transform',
       }}
       animate={{
         x: reverse ? ['-50%', '0%'] : ['0%', '-50%'],

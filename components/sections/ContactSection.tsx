@@ -783,6 +783,7 @@ export default function ContactSection() {
                       <span className="flex items-center justify-center gap-2">
                         <motion.span
                           className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                          style={{ willChange: 'transform' }}
                           animate={{ rotate: 360 }}
                           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                         />
