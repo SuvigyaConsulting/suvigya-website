@@ -124,12 +124,24 @@ export default function Navigation() {
     const element = document.getElementById(id)
     if (element) {
       const navbarOffset = 80
-      const elementPosition = element.getBoundingClientRect().top
-      const offsetPosition = elementPosition + window.scrollY - navbarOffset
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      })
+      const targetY = element.getBoundingClientRect().top + window.scrollY - navbarOffset
+      const startY = window.scrollY
+      const distance = targetY - startY
+      const duration = 800
+      let startTime: number | null = null
+
+      const step = (timestamp: number) => {
+        if (!startTime) startTime = timestamp
+        const elapsed = timestamp - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        const ease = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2
+        window.scrollTo(0, startY + distance * ease)
+        if (progress < 1) requestAnimationFrame(step)
+      }
+
+      requestAnimationFrame(step)
     }
     setIsOpen(false)
   }
