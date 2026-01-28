@@ -6,9 +6,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useAccessibility } from '@/components/AccessibilityProvider'
 import { PlantGrowthConfig, defaultPlantConfig } from './plantGrowthConfig'
 
-// Register GSAP plugin
+// Register GSAP plugin and enable GPU acceleration
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
+  gsap.defaults({ force3D: true })
 }
 
 interface OrganicPlantGrowthProps {
