@@ -73,6 +73,49 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [handleScroll])
 
+  // Close mobile menu on Escape key
+  useEffect(() => {
+    const handleEscape = (e: globalThis.KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleEscape)
+    return () => window.removeEventListener('keydown', handleEscape)
+  }, [isOpen])
+
+  // Focus trap for mobile menu
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!isOpen || !mobileMenuRef.current) return
+    const menu = mobileMenuRef.current
+    const focusableEls = menu.querySelectorAll<HTMLElement>('a[href], button, [tabindex]:not([tabindex="-1"])')
+    if (focusableEls.length === 0) return
+
+    const firstEl = focusableEls[0]
+    const lastEl = focusableEls[focusableEls.length - 1]
+
+    // Focus first element when menu opens
+    firstEl.focus()
+
+    const trapFocus = (e: globalThis.KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl) {
+          e.preventDefault()
+          lastEl.focus()
+        }
+      } else {
+        if (document.activeElement === lastEl) {
+          e.preventDefault()
+          firstEl.focus()
+        }
+      }
+    }
+    menu.addEventListener('keydown', trapFocus)
+    return () => menu.removeEventListener('keydown', trapFocus)
+  }, [isOpen])
+
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault()
     const id = href.replace('#', '')
@@ -131,6 +174,7 @@ export default function Navigation() {
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden relative w-11 h-11 flex flex-col justify-center items-center gap-1.5 z-nav"
             aria-label="Toggle menu"
+            aria-expanded={isOpen}
             whileTap={{ scale: 0.9 }}
           >
             <motion.span
@@ -156,11 +200,15 @@ export default function Navigation() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={mobileMenuRef}
             className="fixed inset-0 z-overlay md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation menu"
           >
             {/* Backdrop */}
             <motion.div

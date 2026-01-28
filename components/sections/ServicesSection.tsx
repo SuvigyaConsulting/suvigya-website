@@ -137,6 +137,15 @@ function ServiceCard({
       <motion.div
         className="h-full glass rounded-panel p-6 md:p-8 cursor-pointer overflow-hidden relative group"
         onClick={onToggle}
+        onKeyDown={(e: React.KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onToggle()
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-expanded={isExpanded}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         layout
@@ -248,6 +257,7 @@ export default function ServicesSection() {
     <section
       id="services"
       ref={sectionRef}
+      aria-label="Our services"
       className="relative py-16 md:py-24 lg:py-32 overflow-hidden section-cream"
     >
       {/* Background pattern */}

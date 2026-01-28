@@ -22,6 +22,7 @@ export default function MagneticButton({
 }: MagneticButtonProps) {
   const ref = useRef<HTMLAnchorElement | HTMLButtonElement>(null)
   const [isHovered, setIsHovered] = useState(false)
+  const [isKeyboardFocused, setIsKeyboardFocused] = useState(false)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
 
@@ -29,8 +30,20 @@ export default function MagneticButton({
   const xSpring = useSpring(x, springConfig)
   const ySpring = useSpring(y, springConfig)
 
+  const handleFocus = (e: React.FocusEvent) => {
+    // Detect keyboard focus (no preceding mouse event)
+    if (!ref.current?.matches(':focus-visible')) return
+    setIsKeyboardFocused(true)
+    x.set(0)
+    y.set(0)
+  }
+
+  const handleBlur = () => {
+    setIsKeyboardFocused(false)
+  }
+
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return
+    if (!ref.current || isKeyboardFocused) return
 
     const rect = ref.current.getBoundingClientRect()
     const centerX = rect.left + rect.width / 2
@@ -58,6 +71,8 @@ export default function MagneticButton({
     onMouseMove: handleMouseMove,
     onMouseLeave: handleMouseLeave,
     onMouseEnter: handleMouseEnter,
+    onFocus: handleFocus,
+    onBlur: handleBlur,
     onClick,
     className,
     style: {
