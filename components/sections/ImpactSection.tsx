@@ -187,7 +187,7 @@ export default function ImpactSection() {
     <section
       id="impact"
       ref={sectionRef}
-      className="relative py-24 overflow-hidden"
+      className="relative py-16 md:py-24 lg:py-32 overflow-hidden"
     >
       {/* Background with parallax */}
       <motion.div
@@ -195,10 +195,10 @@ export default function ImpactSection() {
         style={{ y: backgroundY }}
       />
 
-      <div className="container mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-8 md:mb-12 lg:mb-16"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
@@ -220,7 +220,7 @@ export default function ImpactSection() {
         </motion.div>
 
         {/* Metrics Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 md:mb-16">
           {impactMetrics.map((metric, index) => (
             <MetricCard
               key={metric.label}

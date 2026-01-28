@@ -81,7 +81,7 @@ function ProjectCard({
 
   return (
     <motion.div
-      className="absolute inset-0 flex items-center justify-center px-6"
+      className="absolute inset-0 flex items-center justify-center px-4 md:px-6"
       initial={{ opacity: 0, x: direction > 0 ? 300 : -300, scale: 0.9 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={{ opacity: 0, x: direction > 0 ? -300 : 300, scale: 0.9 }}
@@ -89,7 +89,7 @@ function ProjectCard({
     >
       <div className="w-full max-w-6xl mx-auto">
         <div
-          className={`glass rounded-panel p-8 md:p-12 bg-gradient-to-br ${
+          className={`glass rounded-panel p-5 md:p-8 lg:p-12 bg-gradient-to-br ${
             colorClasses[project.color as keyof typeof colorClasses]
           } border`}
         >
@@ -253,7 +253,7 @@ export default function ProjectsSection() {
     <section
       id="projects"
       ref={sectionRef}
-      className="relative min-h-screen py-24 overflow-hidden"
+      className="relative min-h-screen py-16 md:py-24 lg:py-32 overflow-hidden"
     >
       {/* Background with parallax */}
       <motion.div
@@ -261,11 +261,11 @@ export default function ProjectsSection() {
         style={{ opacity: backgroundOpacity }}
       />
 
-      <div className="container mx-auto px-6 relative z-section">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative z-section">
         {/* Section Header */}
         <motion.div
           ref={ref}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
@@ -298,7 +298,7 @@ export default function ProjectsSection() {
         </div>
 
         {/* Carousel */}
-        <div className="relative h-[500px] md:h-[450px]">
+        <div className="relative h-[420px] md:h-[450px]">
           <AnimatePresence mode="wait" initial={false} custom={direction}>
             <ProjectCard
               key={projects[activeIndex].id}
@@ -336,13 +336,15 @@ export default function ProjectsSection() {
               <button
                 key={index}
                 onClick={() => goToProject(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center"
+                aria-label={`Go to project ${index + 1}`}
+              >
+                <span className={`block w-3 h-3 rounded-full transition-all duration-300 ${
                   index === activeIndex
                     ? 'bg-eucalyptus-400 scale-125'
                     : 'bg-text-light/30 hover:bg-text-light/50'
-                }`}
-                aria-label={`Go to project ${index + 1}`}
-              />
+                }`} />
+              </button>
             ))}
           </div>
 

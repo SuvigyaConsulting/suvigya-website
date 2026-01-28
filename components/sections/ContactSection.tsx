@@ -616,17 +616,17 @@ export default function ContactSection() {
     })
   }
 
-  const inputClasses = "w-full px-5 py-4 bg-background-card border-2 border-sage-100 rounded-button text-text-body placeholder-text-muted focus:outline-none focus:border-sage-400 transition-all duration-300"
+  const inputClasses = "w-full px-4 md:px-5 py-3 md:py-4 min-h-[44px] bg-background-card border-2 border-sage-100 rounded-button text-text-body placeholder-text-muted focus:outline-none focus:border-sage-400 transition-all duration-300"
 
   return (
     <section
       id="contact"
-      className="relative py-24 section-cream overflow-hidden"
+      className="relative py-16 md:py-24 lg:py-32 section-cream overflow-hidden"
     >
       {/* Background decoration */}
       <div className="absolute inset-0 topographic-bg opacity-20 pointer-events-none" />
 
-      <div className="container mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 50 }}
@@ -635,7 +635,7 @@ export default function ContactSection() {
           className="max-w-6xl mx-auto"
         >
           {/* Section Header */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <motion.span
               className="text-sage-600 font-medium tracking-widest uppercase text-sm mb-4 block"
               initial={{ opacity: 0 }}
@@ -707,8 +707,8 @@ export default function ContactSection() {
                   </p>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="glass rounded-panel p-8 md:p-10 space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
+                <form onSubmit={handleSubmit} className="glass rounded-panel p-5 md:p-8 lg:p-10 space-y-5 md:space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-text-body mb-2">
                         Name *
@@ -775,7 +775,7 @@ export default function ContactSection() {
                   <motion.button
                     type="submit"
                     disabled={formStatus !== 'idle'}
-                    className="w-full btn-primary py-4 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full btn-primary py-3 md:py-4 min-h-[44px] text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -804,14 +804,14 @@ export default function ContactSection() {
               >
                 <a
                   href="mailto:contact@suvigya.org"
-                  className="text-text-muted hover:text-sage-600 transition-colors"
+                  className="text-text-muted hover:text-sage-600 transition-colors py-2 min-h-[44px] inline-flex items-center"
                 >
                   contact@suvigya.org
                 </a>
-                <span className="text-sage-200">|</span>
+                <span className="text-sage-200 hidden md:inline">|</span>
                 <a
                   href="tel:+919900393800"
-                  className="text-text-muted hover:text-sage-600 transition-colors"
+                  className="text-text-muted hover:text-sage-600 transition-colors py-2 min-h-[44px] inline-flex items-center"
                 >
                   +919900393800
                 </a>

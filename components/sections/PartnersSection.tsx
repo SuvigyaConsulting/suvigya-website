@@ -218,7 +218,7 @@ function MarqueeRow({ reverse = false }: { reverse?: boolean }) {
                 key={`${partner.name}-${index}`}
                 className="flex-shrink-0 group select-none"
               >
-                <div className="glass px-8 py-6 rounded-panel flex items-center gap-6 hover:bg-sage-50/50 transition-all duration-300 cursor-grab min-w-[300px]">
+                <div className="glass px-6 py-5 md:px-8 md:py-6 rounded-panel flex items-center gap-4 md:gap-6 hover:bg-sage-50/50 transition-all duration-300 cursor-grab min-w-[260px] md:min-w-[300px]">
                   {/* Logo */}
                   <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-sage-50 to-sage-100 flex items-center justify-center text-sage-700 group-hover:scale-110 transition-transform p-2">
                     {LogoComponent && <LogoComponent className="w-full h-full" />}
@@ -259,12 +259,12 @@ export default function PartnersSection() {
   })
 
   return (
-    <section className="relative py-24 overflow-hidden section-cream">
-      <div className="container mx-auto px-6">
+    <section className="relative py-16 md:py-24 lg:py-32 overflow-hidden section-cream">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           ref={ref}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
@@ -295,7 +295,7 @@ export default function PartnersSection() {
 
       {/* Stats summary */}
       <motion.div
-        className="container mx-auto px-6 mt-16"
+        className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 mt-12 md:mt-16"
         initial={{ opacity: 0, y: 20 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ delay: 0.4, duration: 0.8 }}

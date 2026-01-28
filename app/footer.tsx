@@ -28,7 +28,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   return (
     <Link
       href={href}
-      className="text-text-muted hover:text-sage-600 transition-colors duration-300 relative group inline-block"
+      className="text-text-muted hover:text-sage-600 transition-colors duration-300 relative group inline-flex items-center py-1 min-h-[44px]"
     >
       {children}
       <span className="absolute bottom-0 left-0 w-0 h-px bg-sage-400 group-hover:w-full transition-all duration-300" />
@@ -47,8 +47,8 @@ export default function Footer() {
 
       <div className="relative">
         {/* Main Footer Content */}
-        <div className="container mx-auto px-6 py-16">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
             {/* Brand Column */}
             <motion.div
               className="lg:col-span-1"
@@ -71,7 +71,7 @@ export default function Footer() {
                   <motion.a
                     key={social.name}
                     href={social.href}
-                    className="w-10 h-10 rounded-full bg-sage-100 flex items-center justify-center text-sage-600 hover:bg-sage-500 hover:text-white transition-all duration-300"
+                    className="w-11 h-11 rounded-full bg-sage-100 flex items-center justify-center text-sage-600 hover:bg-sage-500 hover:text-white transition-all duration-300"
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     aria-label={social.name}
@@ -153,7 +153,7 @@ export default function Footer() {
                 <li className="pt-2">
                   <motion.a
                     href="#contact"
-                    className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm"
+                    className="btn-primary inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-sm"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -170,15 +170,15 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-sage-200/50">
-          <div className="container mx-auto px-6 py-6">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <p className="text-sm text-text-muted">
                 &copy; {currentYear} SUVIGYA CONSULTING. All rights reserved.
               </p>
               <div className="flex items-center gap-6 text-sm text-text-muted">
-                <a href="#" className="hover:text-sage-600 transition-colors">Privacy Policy</a>
+                <a href="#" className="hover:text-sage-600 transition-colors py-2 min-h-[44px] inline-flex items-center">Privacy Policy</a>
                 <span className="text-sage-200">|</span>
-                <a href="#" className="hover:text-sage-600 transition-colors">Terms of Service</a>
+                <a href="#" className="hover:text-sage-600 transition-colors py-2 min-h-[44px] inline-flex items-center">Terms of Service</a>
               </div>
             </div>
           </div>

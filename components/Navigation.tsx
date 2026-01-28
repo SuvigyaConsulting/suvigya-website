@@ -23,7 +23,7 @@ function NavLink({ item, onClick, isActive }: { item: typeof navItems[0]; onClic
       onClick={(e) => onClick(e, item.href)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative font-medium hover:text-sage-600 transition-all py-2 ${isActive ? 'text-base font-bold text-text-heading' : 'text-sm text-text-muted'}`}
+      className={`relative font-medium hover:text-sage-600 transition-all py-2 px-1 min-h-[44px] inline-flex items-center ${isActive ? 'text-base font-bold text-text-heading' : 'text-sm text-text-muted'}`}
     >
       {item.name}
       <motion.span
@@ -101,7 +101,7 @@ export default function Navigation() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.5 }}
       >
-        <div className="container mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="relative group">
             <motion.span
@@ -128,7 +128,7 @@ export default function Navigation() {
           {/* Mobile Menu Button */}
           <motion.button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden relative w-10 h-10 flex flex-col justify-center items-center gap-1.5 z-nav"
+            className="md:hidden relative w-11 h-11 flex flex-col justify-center items-center gap-1.5 z-nav"
             aria-label="Toggle menu"
             whileTap={{ scale: 0.9 }}
           >
@@ -182,10 +182,10 @@ export default function Navigation() {
                     key={item.name}
                     href={item.href}
                     onClick={(e) => handleNavClick(e, item.href)}
-                    className={`transition-all ${
+                    className={`transition-all py-2 min-h-[44px] inline-flex items-center ${
                       activeSection === item.href.slice(1)
-                        ? 'text-4xl font-extrabold text-text-heading'
-                        : 'text-3xl font-bold text-text-heading hover:text-sage-600'
+                        ? 'text-3xl md:text-4xl font-extrabold text-text-heading'
+                        : 'text-2xl md:text-3xl font-bold text-text-heading hover:text-sage-600'
                     }`}
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
