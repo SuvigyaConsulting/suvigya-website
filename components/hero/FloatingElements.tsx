@@ -369,11 +369,7 @@ export default function FloatingElements({
 }: FloatingElementsProps) {
   const { reducedMotion } = useAccessibility()
 
-  // Render static (no animated elements) when reducedMotion
-  if (reducedMotion) {
-    return null
-  }
-  // Generate particles
+  // All hooks must be called before any conditional return
   const particles = useMemo(() => {
     return Array.from({ length: particleCount }, (_, i) => ({
       id: i,
@@ -391,7 +387,6 @@ export default function FloatingElements({
     }))
   }, [particleCount])
 
-  // Generate leaves
   const leaves = useMemo(() => {
     return Array.from({ length: leafCount }, (_, i) => ({
       id: i,
@@ -401,13 +396,17 @@ export default function FloatingElements({
     }))
   }, [leafCount])
 
-  // Butterfly colors
   const butterflies = useMemo(() => [
     { delay: 3, color: '#F59E0B', startX: 15, startY: 60 },   // Orange
     { delay: 8, color: '#FBBF24', startX: 75, startY: 55 },   // Yellow
     { delay: 14, color: '#FFFFFF', startX: 40, startY: 65 },  // White
     { delay: 20, color: '#8CB369', startX: 85, startY: 58 },  // Sage
   ], [])
+
+  // Conditional return AFTER all hooks
+  if (reducedMotion) {
+    return null
+  }
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
