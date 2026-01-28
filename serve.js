@@ -22,6 +22,16 @@ const mimeTypes = {
   '.eot': 'application/vnd.ms-fontobject',
 };
 
+// Security headers applied to all responses
+const securityHeaders = {
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+  'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
+  'X-Frame-Options': 'DENY',
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+};
+
 const server = http.createServer((req, res) => {
   let filePath = path.join(OUT_DIR, req.url === '/' ? 'index.html' : req.url);
   
@@ -44,7 +54,7 @@ const server = http.createServer((req, res) => {
             res.writeHead(404);
             res.end('File not found');
           } else {
-            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.writeHead(200, { 'Content-Type': 'text/html', ...securityHeaders });
             res.end(content, 'utf-8');
           }
         });
@@ -53,7 +63,7 @@ const server = http.createServer((req, res) => {
         res.end(`Server Error: ${err.code}`);
       }
     } else {
-      res.writeHead(200, { 'Content-Type': contentType });
+      res.writeHead(200, { 'Content-Type': contentType, ...securityHeaders });
       res.end(content, 'utf-8');
     }
   });
