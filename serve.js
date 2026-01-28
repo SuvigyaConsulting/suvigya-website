@@ -37,7 +37,7 @@ const server = http.createServer((req, res) => {
   
   // Security: prevent directory traversal
   if (!filePath.startsWith(OUT_DIR)) {
-    res.writeHead(403);
+    res.writeHead(403, { 'Content-Type': 'text/plain', ...securityHeaders });
     res.end('Forbidden');
     return;
   }
@@ -51,7 +51,7 @@ const server = http.createServer((req, res) => {
         // Try index.html for directory requests
         fs.readFile(path.join(OUT_DIR, 'index.html'), (err, content) => {
           if (err) {
-            res.writeHead(404);
+            res.writeHead(404, { 'Content-Type': 'text/plain', ...securityHeaders });
             res.end('File not found');
           } else {
             res.writeHead(200, { 'Content-Type': 'text/html', ...securityHeaders });
@@ -59,7 +59,7 @@ const server = http.createServer((req, res) => {
           }
         });
       } else {
-        res.writeHead(500);
+        res.writeHead(500, { 'Content-Type': 'text/plain', ...securityHeaders });
         res.end(`Server Error: ${err.code}`);
       }
     } else {
