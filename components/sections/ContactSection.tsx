@@ -644,10 +644,10 @@ export default function ContactSection() {
             >
               Start a Conversation
             </motion.span>
-            <h2 className="text-display font-bold mb-6">
+            <h2 className="text-title font-bold mb-6">
               Let&apos;s <span className="gradient-text">Grow</span> Together
             </h2>
-            <p className="text-xl text-text-body leading-relaxed max-w-2xl mx-auto">
+            <p className="text-subtitle text-text-body leading-relaxed max-w-2xl mx-auto">
               Ready to transform your project? Ready to make an impact? We&apos;d love to hear about it.
             </p>
           </div>

@@ -110,7 +110,7 @@ function ProjectCard({
 
               {/* Title */}
               <motion.h3
-                className="text-3xl md:text-4xl font-bold text-text-heading mb-4"
+                className="text-2xl md:text-3xl lg:text-4xl font-bold text-text-heading mb-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
@@ -166,7 +166,7 @@ function ProjectCard({
               {/* Large impact number */}
               <div className="relative mb-4">
                 <motion.div
-                  className="text-7xl md:text-9xl font-bold gradient-text"
+                  className="text-5xl md:text-7xl lg:text-9xl font-bold gradient-text"
                   initial={{ scale: 0.5 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.4, type: 'spring', stiffness: 200 }}
@@ -278,17 +278,17 @@ export default function ProjectsSection() {
           >
             Case Studies
           </motion.span>
-          <h2 className="text-display font-bold mb-6 text-text-light">
+          <h2 className="text-title font-bold mb-6 text-text-light">
             Stories of <span className="gradient-text-light">Transformation</span>
           </h2>
-          <p className="text-xl text-text-light/80 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-subtitle text-text-light/80 max-w-2xl mx-auto leading-relaxed">
             Discover how we&apos;re creating lasting impact through strategic partnerships
           </p>
         </motion.div>
 
         {/* Project Counter */}
         <div className="flex justify-center items-center gap-4 mb-8">
-          <span className="text-6xl font-bold gradient-text-light">
+          <span className="text-4xl md:text-6xl font-bold gradient-text-light">
             {String(activeIndex + 1).padStart(2, '0')}
           </span>
           <span className="text-text-light/40 text-2xl">/</span>

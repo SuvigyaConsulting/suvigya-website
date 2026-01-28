@@ -211,10 +211,10 @@ export default function ImpactSection() {
           >
             Our Results
           </motion.span>
-          <h2 className="text-display font-bold mb-6">
+          <h2 className="text-title font-bold mb-6">
             <span className="gradient-text">Measurable</span> Impact
           </h2>
-          <p className="text-xl text-text-body max-w-2xl mx-auto leading-relaxed">
+          <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
             Numbers that tell the story of transformation and positive change
           </p>
         </motion.div>
@@ -238,7 +238,7 @@ export default function ImpactSection() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.6, duration: 0.8 }}
         >
-          <p className="text-xl text-text-body leading-generous">
+          <p className="text-base md:text-lg text-text-body leading-generous">
             Through our collaborative approach and innovative solutions, we&apos;ve created
             lasting positive change across multiple continents, working hand-in-hand
             with communities, governments, and international organizations.

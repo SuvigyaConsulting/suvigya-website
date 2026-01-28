@@ -277,10 +277,10 @@ export default function PartnersSection() {
           >
             Trusted Globally
           </motion.span>
-          <h2 className="text-display font-bold mb-6">
+          <h2 className="text-title font-bold mb-6">
             Our <span className="gradient-text">Partners</span>
           </h2>
-          <p className="text-xl text-text-body max-w-2xl mx-auto leading-relaxed">
+          <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
             Collaborating with the world&apos;s leading development organizations
             to create lasting change
           </p>
