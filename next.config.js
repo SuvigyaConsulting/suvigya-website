@@ -5,9 +5,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    optimizePackageImports: ['three', '@react-three/fiber', '@react-three/drei'],
-  },
 }
 
 module.exports = nextConfig
