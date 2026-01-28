@@ -61,10 +61,12 @@ function ProjectCard({
   project,
   isActive,
   direction,
+  reducedMotion = false,
 }: {
   project: typeof projects[0]
   isActive: boolean
   direction: number
+  reducedMotion?: boolean
 }) {
   const colorClasses = {
     sky: 'from-sky-400/20 to-sky-600/10 border-sky-400/30',
@@ -83,10 +85,10 @@ function ProjectCard({
   return (
     <motion.div
       className="absolute inset-0 flex items-center justify-center px-4 md:px-6"
-      initial={{ opacity: 0, x: direction > 0 ? 300 : -300, scale: 0.9 }}
+      initial={reducedMotion ? false : { opacity: 0, x: direction > 0 ? 300 : -300, scale: 0.9 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
-      exit={{ opacity: 0, x: direction > 0 ? -300 : 300, scale: 0.9 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: direction > 0 ? -300 : 300, scale: 0.9 }}
+      transition={reducedMotion ? { duration: 0 } : { duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="w-full max-w-6xl mx-auto">
         <div
@@ -176,13 +178,15 @@ function ProjectCard({
                 </motion.div>
 
                 {/* Decorative ring */}
-                <motion.div
-                  className={`absolute inset-0 -m-8 rounded-full border-4 border-dashed opacity-20 ${
-                    accentClasses[project.color as keyof typeof accentClasses].replace('bg-', 'border-')
-                  }`}
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                />
+                {!reducedMotion && (
+                  <motion.div
+                    className={`absolute inset-0 -m-8 rounded-full border-4 border-dashed opacity-20 ${
+                      accentClasses[project.color as keyof typeof accentClasses].replace('bg-', 'border-')
+                    }`}
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                  />
+                )}
               </div>
 
               {/* Impact label */}
@@ -269,15 +273,15 @@ export default function ProjectsSection() {
         <motion.div
           ref={ref}
           className="text-center mb-8 md:mb-12"
-          initial={{ opacity: 0, y: 30 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
+          transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
         >
           <motion.span
             className="text-eucalyptus-400 font-medium tracking-widest uppercase text-sm mb-4 block"
-            initial={{ opacity: 0 }}
+            initial={reducedMotion ? false : { opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.2 }}
+            transition={reducedMotion ? { duration: 0 } : { delay: 0.2 }}
           >
             Case Studies
           </motion.span>
@@ -308,6 +312,7 @@ export default function ProjectsSection() {
               project={projects[activeIndex]}
               isActive={true}
               direction={direction}
+              reducedMotion={reducedMotion}
             />
           </AnimatePresence>
         </div>

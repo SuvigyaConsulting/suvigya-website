@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 // SVG Logo Components for each partner
 function UNLogo({ className }: { className?: string }) {
@@ -140,7 +141,7 @@ const partners = [
 ]
 
 // Draggable marquee row component
-function MarqueeRow({ reverse = false }: { reverse?: boolean }) {
+function MarqueeRow({ reverse = false, reducedMotion = false }: { reverse?: boolean; reducedMotion?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [startX, setStartX] = useState(0)
@@ -208,7 +209,7 @@ function MarqueeRow({ reverse = false }: { reverse?: boolean }) {
         onMouseLeave={handleMouseLeave}
       >
         <motion.div
-          className={`flex gap-8 ${isPaused ? '' : reverse ? 'animate-marquee-reverse' : 'animate-marquee'}`}
+          className={`flex gap-8 ${reducedMotion || isPaused ? '' : reverse ? 'animate-marquee-reverse' : 'animate-marquee'}`}
           style={{ width: 'fit-content' }}
         >
           {items.map((partner, index) => {
@@ -258,6 +259,7 @@ export default function PartnersSection() {
     threshold: 0.1,
     triggerOnce: true,
   })
+  const { reducedMotion } = useAccessibility()
 
   return (
     <section aria-label="Our partners" className="relative py-16 md:py-24 lg:py-32 overflow-hidden section-cream">
@@ -266,15 +268,15 @@ export default function PartnersSection() {
         <motion.div
           ref={ref}
           className="text-center mb-8 md:mb-12"
-          initial={{ opacity: 0, y: 30 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
+          transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
         >
           <motion.span
             className="text-sage-600 font-medium tracking-widest uppercase text-sm mb-4 block"
-            initial={{ opacity: 0 }}
+            initial={reducedMotion ? false : { opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.2 }}
+            transition={reducedMotion ? { duration: 0 } : { delay: 0.2 }}
           >
             Trusted Globally
           </motion.span>
@@ -290,8 +292,8 @@ export default function PartnersSection() {
 
       {/* Infinite Marquee with drag support */}
       <div className="space-y-4">
-        <MarqueeRow />
-        <MarqueeRow reverse />
+        <MarqueeRow reducedMotion={reducedMotion} />
+        <MarqueeRow reverse reducedMotion={reducedMotion} />
       </div>
 
       {/* Stats summary */}

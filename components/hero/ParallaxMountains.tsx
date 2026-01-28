@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 // Mountain layer SVG paths - organic, flowing silhouettes
 const mountainLayers = [
@@ -146,6 +147,7 @@ interface ParallaxMountainsProps {
 export default function ParallaxMountains({ className = '' }: ParallaxMountainsProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [mounted, setMounted] = useState(false)
+  const { reducedMotion } = useAccessibility()
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -159,6 +161,29 @@ export default function ParallaxMountains({ className = '' }: ParallaxMountainsP
   if (!mounted) {
     return (
       <div className={`relative w-full h-full bg-gradient-to-b from-sky-100 to-sage-50 ${className}`} />
+    )
+  }
+
+  // Static render: show mountains without parallax/animations
+  if (reducedMotion) {
+    return (
+      <div
+        ref={containerRef}
+        className={`relative w-full h-full overflow-hidden bg-gradient-to-b from-sky-mist to-background-page ${className}`}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-sky-mist via-sky-haze to-background-page" />
+        <div className="absolute inset-0 bottom-0">
+          {mountainLayers.map((layer, index) => (
+            <div key={index} className="absolute inset-0 w-full" style={{ opacity: layer.opacity }}>
+              <svg viewBox="0 0 1000 100" preserveAspectRatio="none" className="w-full h-full"
+                style={{ filter: index < 2 ? 'blur(1px)' : 'none' }}>
+                <path d={layer.path} fill={layer.color} />
+              </svg>
+            </div>
+          ))}
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background-page to-transparent z-section" />
+      </div>
     )
   }
 

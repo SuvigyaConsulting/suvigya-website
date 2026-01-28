@@ -2,17 +2,23 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true)
+  const { reducedMotion } = useAccessibility()
 
   useEffect(() => {
+    // Skip loading screen entirely when reducedMotion
+    const delay = reducedMotion ? 0 : 3000
     const timer = setTimeout(() => {
       setIsLoading(false)
-    }, 3000)
+    }, delay)
 
     return () => clearTimeout(timer)
-  }, [])
+  }, [reducedMotion])
+
+  if (reducedMotion) return null
 
   return (
     <AnimatePresence mode="wait">

@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 const impactMetrics = [
   {
@@ -95,15 +96,21 @@ function MetricCard({
   metric,
   index,
   inView,
+  reducedMotion = false,
 }: {
   metric: typeof impactMetrics[0]
   index: number
   inView: boolean
+  reducedMotion?: boolean
 }) {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
     if (!inView) return
+    if (reducedMotion) {
+      setCount(metric.value)
+      return
+    }
 
     const duration = 2000
     const steps = 60
@@ -123,7 +130,7 @@ function MetricCard({
     }, duration / steps)
 
     return () => clearInterval(timer)
-  }, [inView, metric.value])
+  }, [inView, metric.value, reducedMotion])
 
   // Format large numbers
   const formatNumber = (n: number) => {
@@ -135,10 +142,10 @@ function MetricCard({
   return (
     <motion.div
       className="glass p-8 rounded-panel text-center relative overflow-hidden group"
-      initial={{ opacity: 0, y: 50 }}
+      initial={reducedMotion ? false : { opacity: 0, y: 50 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ delay: index * 0.15, duration: 0.6 }}
-      whileHover={{ y: -8, scale: 1.02 }}
+      transition={reducedMotion ? { duration: 0 } : { delay: index * 0.15, duration: 0.6 }}
+      whileHover={reducedMotion ? {} : { y: -8, scale: 1.02 }}
     >
       {/* Background decoration */}
       <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-radial from-sage-100/50 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -146,9 +153,9 @@ function MetricCard({
       {/* Icon */}
       <motion.div
         className="text-5xl mb-4"
-        initial={{ scale: 0 }}
+        initial={reducedMotion ? false : { scale: 0 }}
         animate={inView ? { scale: 1 } : {}}
-        transition={{ delay: 0.3 + index * 0.1, type: 'spring', stiffness: 200 }}
+        transition={reducedMotion ? { duration: 0 } : { delay: 0.3 + index * 0.1, type: 'spring', stiffness: 200 }}
       >
         {metric.icon}
       </motion.div>
@@ -175,6 +182,7 @@ function MetricCard({
 export default function ImpactSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
+  const { reducedMotion } = useAccessibility()
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -193,22 +201,22 @@ export default function ImpactSection() {
       {/* Background with parallax */}
       <motion.div
         className="absolute inset-0 topographic-bg opacity-30 pointer-events-none"
-        style={{ y: backgroundY }}
+        style={reducedMotion ? {} : { y: backgroundY }}
       />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           className="text-center mb-8 md:mb-12 lg:mb-16"
-          initial={{ opacity: 0, y: 30 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
+          transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
         >
           <motion.span
             className="text-sage-600 font-medium tracking-widest uppercase text-sm mb-4 block"
-            initial={{ opacity: 0 }}
+            initial={reducedMotion ? false : { opacity: 0 }}
             animate={isInView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.2 }}
+            transition={reducedMotion ? { duration: 0 } : { delay: 0.2 }}
           >
             Our Results
           </motion.span>
@@ -228,6 +236,7 @@ export default function ImpactSection() {
               metric={metric}
               index={index}
               inView={isInView}
+              reducedMotion={reducedMotion}
             />
           ))}
         </div>
@@ -235,9 +244,9 @@ export default function ImpactSection() {
         {/* Bottom narrative */}
         <motion.div
           className="max-w-4xl mx-auto text-center"
-          initial={{ opacity: 0, y: 30 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.6, duration: 0.8 }}
+          transition={reducedMotion ? { duration: 0 } : { delay: 0.6, duration: 0.8 }}
         >
           <p className="text-base md:text-lg text-text-body leading-generous">
             Through our collaborative approach and innovative solutions, we&apos;ve created

@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { usePersonalizationStore } from '@/store/personalization'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 // Growing plant visualization based on form progress
 function GrowingPlant({ progress }: { progress: number }) {
@@ -552,6 +553,7 @@ export default function ContactSection() {
   const [formStatus, setFormStatus] = useState<FormStatus>('idle')
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { getContextualCTA } = usePersonalizationStore()
+  const { reducedMotion } = useAccessibility()
 
   // Cleanup reset timer on unmount
   useEffect(() => {
@@ -630,18 +632,18 @@ export default function ContactSection() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, y: 50 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
+          transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
           className="max-w-6xl mx-auto"
         >
           {/* Section Header */}
           <div className="text-center mb-8 md:mb-12">
             <motion.span
               className="text-sage-600 font-medium tracking-widest uppercase text-sm mb-4 block"
-              initial={{ opacity: 0 }}
+              initial={reducedMotion ? false : { opacity: 0 }}
               animate={inView ? { opacity: 1 } : {}}
-              transition={{ delay: 0.2 }}
+              transition={reducedMotion ? { duration: 0 } : { delay: 0.2 }}
             >
               Start a Conversation
             </motion.span>

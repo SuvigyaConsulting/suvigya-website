@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 // Floating particle/seed element
 function Particle({
@@ -366,6 +367,12 @@ export default function FloatingElements({
   showButterflies = true,
   showMist = true,
 }: FloatingElementsProps) {
+  const { reducedMotion } = useAccessibility()
+
+  // Render static (no animated elements) when reducedMotion
+  if (reducedMotion) {
+    return null
+  }
   // Generate particles
   const particles = useMemo(() => {
     return Array.from({ length: particleCount }, (_, i) => ({
