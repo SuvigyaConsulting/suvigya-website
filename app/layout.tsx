@@ -15,9 +15,59 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'SUVIGYA CONSULTING - Natural Resources Management & Policy',
-  description: 'Expert consulting in GIS, natural resources management, policy generation, and grassroots actions. Working with KFW, UN, ADB, WB and more.',
-  keywords: 'consulting, GIS, natural resources, policy, KFW, UN, ADB, World Bank',
+  metadataBase: new URL('https://suvigya.com'),
+  title: {
+    default: 'SUVIGYA CONSULTING - Natural Resources Management & Policy',
+    template: '%s | Suvigya Consulting',
+  },
+  description:
+    'Expert consulting in GIS, natural resources management, policy generation, and grassroots actions. Working with KFW, UN, ADB, WB and more.',
+  keywords: [
+    'consulting',
+    'GIS',
+    'natural resources',
+    'policy',
+    'environment',
+    'KFW',
+    'UN',
+    'ADB',
+    'World Bank',
+    'sustainability',
+  ],
+  authors: [{ name: 'Suvigya Consulting' }],
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://suvigya.com',
+    siteName: 'Suvigya Consulting',
+    title: 'SUVIGYA CONSULTING - Natural Resources Management & Policy',
+    description:
+      'Expert consulting in GIS, natural resources management, policy generation, and grassroots actions.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Suvigya Consulting',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SUVIGYA CONSULTING - Natural Resources Management & Policy',
+    description:
+      'Expert consulting in GIS, natural resources management, policy generation, and grassroots actions.',
+    images: ['/og-image.png'],
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: '32x32' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
+  themeColor: '#4A7C59',
 }
 
 export default function RootLayout({
