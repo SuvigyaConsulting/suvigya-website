@@ -134,8 +134,8 @@ module.exports = {
         display: ['var(--font-display)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        'hero': ['clamp(2.75rem, 10vw, 10rem)', { lineHeight: '0.95', letterSpacing: '-0.03em' }],
-        'display': ['clamp(2rem, 7vw, 6rem)', { lineHeight: '1.0', letterSpacing: '-0.02em' }],
+        'hero': ['clamp(2rem, 10vw, 10rem)', { lineHeight: '0.95', letterSpacing: '-0.03em' }],
+        'display': ['clamp(1.75rem, 7vw, 6rem)', { lineHeight: '1.0', letterSpacing: '-0.02em' }],
         'title': ['clamp(2rem, 4vw, 3.5rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
         'subtitle': ['clamp(1.25rem, 2vw, 1.75rem)', { lineHeight: '1.4' }],
       },
