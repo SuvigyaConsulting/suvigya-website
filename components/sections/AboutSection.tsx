@@ -101,7 +101,7 @@ function TimelineItem({
       transition={{ delay: index * 0.1, duration: 0.6 }}
     >
       {/* Year badge */}
-      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4 ${
+      <div className={`inline-flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-full mb-4 ${
         isActive ? 'bg-sage-500 text-white' : 'bg-sage-100 text-sage-700'
       }`}>
         <span className="text-lg">{milestone.icon}</span>
@@ -210,10 +210,10 @@ export default function AboutSection() {
           >
             Our Journey
           </motion.span>
-          <h2 className="text-display font-bold mb-6">
+          <h2 className="text-title font-bold mb-6">
             <span className="gradient-text">15 Years</span> of Impact
           </h2>
-          <p className="text-xl text-text-body max-w-2xl mx-auto leading-relaxed">
+          <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
             From a small consultancy to a global force for positive change,
             our journey has been defined by innovation and impact.
           </p>
@@ -274,7 +274,7 @@ export default function AboutSection() {
               transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
               whileHover={{ y: -8, scale: 1.02 }}
             >
-              <div className={`text-5xl md:text-6xl font-bold mb-3 gradient-text`}>
+              <div className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 gradient-text">
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} inView={isInView} />
               </div>
               <div className="text-text-muted font-medium">{stat.label}</div>

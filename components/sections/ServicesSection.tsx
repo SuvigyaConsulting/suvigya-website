@@ -191,7 +191,7 @@ function ServiceCard({
 
           {/* Expand indicator */}
           <motion.div
-            className="mt-4 text-sage-600 font-medium text-sm flex items-center gap-1"
+            className="mt-4 text-sage-600 font-medium text-sm flex items-center gap-1 min-h-[44px] py-2"
           >
             <motion.svg
               width="16"
@@ -273,10 +273,10 @@ export default function ServicesSection() {
           >
             What We Do
           </motion.span>
-          <h2 className="text-display font-bold mb-6">
+          <h2 className="text-title font-bold mb-6">
             Our <span className="gradient-text">Expertise</span>
           </h2>
-          <p className="text-xl text-text-body max-w-2xl mx-auto leading-relaxed">
+          <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
             Comprehensive consulting across development sectors,
             from policy and governance to community impact
           </p>

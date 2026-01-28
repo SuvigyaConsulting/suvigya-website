@@ -82,7 +82,7 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="max-w-5xl mx-auto"
+          className="max-w-5xl w-full mx-auto overflow-hidden"
         >
           {/* Tagline */}
           <motion.p
@@ -95,7 +95,7 @@ export default function HeroSection() {
           </motion.p>
 
           {/* Main Headline */}
-          <h1 className="text-hero font-bold mb-8 leading-[0.95] text-forest-800 px-2">
+          <h1 className="text-hero font-extrabold mb-8 text-forest-800 px-2">
             <div className="overflow-hidden md:overflow-visible">
               <AnimatedText delay={0.5}>SHAPING</AnimatedText>
             </div>
@@ -111,7 +111,7 @@ export default function HeroSection() {
 
           {/* Subheadline */}
           <motion.p
-            className="text-xl md:text-2xl text-text-body mb-12 max-w-2xl mx-auto leading-relaxed"
+            className="text-subtitle text-text-body mb-12 max-w-2xl mx-auto leading-relaxed"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 0.8 }}
