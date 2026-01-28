@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 
@@ -146,6 +146,16 @@ function MarqueeRow({ reverse = false }: { reverse?: boolean }) {
   const [startX, setStartX] = useState(0)
   const [scrollLeft, setScrollLeft] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const resumeTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Clear resume timer on unmount
+  useEffect(() => {
+    return () => {
+      if (resumeTimerRef.current) {
+        clearTimeout(resumeTimerRef.current)
+      }
+    }
+  }, [])
 
   // Double the partners for seamless loop
   const items = [...partners, ...partners]
@@ -161,7 +171,8 @@ function MarqueeRow({ reverse = false }: { reverse?: boolean }) {
   const handleMouseUp = () => {
     setIsDragging(false)
     // Resume animation after a delay
-    setTimeout(() => setIsPaused(false), 2000)
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current)
+    resumeTimerRef.current = setTimeout(() => setIsPaused(false), 2000)
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -175,7 +186,8 @@ function MarqueeRow({ reverse = false }: { reverse?: boolean }) {
   const handleMouseLeave = () => {
     if (isDragging) {
       setIsDragging(false)
-      setTimeout(() => setIsPaused(false), 2000)
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current)
+      resumeTimerRef.current = setTimeout(() => setIsPaused(false), 2000)
     }
   }
 
