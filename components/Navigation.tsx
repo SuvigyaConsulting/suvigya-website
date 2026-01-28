@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import Link from 'next/link'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 const navItems = [
   { name: 'Home', href: '#home' },
@@ -41,6 +42,7 @@ export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
   const { scrollY } = useScroll()
+  const { reducedMotion } = useAccessibility()
 
   useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsScrolled(latest > 50)
@@ -141,9 +143,9 @@ export default function Navigation() {
             ? 'glass py-3 shadow-soft'
             : 'py-5 bg-transparent'
         }`}
-        initial={{ y: -100, opacity: 0 }}
+        initial={reducedMotion ? false : { y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.5 }}
+        transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 100, damping: 20, delay: 0.5 }}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex items-center justify-between">
           {/* Logo */}

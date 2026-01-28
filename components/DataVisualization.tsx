@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 interface DataPoint {
   label: string
@@ -17,6 +18,7 @@ interface DataVisualizationProps {
 }
 
 export default function DataVisualization({ data, title, animated = true }: DataVisualizationProps) {
+  const { reducedMotion } = useAccessibility()
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true,
@@ -43,9 +45,9 @@ export default function DataVisualization({ data, title, animated = true }: Data
                 <motion.div
                   className="h-full rounded-full"
                   style={{ backgroundColor: item.color }}
-                  initial={{ width: 0 }}
-                  animate={animated && inView ? { width: `${width}%` } : { width: `${width}%` }}
-                  transition={{ delay: index * 0.1, duration: 1, ease: 'easeOut' }}
+                  initial={reducedMotion ? false : { width: 0 }}
+                  animate={{ width: `${width}%` }}
+                  transition={reducedMotion ? { duration: 0 } : { delay: index * 0.1, duration: 1, ease: 'easeOut' }}
                 />
               </div>
             </div>

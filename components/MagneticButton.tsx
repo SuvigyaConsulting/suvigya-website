@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 interface MagneticButtonProps {
   children: React.ReactNode
@@ -22,6 +23,7 @@ export default function MagneticButton({
 }: MagneticButtonProps) {
   const ref = useRef<HTMLAnchorElement | HTMLButtonElement>(null)
   const [isHovered, setIsHovered] = useState(false)
+  const { reducedMotion } = useAccessibility()
   const [isKeyboardFocused, setIsKeyboardFocused] = useState(false)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -43,7 +45,7 @@ export default function MagneticButton({
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current || isKeyboardFocused) return
+    if (!ref.current || isKeyboardFocused || reducedMotion) return
 
     const rect = ref.current.getBoundingClientRect()
     const centerX = rect.left + rect.width / 2

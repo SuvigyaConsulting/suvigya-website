@@ -3,6 +3,7 @@
 import { ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import { useAccessibility } from '@/components/AccessibilityProvider'
 
 interface SectionRevealProps {
   children: ReactNode
@@ -27,6 +28,7 @@ export default function SectionReveal({
     threshold,
     triggerOnce: once,
   })
+  const { reducedMotion } = useAccessibility()
 
   // Calculate initial position based on direction
   const getInitialPosition = () => {
@@ -50,9 +52,9 @@ export default function SectionReveal({
     <motion.div
       ref={ref}
       className={className}
-      initial={{ opacity: 0, ...initialPosition }}
+      initial={reducedMotion ? false : { opacity: 0, ...initialPosition }}
       animate={inView ? { opacity: 1, y: 0, x: 0 } : {}}
-      transition={{
+      transition={reducedMotion ? { duration: 0 } : {
         duration,
         delay,
         ease: [0.22, 1, 0.36, 1],
@@ -85,6 +87,7 @@ export function StaggerReveal({
     threshold,
     triggerOnce: true,
   })
+  const { reducedMotion } = useAccessibility()
 
   const getInitialPosition = () => {
     switch (direction) {
@@ -108,9 +111,9 @@ export function StaggerReveal({
       {children.map((child, index) => (
         <motion.div
           key={index}
-          initial={{ opacity: 0, ...initialPosition }}
+          initial={reducedMotion ? false : { opacity: 0, ...initialPosition }}
           animate={inView ? { opacity: 1, y: 0, x: 0 } : {}}
-          transition={{
+          transition={reducedMotion ? { duration: 0 } : {
             duration,
             delay: index * staggerDelay,
             ease: [0.22, 1, 0.36, 1],
