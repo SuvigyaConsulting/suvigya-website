@@ -16,7 +16,7 @@ function AnimatedText({ children, delay = 0, reducedMotion = false }: { children
       transition={{ delay: reducedMotion ? 0 : delay, duration: reducedMotion ? 0 : 0.01 }}
     >
       <motion.span
-        className="inline-block px-[0.1em]"
+        className="inline-block"
         initial={reducedMotion ? false : { y: '100%' }}
         animate={{ y: 0 }}
         transition={{
@@ -104,7 +104,7 @@ export default function HeroSection() {
             </div>
             <div className="overflow-hidden md:overflow-visible">
               <AnimatedText delay={0.65} reducedMotion={reducedMotion}>
-                <span className="gradient-text">TOMORROW&apos;S</span>
+                <span className="gradient-text pr-[0.05em]">TOMORROW&apos;S</span>
               </AnimatedText>
             </div>
             <div className="overflow-hidden md:overflow-visible">
