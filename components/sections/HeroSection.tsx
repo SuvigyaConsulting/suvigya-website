@@ -16,7 +16,7 @@ function AnimatedText({ children, delay = 0, reducedMotion = false }: { children
       transition={{ delay: reducedMotion ? 0 : delay, duration: reducedMotion ? 0 : 0.01 }}
     >
       <motion.span
-        className="inline-block pr-[0.1em]"
+        className="inline-block pr-[0.15em]"
         initial={reducedMotion ? false : { y: '100%' }}
         animate={{ y: 0 }}
         transition={{
@@ -85,7 +85,7 @@ export default function HeroSection() {
           initial={reducedMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: reducedMotion ? 0 : 1, delay: reducedMotion ? 0 : 0.5 }}
-          className="max-w-5xl w-full mx-auto overflow-hidden"
+          className="max-w-5xl w-full mx-auto"
         >
           {/* Tagline */}
           <motion.p
