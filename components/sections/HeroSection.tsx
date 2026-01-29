@@ -104,7 +104,7 @@ export default function HeroSection() {
             </div>
             <div className="overflow-hidden md:overflow-visible">
               <AnimatedText delay={0.65} reducedMotion={reducedMotion}>
-                <span className="gradient-text pr-[0.05em]">TOMORROW&apos;S</span>
+                <span className="gradient-text" style={{ paddingRight: '0.05em', marginLeft: '-0.025em' }}>TOMORROW&apos;S</span>
               </AnimatedText>
             </div>
             <div className="overflow-hidden md:overflow-visible">
