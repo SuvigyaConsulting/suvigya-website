@@ -114,7 +114,7 @@ export default function HeroSection() {
 
           {/* Subheadline */}
           <motion.p
-            className="text-subtitle text-text-body mb-12 max-w-2xl mx-auto leading-relaxed"
+            className="text-subtitle text-text-body mb-12 max-w-3xl mx-auto leading-relaxed"
             initial={reducedMotion ? false : { opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: reducedMotion ? 0 : 1, duration: reducedMotion ? 0 : 0.8 }}
