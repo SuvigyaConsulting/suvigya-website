@@ -119,8 +119,9 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: reducedMotion ? 0 : 1, duration: reducedMotion ? 0 : 0.8 }}
           >
-            Transforming communities through innovative solutions, strategic policy
-            making, project development, and actionable insights based on ground reality
+            Transforming communities through innovative solutions,<br />
+            strategic policy making, and project development,<br />
+            driven by actionable insights based on ground reality
           </motion.p>
 
         </motion.div>
