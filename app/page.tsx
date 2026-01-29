@@ -25,6 +25,7 @@ const ContactSection = dynamic(() => import('@/components/sections/ContactSectio
   ssr: false,
   loading: () => <div id="contact" className="min-h-[50vh]" />,
 })
+import Footer from '@/components/Footer'
 import ScrollProgress from '@/components/ScrollProgress'
 import LoadingScreen from '@/components/LoadingScreen'
 import ErrorBoundary from '@/components/ErrorBoundary'
@@ -52,6 +53,7 @@ export default function Home() {
         <PartnersSection />
         <ImpactSection />
         <ContactSection />
+        <Footer />
       </Suspense>
     </>
   )
