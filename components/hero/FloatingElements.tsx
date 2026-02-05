@@ -287,7 +287,7 @@ function Butterfly({
         {/* Right wing */}
         <ellipse cx="12" cy="5" rx="4" ry="5" fill={color} opacity={0.8} />
         {/* Body */}
-        <ellipse cx="8" cy="7" rx="1" ry="5" fill="#2D3B31" />
+        <ellipse cx="8" cy="7" rx="1" ry="5" fill="#111827" />
         {/* Lower wings */}
         <ellipse cx="5" cy="10" rx="3" ry="3" fill={color} opacity={0.6} />
         <ellipse cx="11" cy="10" rx="3" ry="3" fill={color} opacity={0.6} />
@@ -379,9 +379,9 @@ export default function FloatingElements({
       startX: Math.random() * 100,
       startY: Math.random() * 30,
       color: [
-        'rgba(140, 179, 105, 0.6)',
-        'rgba(168, 213, 186, 0.5)',
-        'rgba(196, 167, 125, 0.4)',
+        'rgba(44, 82, 130, 0.5)',
+        'rgba(20, 184, 166, 0.4)',
+        'rgba(217, 119, 6, 0.35)',
         'rgba(255, 255, 255, 0.5)',
       ][Math.floor(Math.random() * 4)],
     }))
@@ -397,10 +397,10 @@ export default function FloatingElements({
   }, [leafCount])
 
   const butterflies = useMemo(() => [
-    { delay: 3, color: '#F59E0B', startX: 15, startY: 60 },   // Orange
-    { delay: 8, color: '#FBBF24', startX: 75, startY: 55 },   // Yellow
+    { delay: 3, color: '#F59E0B', startX: 15, startY: 60 },   // Gold
+    { delay: 8, color: '#FBBF24', startX: 75, startY: 55 },   // Gold bright
     { delay: 14, color: '#FFFFFF', startX: 40, startY: 65 },  // White
-    { delay: 20, color: '#8CB369', startX: 85, startY: 58 },  // Sage
+    { delay: 20, color: '#14b8a6', startX: 85, startY: 58 },  // Teal
   ], [])
 
   // Conditional return AFTER all hooks

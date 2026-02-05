@@ -32,8 +32,8 @@ const impactMetrics = [
   {
     value: 100,
     display: '100+',
-    label: 'Policies Developed',
-    description: 'Evidence-based environmental and development policies',
+    label: 'Frameworks Developed',
+    description: 'Evidence-based environmental and development frameworks',
     icon: '📜',
     color: 'sky',
   },
@@ -152,7 +152,7 @@ function MetricCard({
 
       {/* Icon */}
       <motion.div
-        className="text-5xl mb-4"
+        className="text-4xl md:text-5xl mb-4"
         initial={reducedMotion ? false : { scale: 0 }}
         animate={inView ? { scale: 1 } : {}}
         transition={reducedMotion ? { duration: 0 } : { delay: 0.3 + index * 0.1, type: 'spring', stiffness: 200 }}
@@ -171,7 +171,7 @@ function MetricCard({
       </div>
 
       {/* Label */}
-      <h3 className="text-xl font-bold text-text-heading mb-2">{metric.label}</h3>
+      <h3 className="text-xl md:text-2xl font-bold text-text-heading mb-3">{metric.label}</h3>
 
       {/* Description */}
       <p className="text-sm text-text-muted leading-relaxed">{metric.description}</p>
@@ -196,7 +196,7 @@ export default function ImpactSection() {
       id="impact"
       ref={sectionRef}
       aria-label="Our impact"
-      className="relative py-16 md:py-24 lg:py-32 overflow-hidden"
+      className="relative py-8 md:py-12 lg:py-16 overflow-hidden"
     >
       {/* Background with parallax */}
       <motion.div
@@ -207,7 +207,7 @@ export default function ImpactSection() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-8 md:mb-12 lg:mb-16"
+          className="text-center mb-8 md:mb-12"
           initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
@@ -218,7 +218,7 @@ export default function ImpactSection() {
             animate={isInView ? { opacity: 1 } : {}}
             transition={reducedMotion ? { duration: 0 } : { delay: 0.2 }}
           >
-            Our Results
+            To Deliver
           </motion.span>
           <h2 className="text-title font-bold mb-6">
             <span className="gradient-text">Measurable</span> Impact
@@ -229,7 +229,7 @@ export default function ImpactSection() {
         </motion.div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 md:mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 md:mb-12">
           {impactMetrics.map((metric, index) => (
             <MetricCard
               key={metric.label}

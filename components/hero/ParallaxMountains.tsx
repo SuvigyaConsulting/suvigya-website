@@ -4,55 +4,76 @@ import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { useAccessibility } from '@/components/AccessibilityProvider'
 
-// Mountain layer SVG paths - organic, flowing silhouettes
+// Mountain layer SVG paths - gentle rolling hills with natural undulation
 const mountainLayers = [
-  // Layer 1: Far distant mountains (subtle, misty)
+  // Layer 1: Very far distant rolling hills (hazy)
   {
-    path: 'M0,100 L0,70 Q50,50 100,65 Q150,45 200,55 Q250,35 300,50 Q350,40 400,45 Q450,30 500,40 Q550,25 600,35 Q650,45 700,40 Q750,55 800,50 Q850,40 900,55 Q950,45 1000,60 L1000,100 Z',
+    path: 'M0,100 L0,58 Q70,54 140,52 Q210,48 280,50 Q350,54 420,52 Q490,48 560,50 Q630,54 700,52 Q770,48 840,50 Q910,54 1000,52 L1000,100 Z',
+    color: '#3A6B4A',
+    parallaxRate: 0.05,
+    opacity: 0.25,
+    blur: 2,
+  },
+  // Layer 2: Far rolling hills
+  {
+    path: 'M0,100 L0,60 Q50,56 100,54 Q160,50 220,48 Q290,52 360,56 Q430,60 500,58 Q570,54 640,50 Q710,48 780,52 Q850,56 920,58 Q960,56 1000,54 L1000,100 Z',
     color: '#2D5A3D',
     parallaxRate: 0.1,
-    opacity: 0.4,
+    opacity: 0.35,
+    blur: 1.5,
   },
-  // Layer 2: Mid-distant mountains
+  // Layer 3: Mid-distant gentle hills
   {
-    path: 'M0,100 L0,75 Q40,55 80,60 Q120,45 160,55 Q200,40 240,50 Q280,35 320,45 Q360,50 400,40 Q440,30 480,45 Q520,55 560,45 Q600,35 640,50 Q680,60 720,50 Q760,40 800,55 Q840,45 880,60 Q920,50 960,65 L1000,55 L1000,100 Z',
+    path: 'M0,100 L0,62 Q60,56 120,52 Q180,46 250,44 Q320,48 390,54 Q450,60 520,62 Q580,58 640,52 Q700,46 770,44 Q840,48 910,56 Q960,60 1000,58 L1000,100 Z',
     color: '#4A7C59',
-    parallaxRate: 0.25,
-    opacity: 0.6,
+    parallaxRate: 0.2,
+    opacity: 0.5,
+    blur: 1,
   },
-  // Layer 3: Mid mountains (main visual)
+  // Layer 4: Main rolling hills with varied rhythm
   {
-    path: 'M0,100 L0,70 Q30,50 60,55 Q90,40 120,50 Q150,35 180,45 Q210,55 240,45 Q270,30 300,40 Q330,50 360,42 Q390,35 420,48 Q450,60 480,50 Q510,40 540,52 Q570,62 600,55 Q630,45 660,58 Q690,70 720,60 Q750,50 780,62 Q810,75 840,65 Q870,55 900,68 Q930,58 960,70 L1000,65 L1000,100 Z',
+    path: 'M0,100 L0,66 Q40,60 80,56 Q130,50 180,46 Q230,44 280,48 Q340,54 400,60 Q450,64 500,62 Q550,58 600,52 Q650,48 700,46 Q750,50 800,56 Q860,62 920,66 Q960,64 1000,62 L1000,100 Z',
     color: '#5A8C69',
-    parallaxRate: 0.4,
-    opacity: 0.8,
+    parallaxRate: 0.35,
+    opacity: 0.7,
+    blur: 0.5,
   },
-  // Layer 4: Near mountains
+  // Layer 5: Nearer rolling hills
   {
-    path: 'M0,100 L0,80 Q25,60 50,65 Q75,55 100,62 Q125,50 150,58 Q175,65 200,55 Q225,45 250,55 Q275,65 300,58 Q325,50 350,60 Q375,70 400,62 Q425,52 450,65 Q475,75 500,68 Q525,58 550,70 Q575,80 600,72 Q625,62 650,75 Q675,85 700,78 Q725,68 750,80 Q775,90 800,82 Q825,72 850,85 Q875,78 900,88 Q925,80 950,90 L1000,85 L1000,100 Z',
+    path: 'M0,100 L0,72 Q50,66 110,62 Q170,58 230,56 Q300,60 370,66 Q440,72 510,74 Q570,72 630,66 Q690,60 750,58 Q820,62 890,68 Q950,74 1000,72 L1000,100 Z',
+    color: '#6B9E78',
+    parallaxRate: 0.5,
+    opacity: 0.85,
+    blur: 0,
+  },
+  // Layer 6: Close soft hills
+  {
+    path: 'M0,100 L0,82 Q60,76 130,74 Q200,72 280,76 Q360,80 440,84 Q520,86 600,84 Q680,80 760,76 Q840,74 920,78 Q960,82 1000,80 L1000,100 Z',
     color: '#8CB369',
-    parallaxRate: 0.55,
-    opacity: 0.9,
+    parallaxRate: 0.65,
+    opacity: 0.95,
+    blur: 0,
   },
-  // Layer 5: Foreground hills
+  // Layer 7: Foreground gentle rise
   {
-    path: 'M0,100 L0,88 Q20,78 40,82 Q60,75 80,80 Q100,72 120,78 Q140,85 160,80 Q180,74 200,82 Q220,88 240,84 Q260,78 280,85 Q300,92 320,88 Q340,82 360,90 Q380,96 400,92 Q420,86 440,94 Q460,100 480,96 Q500,90 520,98 Q540,94 560,100 Q580,96 600,100 Q620,95 640,100 Q660,96 680,100 Q700,94 720,100 Q740,96 760,100 Q780,95 800,100 Q820,96 840,100 Q860,94 880,100 Q900,96 920,100 Q940,94 960,100 Q980,96 1000,100 L1000,100 Z',
+    path: 'M0,100 L0,90 Q80,86 170,84 Q270,86 370,90 Q470,92 570,90 Q670,86 770,84 Q870,86 940,90 L1000,88 L1000,100 Z',
     color: '#A8D5BA',
-    parallaxRate: 0.7,
+    parallaxRate: 0.8,
     opacity: 1,
+    blur: 0,
   },
 ]
 
 // Cloud component
-function Cloud({ delay, duration, startX }: { delay: number; duration: number; startX: number }) {
+function Cloud({ delay, duration, startX, size = 1, top }: { delay: number; duration: number; startX: number; size?: number; top: number }) {
   return (
     <motion.div
       className="absolute"
-      style={{ top: `${15 + Math.random() * 20}%` }}
+      style={{ top: `${top}%` }}
       initial={{ x: startX, opacity: 0 }}
       animate={{
-        x: [startX, startX + 200],
-        opacity: [0, 0.6, 0.6, 0],
+        x: [startX, startX + 400],
+        opacity: [0, 0.5, 0.5, 0],
       }}
       transition={{
         duration,
@@ -61,12 +82,27 @@ function Cloud({ delay, duration, startX }: { delay: number; duration: number; s
         ease: 'linear',
       }}
     >
-      <svg width="120" height="40" viewBox="0 0 120 40" className="opacity-60">
+      <svg width={120 * size} height={40 * size} viewBox="0 0 120 40" className="opacity-50">
         <ellipse cx="30" cy="25" rx="25" ry="12" fill="white" />
-        <ellipse cx="55" cy="20" rx="30" ry="15" fill="white" />
-        <ellipse cx="85" cy="25" rx="25" ry="12" fill="white" />
+        <ellipse cx="55" cy="18" rx="32" ry="16" fill="white" />
+        <ellipse cx="85" cy="24" rx="25" ry="12" fill="white" />
+        <ellipse cx="45" cy="28" rx="20" ry="10" fill="white" />
       </svg>
     </motion.div>
+  )
+}
+
+// Atmospheric haze between layers
+function HazeLayer({ top, opacity }: { top: string; opacity: number }) {
+  return (
+    <div
+      className="absolute left-0 right-0 pointer-events-none"
+      style={{
+        top,
+        height: '15%',
+        background: `linear-gradient(to bottom, transparent, rgba(200, 220, 210, ${opacity}), transparent)`,
+      }}
+    />
   )
 }
 
@@ -74,20 +110,20 @@ function Cloud({ delay, duration, startX }: { delay: number; duration: number; s
 function SunGlow() {
   return (
     <motion.div
-      className="absolute top-[15%] right-[20%] w-32 h-32 md:w-48 md:h-48"
+      className="absolute top-[10%] right-[15%] w-40 h-40 md:w-56 md:h-56"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1.5, delay: 0.5 }}
     >
-      <div className="w-full h-full rounded-full bg-gradient-radial from-amber-200/40 via-amber-100/20 to-transparent blur-xl" />
+      <div className="w-full h-full rounded-full bg-gradient-radial from-amber-200/40 via-amber-100/20 to-transparent blur-2xl" />
       <motion.div
         className="absolute inset-4 rounded-full bg-gradient-radial from-amber-100/60 to-transparent"
         animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.6, 0.8, 0.6],
+          scale: [1, 1.15, 1],
+          opacity: [0.5, 0.7, 0.5],
         }}
         transition={{
-          duration: 4,
+          duration: 5,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
@@ -96,45 +132,52 @@ function SunGlow() {
   )
 }
 
-// Mountain layer component
+// Mountain layer component with enhanced parallax
 function MountainLayer({
   layer,
   scrollYProgress,
   index,
+  totalLayers,
 }: {
   layer: typeof mountainLayers[0]
   scrollYProgress: ReturnType<typeof useScroll>['scrollYProgress']
   index: number
+  totalLayers: number
 }) {
+  // Stronger parallax: far layers barely move, near layers move a lot
   const y = useTransform(
     scrollYProgress,
     [0, 1],
-    [0, -100 * layer.parallaxRate]
+    [0, -200 * layer.parallaxRate]
   )
 
-  const smoothY = useSpring(y, { stiffness: 100, damping: 30 })
+  const smoothY = useSpring(y, { stiffness: 80, damping: 25 })
+
+  // Subtle scale effect: near layers scale slightly more
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [1, 1 + layer.parallaxRate * 0.1]
+  )
 
   return (
     <motion.div
       className="absolute inset-0 w-full"
-      style={{ y: smoothY }}
-      initial={{ opacity: 0, y: 50 }}
+      style={{
+        y: smoothY,
+        scale,
+        filter: layer.blur > 0 ? `blur(${layer.blur}px)` : 'none',
+      }}
+      initial={{ opacity: 0, y: 30 + index * 10 }}
       animate={{ opacity: layer.opacity, y: 0 }}
-      transition={{ duration: 0.8, delay: index * 0.15 }}
+      transition={{ duration: 1, delay: index * 0.12, ease: 'easeOut' }}
     >
       <svg
         viewBox="0 0 1000 100"
         preserveAspectRatio="none"
         className="w-full h-full"
-        style={{ filter: index < 2 ? 'blur(1px)' : 'none' }}
       >
-        <motion.path
-          d={layer.path}
-          fill={layer.color}
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.5, delay: index * 0.1 }}
-        />
+        <path d={layer.path} fill={layer.color} />
       </svg>
     </motion.div>
   )
@@ -171,12 +214,18 @@ export default function ParallaxMountains({ className = '' }: ParallaxMountainsP
         ref={containerRef}
         className={`relative w-full h-full overflow-hidden bg-gradient-to-b from-sky-mist to-background-page ${className}`}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-sky-mist via-sky-haze to-background-page" />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, #7EB8C9 0%, #A2CEDB 15%, #B8D4E3 30%, #D4E5ED 50%, #E4EDE8 70%, #EDF3EE 85%, var(--color-background-page) 100%)' }} />
         <div className="absolute inset-0 bottom-0">
           {mountainLayers.map((layer, index) => (
-            <div key={index} className="absolute inset-0 w-full" style={{ opacity: layer.opacity }}>
-              <svg viewBox="0 0 1000 100" preserveAspectRatio="none" className="w-full h-full"
-                style={{ filter: index < 2 ? 'blur(1px)' : 'none' }}>
+            <div
+              key={index}
+              className="absolute inset-0 w-full"
+              style={{
+                opacity: layer.opacity,
+                filter: layer.blur > 0 ? `blur(${layer.blur}px)` : 'none',
+              }}
+            >
+              <svg viewBox="0 0 1000 100" preserveAspectRatio="none" className="w-full h-full">
                 <path d={layer.path} fill={layer.color} />
               </svg>
             </div>
@@ -192,18 +241,29 @@ export default function ParallaxMountains({ className = '' }: ParallaxMountainsP
       ref={containerRef}
       className={`relative w-full h-full overflow-hidden bg-gradient-to-b from-sky-mist to-background-page ${className}`}
     >
-      {/* Sky gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-sky-mist via-sky-haze to-background-page" />
+      {/* Sky gradient background - rich multi-stop */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: 'linear-gradient(to bottom, #7EB8C9 0%, #A2CEDB 15%, #B8D4E3 30%, #D4E5ED 50%, #E4EDE8 70%, #EDF3EE 85%, var(--color-background-page) 100%)',
+        }}
+      />
 
       {/* Sun glow */}
       <SunGlow />
 
-      {/* Animated clouds */}
+      {/* Animated clouds at different depths */}
       <div className="absolute inset-0 overflow-hidden">
-        <Cloud delay={0} duration={60} startX={-150} />
-        <Cloud delay={15} duration={55} startX={-120} />
-        <Cloud delay={30} duration={65} startX={-180} />
+        <Cloud delay={0} duration={80} startX={-200} size={1.4} top={8} />
+        <Cloud delay={10} duration={70} startX={-150} size={1} top={14} />
+        <Cloud delay={25} duration={90} startX={-180} size={1.2} top={10} />
+        <Cloud delay={40} duration={75} startX={-160} size={0.8} top={18} />
+        <Cloud delay={55} duration={85} startX={-200} size={1.1} top={6} />
       </div>
+
+      {/* Atmospheric haze for depth */}
+      <HazeLayer top="30%" opacity={0.15} />
+      <HazeLayer top="50%" opacity={0.1} />
 
       {/* Mountain layers with parallax */}
       <div className="absolute inset-0 bottom-0">
@@ -213,6 +273,7 @@ export default function ParallaxMountains({ className = '' }: ParallaxMountainsP
             layer={layer}
             scrollYProgress={scrollYProgress}
             index={index}
+            totalLayers={mountainLayers.length}
           />
         ))}
       </div>

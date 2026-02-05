@@ -8,111 +8,125 @@ import { useAccessibility } from '@/components/AccessibilityProvider'
 
 const services = [
   {
-    title: 'Forestry, Biodiversity & Landscape Management',
-    description: 'Restoration, conservation, and sustainable ecosystem management strategies.',
-    icon: '🌳',
-    gradient: 'from-sage-500 to-eucalyptus-400',
-    details: [
-      'Integrated landscape & watershed management',
-      'Sustainable forestry & agroforestry (REDD+)',
-      'Biodiversity conservation & eco-tourism',
-      'Payment for ecosystem services (PES)',
-    ],
-  },
-  {
-    title: 'Agribusiness & Value Chain Development',
-    description: 'Strengthening market linkages and value addition for agricultural products.',
-    icon: '🌾',
-    gradient: 'from-amber-400 to-sage-400',
-    details: [
-      'Value chain strengthening for crops & NTFPs',
-      'Farmer-industry productive alliances',
-      'Organic certification & branding support',
-      'Market access strategies for regional products',
-    ],
-  },
-  {
-    title: 'Rural Development & Livelihoods',
-    description: 'Community-driven enterprise promotion and skill development.',
-    icon: '🤝',
-    gradient: 'from-eucalyptus-400 to-mint-400',
-    details: [
-      'MSME development & rural enterprises',
-      'Skill development & employment generation',
-      'Strengthening SHGs & cooperatives',
-      'Community-based development models',
-    ],
-  },
-  {
-    title: 'Climate Adaptation & Natural Resource Management',
-    description: 'Climate-smart interventions and sustainable land and water management.',
-    icon: '🌍',
-    gradient: 'from-sky-400 to-sage-400',
-    details: [
-      'Watershed & catchment management',
-      'Climate-resilient agriculture & agroforestry',
-      'Disaster risk reduction & early warning systems',
-      'Carbon sequestration & sustainable financing',
-    ],
-  },
-  {
-    title: 'Infrastructure & Investment Mobilization',
-    description: 'Sustainable infrastructure planning and private sector engagement.',
-    icon: '🏗️',
-    gradient: 'from-sage-500 to-sky-400',
-    details: [
-      'Climate-resilient infrastructure development',
-      'Public-private partnerships (PPP)',
-      'Blended finance & fund mobilization',
-      'Smart villages & green infrastructure',
-    ],
-  },
-  {
-    title: 'Monitoring, Evaluation & Learning',
-    description: 'Result-based frameworks for program evaluation and continuous improvement.',
-    icon: '📊',
-    gradient: 'from-mint-400 to-sage-500',
-    details: [
-      'M&E frameworks with digital tracking',
-      'Baseline studies & impact assessments',
-      'Third-party evaluations & audits',
-      'Knowledge management & learning dissemination',
-    ],
-  },
-  {
-    title: 'Capacity Building & Governance',
-    description: 'Institutional strengthening and participatory governance models.',
+    title: 'Policy, Strategy & Institutional Advisory',
+    description: 'For governments, donors, and agencies seeking evidence-based direction.',
     icon: '🏛️',
     gradient: 'from-sage-500 to-eucalyptus-400',
     details: [
-      'Training for government & implementing agencies',
-      'SOPs & governance frameworks',
-      'Participatory planning & decentralized governance',
-      'Regulatory & compliance advisory',
+      'Policy analysis',
+      'Strategy and sector roadmaps',
+      'Regulatory and institutional frameworks',
+      'Program design',
+      'Capacity assessments',
+      'Technical secretariat support',
     ],
   },
   {
-    title: 'Digital Transformation & GIS',
-    description: 'Data-driven decision making through geospatial analytics and digital solutions.',
-    icon: '🗺️',
-    gradient: 'from-sky-400 to-mint-400',
+    title: 'Climate, Environment & Natural Resources',
+    description: 'Mitigation, adaptation, resilience, biodiversity, and landscape management.',
+    icon: '🌍',
+    gradient: 'from-sky-400 to-sage-400',
     details: [
-      'GIS & remote sensing for planning',
-      'E-governance & digital rural solutions',
-      'Decision support systems (DSS)',
-      'Real-time analytics for policy & projects',
+      'Climate vulnerability assessments',
+      'Nature-based solutions',
+      'Carbon finance and REDD+',
+      'Watershed and landscape restoration',
+      'Biodiversity conservation',
+      'ESMFs, EIAs, and safeguards',
     ],
   },
   {
-    title: 'Research, Documentation & Strategy',
-    description: 'Technical writing, market research, and stakeholder engagement.',
+    title: 'Agriculture, Livelihoods & Rural Development',
+    description: 'Market-linked, inclusive, and resilient rural systems.',
+    icon: '🌾',
+    gradient: 'from-amber-400 to-sage-400',
+    details: [
+      'Integrated rural development',
+      'Agricultural and non-farm value chains',
+      'FPO strengthening',
+      'Market access and private-sector linkages',
+      'Rural enterprise and MSME development',
+      'NTFP-based livelihoods',
+    ],
+  },
+  {
+    title: 'Finance, Investment & Economic Advisory',
+    description: 'Mobilizing and structuring finance for development impact.',
+    icon: '💰',
+    gradient: 'from-sage-500 to-sky-400',
+    details: [
+      'Blended and climate finance',
+      'Public-private partnerships',
+      'Economic, financial, and fiscal analysis',
+      'Investment prioritization',
+      'CSR, ESG, and impact investment',
+    ],
+  },
+  {
+    title: 'Research, Analytics & Policy Frameworks',
+    description: 'Evidence systems that inform decisions and policy choices.',
+    icon: '🔍',
+    gradient: 'from-eucalyptus-400 to-mint-400',
+    details: [
+      'Research design',
+      'Surveys, sampling, and data collection',
+      'Econometric and spatial analysis',
+      'Political economy analysis',
+      'Policy evaluation and evidence frameworks',
+    ],
+  },
+  {
+    title: 'Project Preparation, Documentation & Compliance',
+    description: 'Decision-ready documentation for donors and governments.',
     icon: '📋',
     gradient: 'from-amber-400 to-eucalyptus-400',
     details: [
-      'Technical reports, DPRs & policy briefs',
-      'Grant & proposal writing (GCF, GEF, World Bank)',
-      'Feasibility studies & business planning',
-      'Stakeholder engagement & communication strategy',
+      'Project preparation documents',
+      'Feasibility studies, DPRs, and PIMs',
+      'Policy and strategy papers',
+      'Safeguards and compliance documentation',
+      'Donor financing proposals',
+    ],
+  },
+  {
+    title: 'Monitoring, Evaluation, Learning & Digital Systems',
+    description: 'Accountability, learning, and adaptive management at scale.',
+    icon: '📊',
+    gradient: 'from-mint-400 to-sage-500',
+    details: [
+      'Results frameworks',
+      'MEL system design',
+      'Baseline, midline, and endline studies',
+      'Third-party monitoring',
+      'MIS, dashboards, and decision-support tools',
+      'GIS and spatial analytics',
+    ],
+  },
+  {
+    title: 'Capacity Building & Institutional Strengthening',
+    description: 'Building the skills, systems, and structures that sustain results beyond the project cycle.',
+    icon: '🎓',
+    gradient: 'from-sky-400 to-mint-400',
+    details: [
+      'Training for government and implementing agencies',
+      'Institutional development and governance frameworks',
+      'Participatory planning and stakeholder engagement',
+      'Knowledge management and learning dissemination',
+      'SOPs, manuals, and operational guidelines',
+    ],
+  },
+  {
+    title: 'On-Ground Implementation & Staffing',
+    description: 'The differentiator many firms lack.',
+    icon: '🤝',
+    gradient: 'from-sage-500 to-eucalyptus-400',
+    details: [
+      'Field-level coordination',
+      'PMU and PIU staffing',
+      'Technical experts and field teams',
+      'Surge staffing for projects',
+      'Community facilitation',
+      'Implementation supervision',
     ],
   },
 ]
@@ -263,7 +277,7 @@ export default function ServicesSection() {
       id="services"
       ref={sectionRef}
       aria-label="Our services"
-      className="relative py-16 md:py-24 lg:py-32 overflow-hidden section-cream"
+      className="relative py-12 md:py-16 lg:py-24 overflow-hidden section-cream"
     >
       {/* Background pattern */}
       <motion.div
@@ -275,7 +289,7 @@ export default function ServicesSection() {
         {/* Section Header */}
         <motion.div
           ref={ref}
-          className="text-center mb-12 md:mb-16"
+          className="text-center mb-8 md:mb-12"
           initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
@@ -292,8 +306,7 @@ export default function ServicesSection() {
             Our <span className="gradient-text">Expertise</span>
           </h2>
           <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
-            Comprehensive consulting across development sectors,
-            from policy and governance to community impact
+            Policy to Practice. Strategy to Scale. Real world insights for outcomes that last.
           </p>
         </motion.div>
 
@@ -311,32 +324,6 @@ export default function ServicesSection() {
           ))}
         </div>
 
-        {/* CTA */}
-        <motion.div
-          className="text-center mt-16"
-          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
-          whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={reducedMotion ? { duration: 0 } : { delay: 0.5 }}
-        >
-          <motion.a
-            href="#contact"
-            className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-lg"
-            whileHover={reducedMotion ? {} : { scale: 1.05 }}
-            whileTap={reducedMotion ? {} : { scale: 0.98 }}
-          >
-            Discuss Your Project
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M5 12h14M12 5l7 7-7 7"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </motion.a>
-        </motion.div>
       </div>
     </section>
   )

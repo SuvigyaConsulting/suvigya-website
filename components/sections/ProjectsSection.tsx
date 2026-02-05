@@ -8,51 +8,107 @@ import { useAccessibility } from '@/components/AccessibilityProvider'
 const projects = [
   {
     id: 1,
-    title: 'Water Resources Management',
-    client: 'Asian Development Bank',
-    region: 'Southeast Asia',
-    description: 'Comprehensive water resources assessment and management strategy covering 12 river basins across 5 countries. Implemented real-time monitoring systems and community-based water management protocols.',
-    impact: { value: '2M+', label: 'People with improved water access' },
-    year: '2023',
-    tags: ['GIS Analysis', 'Water Management', 'Policy Development'],
-    image: '/projects/water.jpg', // Placeholder - would be actual image
+    title: 'Afghanistan Emergency Food Security Project',
+    client: 'World Bank / FAO',
+    region: 'Afghanistan',
+    description: 'Economic and financial analysis, PIM development, PAD preparation for irrigation, agribusiness, and food security interventions across conflict-affected regions.',
+    impact: { value: '$415M', label: 'Project value supported' },
+    year: '2024',
+    tags: ['Economic Analysis', 'PIM Development', 'PAD Preparation'],
+    image: '/projects/food-security.jpg',
     color: 'sky',
+    icon: 'wheat',
   },
   {
     id: 2,
-    title: 'Forest Conservation Initiative',
-    client: 'United Nations',
-    region: 'Amazon Basin',
-    description: 'Biodiversity mapping and conservation framework for tropical forest ecosystems using advanced satellite imagery and community engagement programs.',
-    impact: { value: '500K', label: 'Hectares of forest protected' },
-    year: '2022',
-    tags: ['Conservation', 'Remote Sensing', 'Community Engagement'],
-    image: '/projects/forest.jpg',
-    color: 'eucalyptus',
+    title: 'Kerala Climate Resilient Agri-Value Chain (KERA)',
+    client: 'World Bank',
+    region: 'Kerala, India',
+    description: 'End-to-end project design, costing, and PIM preparation for climate-resilient value chains across rubber, coffee, and cardamom, including economic and financial analysis.',
+    impact: { value: '$285M', label: 'Project value supported' },
+    year: '2024',
+    tags: ['Project Design', 'Value Chains', 'Climate Resilience'],
+    image: '/projects/agri-value.jpg',
+    color: 'sage',
+    icon: 'leaf',
   },
   {
     id: 3,
-    title: 'Climate Adaptation Program',
-    client: 'KfW Development Bank',
-    region: 'Sub-Saharan Africa',
-    description: 'Climate resilience planning and adaptation strategies for vulnerable communities, including drought-resistant agriculture and flood mitigation infrastructure.',
-    impact: { value: '50+', label: 'Communities with enhanced resilience' },
+    title: 'ELEMENT Project: Nagaland & Tripura',
+    client: 'World Bank',
+    region: 'North East India',
+    description: 'Project design, investment planning, and operations manual for NTFP value chains, eco-tourism, and private sector frameworks in biodiversity-rich landscapes.',
+    impact: { value: '$242M', label: 'Project value supported' },
     year: '2023',
-    tags: ['Climate Action', 'Grassroots', 'Infrastructure'],
-    image: '/projects/climate.jpg',
-    color: 'amber',
+    tags: ['NTFP Value Chains', 'Eco-Tourism', 'Private Sector'],
+    image: '/projects/element.jpg',
+    color: 'eucalyptus',
+    icon: 'tree',
   },
   {
     id: 4,
-    title: 'Sustainable Agriculture',
-    client: 'World Bank',
-    region: 'South Asia',
-    description: 'Agricultural land use optimization and sustainable farming practices implementation across 10,000 farming households using precision agriculture techniques.',
-    impact: { value: '30%', label: 'Increase in crop yields' },
-    year: '2022',
-    tags: ['Agriculture', 'GIS', 'Sustainability'],
-    image: '/projects/agriculture.jpg',
+    title: 'GCF Regional Programme: Hindu Kush Himalayan Region',
+    client: 'GCF',
+    region: '8 Countries',
+    description: 'Blended finance facility concept benefiting 72 million people across the Hindu Kush Himalayan region, structuring climate finance at a transboundary scale.',
+    impact: { value: '72M', label: 'People across 8 countries' },
+    year: '2024',
+    tags: ['Climate Finance', 'Blended Finance', 'Regional'],
+    image: '/projects/gcf-hkh.jpg',
+    color: 'sky',
+    icon: 'mountain',
+  },
+  {
+    id: 5,
+    title: 'Community-Based Forest Management & Livelihoods',
+    client: 'JICA',
+    region: 'Meghalaya, India',
+    description: 'DPR and investment planning for community forestry and livelihood systems, integrating forest conservation with income generation for indigenous communities.',
+    impact: { value: '$124M', label: 'Project value supported' },
+    year: '2023',
+    tags: ['Forestry', 'Livelihoods', 'DPR Preparation'],
+    image: '/projects/jica-forest.jpg',
     color: 'sage',
+    icon: 'globe',
+  },
+  {
+    id: 6,
+    title: 'CONSERVE Biodiversity Project',
+    client: 'GEF-GBFF / UNDP',
+    region: 'India',
+    description: 'ProDoc development, CEO Endorsement, Theory of Change, Results Framework, MEL, and co-financing for a multi-state biodiversity implementation design.',
+    impact: { value: '$12.3M', label: 'GEF grant mobilized' },
+    year: '2024',
+    tags: ['Biodiversity', 'ProDoc', 'Results Framework'],
+    image: '/projects/conserve.jpg',
+    color: 'eucalyptus',
+    icon: 'shield',
+  },
+  {
+    id: 7,
+    title: 'Umbrella Programme for Natural Resource Management',
+    client: 'GIZ / KfW / NABARD',
+    region: 'India',
+    description: 'Appraisal, monitoring, and evaluation of 50+ community-led NRM projects. Mid-term reviews and performance assessments across multiple states.',
+    impact: { value: '50+', label: 'Community NRM projects evaluated' },
+    year: '2023',
+    tags: ['M&E', 'NRM', 'Third-Party Monitoring'],
+    image: '/projects/umbrella-nrm.jpg',
+    color: 'amber',
+    icon: 'chart',
+  },
+  {
+    id: 8,
+    title: 'Blue Economy: Plastic Waste Management',
+    client: 'GoK / World Bank',
+    region: 'Coastal Karnataka, India',
+    description: 'Concept note and investment framework for plastic waste management and blue economy transformation along the Karnataka coastline.',
+    impact: { value: '$60M', label: 'Investment framework designed' },
+    year: '2024',
+    tags: ['Blue Economy', 'Waste Management', 'Investment Design'],
+    image: '/projects/blue-economy.jpg',
+    color: 'sky',
+    icon: 'water',
   },
 ]
 
@@ -92,7 +148,7 @@ function ProjectCard({
     >
       <div className="w-full max-w-6xl mx-auto">
         <div
-          className={`glass rounded-panel p-5 md:p-8 lg:p-12 bg-gradient-to-br ${
+          className={`glass rounded-panel p-5 md:p-6 lg:p-8 bg-gradient-to-br ${
             colorClasses[project.color as keyof typeof colorClasses]
           } border`}
         >
@@ -108,7 +164,6 @@ function ProjectCard({
                 >
                   {project.client}
                 </span>
-                <span className="text-text-muted text-sm">{project.year}</span>
               </div>
 
               {/* Title */}
@@ -161,15 +216,88 @@ function ProjectCard({
 
             {/* Right: Impact visualization */}
             <motion.div
-              className="flex flex-col items-center justify-center text-center"
+              className="relative flex flex-col items-center justify-center text-center w-full h-[180px] md:h-[220px]"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
             >
-              {/* Large impact number */}
-              <div className="relative mb-4">
+              {/* Spinning background icon - fills the container */}
+              {!reducedMotion && (
                 <motion.div
-                  className="text-5xl md:text-7xl lg:text-9xl font-bold gradient-text"
+                  className="absolute inset-0 flex items-center justify-center opacity-20"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+                >
+                  <svg viewBox="0 0 120 120" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      {project.icon === 'wheat' && (
+                        <>
+                          <circle cx="60" cy="60" r="55" strokeDasharray="8 4" />
+                          <path d="M60 15 Q75 40 60 60 Q45 40 60 15" strokeWidth="1.5" />
+                          <path d="M40 25 Q60 45 60 60" strokeWidth="1.5" />
+                          <path d="M80 25 Q60 45 60 60" strokeWidth="1.5" />
+                          <path d="M60 60 L60 105" strokeWidth="1.5" />
+                        </>
+                      )}
+                      {project.icon === 'leaf' && (
+                        <>
+                          <circle cx="60" cy="60" r="55" strokeDasharray="6 6" />
+                          <path d="M30 80 Q30 30 80 20 Q70 70 30 80 Z" strokeWidth="1.5" />
+                          <path d="M30 80 Q55 50 80 20" strokeWidth="1" />
+                        </>
+                      )}
+                      {project.icon === 'tree' && (
+                        <>
+                          <circle cx="60" cy="60" r="55" strokeDasharray="4 8" />
+                          <path d="M60 20 L40 50 L50 50 L35 75 L50 75 L45 95 L75 95 L70 75 L85 75 L70 50 L80 50 Z" strokeWidth="1.5" />
+                        </>
+                      )}
+                      {project.icon === 'mountain' && (
+                        <>
+                          <circle cx="60" cy="60" r="55" strokeDasharray="10 5" />
+                          <path d="M15 90 L45 35 L55 55 L75 25 L105 90 Z" strokeWidth="1.5" />
+                        </>
+                      )}
+                      {project.icon === 'globe' && (
+                        <>
+                          <circle cx="60" cy="60" r="55" strokeDasharray="6 4" />
+                          <circle cx="60" cy="60" r="35" strokeWidth="1.5" />
+                          <ellipse cx="60" cy="60" rx="15" ry="35" strokeWidth="1" />
+                          <line x1="25" y1="60" x2="95" y2="60" strokeWidth="1" />
+                          <line x1="60" y1="25" x2="60" y2="95" strokeWidth="1" />
+                        </>
+                      )}
+                      {project.icon === 'water' && (
+                        <>
+                          <circle cx="60" cy="60" r="55" strokeDasharray="3 6" />
+                          <path d="M60 20 Q80 50 60 75 Q40 50 60 20 Z" strokeWidth="1.5" />
+                          <path d="M20 85 Q40 75 60 85 Q80 95 100 85" strokeWidth="1.5" />
+                          <path d="M20 95 Q40 85 60 95 Q80 105 100 95" strokeWidth="1" />
+                        </>
+                      )}
+                      {project.icon === 'chart' && (
+                        <>
+                          <circle cx="60" cy="60" r="55" strokeDasharray="8 6" />
+                          <rect x="25" y="70" width="15" height="25" strokeWidth="1.5" />
+                          <rect x="45" y="50" width="15" height="45" strokeWidth="1.5" />
+                          <rect x="65" y="35" width="15" height="60" strokeWidth="1.5" />
+                          <rect x="85" y="55" width="15" height="40" strokeWidth="1.5" />
+                        </>
+                      )}
+                      {project.icon === 'shield' && (
+                        <>
+                          <circle cx="60" cy="60" r="55" strokeDasharray="5 5" />
+                          <path d="M60 15 L90 35 L90 65 Q90 95 60 105 Q30 95 30 65 L30 35 Z" strokeWidth="1.5" />
+                          <path d="M48 60 L56 68 L74 50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </>
+                      )}
+                    </svg>
+                </motion.div>
+              )}
+
+              {/* Number + label centered on top */}
+              <div className="relative z-10 flex flex-col items-center justify-center">
+                <motion.div
+                  className="text-5xl md:text-7xl lg:text-8xl font-bold gradient-text"
                   initial={{ scale: 0.5 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.4, type: 'spring', stiffness: 200 }}
@@ -177,27 +305,15 @@ function ProjectCard({
                   {project.impact.value}
                 </motion.div>
 
-                {/* Decorative ring */}
-                {!reducedMotion && (
-                  <motion.div
-                    className={`absolute inset-0 -m-8 rounded-full border-4 border-dashed opacity-20 ${
-                      accentClasses[project.color as keyof typeof accentClasses].replace('bg-', 'border-')
-                    }`}
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                  />
-                )}
+                <motion.p
+                  className="text-lg text-text-muted max-w-[200px] mt-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  {project.impact.label}
+                </motion.p>
               </div>
-
-              {/* Impact label */}
-              <motion.p
-                className="text-lg text-text-muted max-w-[200px]"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-              >
-                {project.impact.label}
-              </motion.p>
             </motion.div>
           </div>
         </div>
@@ -260,7 +376,7 @@ export default function ProjectsSection() {
       id="projects"
       ref={sectionRef}
       aria-label="Projects"
-      className="relative min-h-screen py-16 md:py-24 lg:py-32 overflow-hidden"
+      className="relative py-8 md:py-12 lg:py-16 overflow-hidden"
     >
       {/* Background with parallax */}
       <motion.div
@@ -272,7 +388,7 @@ export default function ProjectsSection() {
         {/* Section Header */}
         <motion.div
           ref={ref}
-          className="text-center mb-8 md:mb-12"
+          className="text-center mb-6 md:mb-8"
           initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
@@ -294,8 +410,8 @@ export default function ProjectsSection() {
         </motion.div>
 
         {/* Project Counter */}
-        <div className="flex justify-center items-center gap-4 mb-8">
-          <span className="text-4xl md:text-6xl font-bold gradient-text-light">
+        <div className="flex justify-center items-center gap-4 mb-4">
+          <span className="text-3xl md:text-4xl font-bold gradient-text-light">
             {String(activeIndex + 1).padStart(2, '0')}
           </span>
           <span className="text-text-light/40 text-2xl">/</span>
@@ -305,7 +421,7 @@ export default function ProjectsSection() {
         </div>
 
         {/* Carousel */}
-        <div className="relative h-[420px] md:h-[450px]">
+        <div className="relative h-[380px] md:h-[380px]">
           <AnimatePresence mode="wait" initial={false} custom={direction}>
             <ProjectCard
               key={projects[activeIndex].id}
@@ -318,7 +434,7 @@ export default function ProjectsSection() {
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-center items-center gap-6 mt-8">
+        <div className="flex justify-center items-center gap-6 mt-4">
           {/* Previous button */}
           <motion.button
             onClick={prevProject}
@@ -376,17 +492,6 @@ export default function ProjectsSection() {
           </motion.button>
         </div>
 
-        {/* Progress bar */}
-        <div className="mt-8 max-w-md mx-auto">
-          <div className="h-1 bg-text-light/10 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-sage-400 to-eucalyptus-400"
-              initial={{ width: '0%' }}
-              animate={{ width: `${((activeIndex + 1) / projects.length) * 100}%` }}
-              transition={{ duration: 0.5 }}
-            />
-          </div>
-        </div>
       </div>
     </section>
   )

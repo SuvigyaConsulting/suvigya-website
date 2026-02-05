@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 /* ============================================
-   SUVIGYA Consulting - Fresh Nature Design System
+   SUVIGYA Consulting - Corporate Design System
+   Navy / Teal / Gold (matching brochure)
    ============================================ */
 
 :root {
@@ -11,20 +12,20 @@
   --font-inter: 'Inter', system-ui, sans-serif;
   --font-display: 'Inter', system-ui, sans-serif;
 
-  /* Fresh Nature Color Tokens */
-  --color-sage: #4A7C59;
-  --color-sage-dark: #2D5A3D;
-  --color-sage-light: #8FC4A3;
-  --color-eucalyptus: #8CB369;
-  --color-eucalyptus-dark: #72994F;
-  --color-mint: #A8D5BA;
-  --color-amber: #C4A77D;
-  --color-sky: #7EB8C9;
-  --color-forest: #1a2f1e;
-  --color-cream: #FAFBF8;
-  --color-mist: #F4F7F5;
-  --color-sky-mist: #B8D4E3;
-  --color-sky-haze: #D4E5ED;
+  /* Corporate Color Tokens */
+  --color-sage: #2c5282;
+  --color-sage-dark: #1a365d;
+  --color-sage-light: #8dabc9;
+  --color-eucalyptus: #14b8a6;
+  --color-eucalyptus-dark: #0d9488;
+  --color-mint: #cbd5e1;
+  --color-amber: #d97706;
+  --color-sky: #60a5fa;
+  --color-forest: #06101e;
+  --color-cream: #ffffff;
+  --color-mist: #f9fafb;
+  --color-sky-mist: #dbeafe;
+  --color-sky-haze: #eff6ff;
 
   /* Z-Index Scale */
   --z-content: 0;
@@ -80,14 +81,14 @@ html {
 
 body {
   background-color: var(--color-mist);
-  color: #2D3B31;
+  color: #111827;
   overflow-x: hidden;
   font-family: var(--font-inter), system-ui, sans-serif;
   line-height: 1.75;
-  /* Subtle organic texture */
+  /* Subtle texture */
   background-image:
-    radial-gradient(circle at 1px 1px, rgba(74, 124, 89, 0.03) 1px, transparent 0),
-    linear-gradient(180deg, #F4F7F5 0%, #E8F5ED 50%, #F4F7F5 100%);
+    radial-gradient(circle at 1px 1px, rgba(26, 54, 93, 0.02) 1px, transparent 0),
+    linear-gradient(180deg, #f9fafb 0%, #eff6ff 50%, #f9fafb 100%);
   background-size: 24px 24px, 100% 200vh;
   background-attachment: fixed;
 }
@@ -97,7 +98,7 @@ body {
    ============================================ */
 
 h1, h2, h3, h4, h5, h6 {
-  color: var(--color-forest);
+  color: var(--color-sage-dark);
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -121,7 +122,7 @@ h3 {
 
 p {
   line-height: 1.75;
-  color: #2D3B31;
+  color: #111827;
 }
 
 /* ============================================
@@ -133,17 +134,17 @@ p {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(244, 247, 245, 0.8);
+  background: rgba(249, 250, 251, 0.8);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--color-sage) 0%, var(--color-eucalyptus) 100%);
+  background: linear-gradient(180deg, var(--color-sage-dark) 0%, var(--color-eucalyptus-dark) 100%);
   border-radius: 5px;
   border: 2px solid var(--color-mist);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--color-sage-dark) 0%, var(--color-sage) 100%);
+  background: linear-gradient(180deg, var(--color-forest) 0%, var(--color-sage-dark) 100%);
 }
 
 /* ============================================
@@ -177,18 +178,18 @@ p {
 }
 
 .high-contrast .glass {
-  background: rgba(250, 251, 248, 0.98);
-  border: 2px solid var(--color-sage);
+  background: rgba(255, 255, 255, 0.98);
+  border: 2px solid var(--color-sage-dark);
 }
 
 .high-contrast .glass-dark {
-  background: rgba(26, 47, 30, 0.98);
+  background: rgba(6, 16, 30, 0.98);
   border: 2px solid var(--color-eucalyptus);
 }
 
 /* Selection */
 ::selection {
-  background: rgba(140, 179, 105, 0.3);
+  background: rgba(20, 184, 166, 0.25);
   color: var(--color-forest);
 }
 
@@ -206,7 +207,7 @@ textarea:focus-visible,
 select:focus-visible {
   outline: 2px solid var(--color-sage);
   outline-offset: 0px;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8), 0 0 0 4px rgba(74, 124, 89, 0.3);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8), 0 0 0 4px rgba(44, 82, 130, 0.3);
   border-color: var(--color-sage);
 }
 
@@ -235,9 +236,8 @@ a:focus-visible {
 }
 
 section {
-  padding-top: var(--section-padding-y);
-  padding-bottom: var(--section-padding-y);
   position: relative;
+  scroll-margin-top: 80px;
 }
 
 .container {
@@ -252,35 +252,35 @@ section {
    ============================================ */
 
 .glass {
-  background: rgba(250, 251, 248, 0.7);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(74, 124, 89, 0.1);
+  border: 1px solid rgba(26, 54, 93, 0.08);
   box-shadow:
-    0 4px 20px rgba(45, 90, 61, 0.08),
-    0 1px 3px rgba(45, 90, 61, 0.05),
+    0 4px 20px rgba(26, 54, 93, 0.08),
+    0 1px 3px rgba(26, 54, 93, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
   border-radius: 16px;
   transition: all var(--transition-medium);
 }
 
 .glass:hover {
-  background: rgba(250, 251, 248, 0.85);
+  background: rgba(255, 255, 255, 0.85);
   box-shadow:
-    0 8px 30px rgba(45, 90, 61, 0.12),
-    0 2px 6px rgba(45, 90, 61, 0.06),
+    0 8px 30px rgba(26, 54, 93, 0.12),
+    0 2px 6px rgba(26, 54, 93, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
   transform: translateY(-2px);
 }
 
 .glass-dark {
-  background: rgba(26, 47, 30, 0.8);
+  background: rgba(6, 16, 30, 0.8);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(140, 179, 105, 0.15);
+  border: 1px solid rgba(20, 184, 166, 0.15);
   box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(140, 179, 105, 0.1);
+    inset 0 1px 0 rgba(20, 184, 166, 0.1);
   border-radius: 16px;
 }
 
@@ -289,7 +289,7 @@ section {
    ============================================ */
 
 .gradient-text {
-  background: linear-gradient(135deg, var(--color-sage-dark) 0%, var(--color-sage) 50%, var(--color-eucalyptus) 100%);
+  background: linear-gradient(135deg, var(--color-sage-dark) 0%, var(--color-sage) 50%, var(--color-eucalyptus-dark) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -304,7 +304,7 @@ section {
 }
 
 .gradient-text-warm {
-  background: linear-gradient(135deg, var(--color-sage) 0%, var(--color-amber) 100%);
+  background: linear-gradient(135deg, var(--color-sage-dark) 0%, var(--color-amber) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -323,7 +323,7 @@ section {
   border: none;
   cursor: pointer;
   transition: all var(--transition-medium);
-  box-shadow: 0 4px 15px rgba(74, 124, 89, 0.3);
+  box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
   position: relative;
   overflow: hidden;
 }
@@ -343,7 +343,7 @@ section {
 
 .btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(74, 124, 89, 0.4);
+  box-shadow: 0 8px 25px rgba(26, 54, 93, 0.4);
 }
 
 .btn-primary:hover::before {
@@ -352,20 +352,20 @@ section {
 
 .btn-secondary {
   background: transparent;
-  color: var(--color-sage);
+  color: var(--color-sage-dark);
   padding: 1rem 2rem;
   border-radius: 12px;
   font-weight: 600;
-  border: 2px solid var(--color-sage);
+  border: 2px solid var(--color-sage-dark);
   cursor: pointer;
   transition: all var(--transition-medium);
 }
 
 .btn-secondary:hover {
-  background: var(--color-sage);
+  background: var(--color-sage-dark);
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(74, 124, 89, 0.25);
+  box-shadow: 0 4px 15px rgba(26, 54, 93, 0.25);
 }
 
 /* ============================================
@@ -376,15 +376,15 @@ section {
   background: var(--color-cream);
   border-radius: 20px;
   padding: 2rem;
-  border: 1px solid rgba(74, 124, 89, 0.08);
-  box-shadow: 0 4px 20px rgba(45, 90, 61, 0.06);
+  border: 1px solid rgba(26, 54, 93, 0.08);
+  box-shadow: 0 4px 20px rgba(26, 54, 93, 0.06);
   transition: all var(--transition-medium);
 }
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(45, 90, 61, 0.12);
-  border-color: rgba(74, 124, 89, 0.15);
+  box-shadow: 0 12px 40px rgba(26, 54, 93, 0.12);
+  border-color: rgba(26, 54, 93, 0.15);
 }
 
 .card-interactive {
@@ -406,7 +406,7 @@ section {
 }
 
 .section-dark {
-  background: linear-gradient(180deg, var(--color-forest) 0%, #0f1f14 100%);
+  background: linear-gradient(180deg, var(--color-forest) 0%, #030712 100%);
   color: var(--color-mist);
 }
 
@@ -420,7 +420,7 @@ section {
 }
 
 .section-dark p {
-  color: rgba(244, 247, 245, 0.8);
+  color: rgba(249, 250, 251, 0.8);
 }
 
 /* ============================================
@@ -428,7 +428,7 @@ section {
    ============================================ */
 
 .topographic-bg {
-  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 25 Q 25 10, 40 25 T 70 25 T 100 25' stroke='%234A7C59' stroke-width='0.5' fill='none' opacity='0.1'/%3E%3Cpath d='M0 50 Q 15 35, 30 50 T 60 50 T 90 50' stroke='%238CB369' stroke-width='0.5' fill='none' opacity='0.08'/%3E%3Cpath d='M10 75 Q 25 60, 40 75 T 70 75 T 100 75' stroke='%234A7C59' stroke-width='0.5' fill='none' opacity='0.06'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 25 Q 25 10, 40 25 T 70 25 T 100 25' stroke='%231a365d' stroke-width='0.5' fill='none' opacity='0.1'/%3E%3Cpath d='M0 50 Q 15 35, 30 50 T 60 50 T 90 50' stroke='%230d9488' stroke-width='0.5' fill='none' opacity='0.08'/%3E%3Cpath d='M10 75 Q 25 60, 40 75 T 70 75 T 100 75' stroke='%231a365d' stroke-width='0.5' fill='none' opacity='0.06'/%3E%3C/svg%3E");
   background-size: 200px 200px;
 }
 
@@ -463,9 +463,9 @@ section {
   animation: shimmer 2s infinite linear;
   background: linear-gradient(
     to right,
-    rgba(74, 124, 89, 0.08) 0%,
-    rgba(140, 179, 105, 0.15) 50%,
-    rgba(74, 124, 89, 0.08) 100%
+    rgba(26, 54, 93, 0.08) 0%,
+    rgba(20, 184, 166, 0.15) 50%,
+    rgba(26, 54, 93, 0.08) 100%
   );
   background-size: 1000px 100%;
   border-radius: 8px;
@@ -524,7 +524,7 @@ section {
   left: 0;
   width: 8px;
   height: 8px;
-  background: var(--color-sage);
+  background: var(--color-sage-dark);
   border-radius: 50%;
   pointer-events: none;
   z-index: var(--z-cursor);
@@ -538,7 +538,7 @@ section {
   left: 0;
   width: 40px;
   height: 40px;
-  border: 2px solid var(--color-sage);
+  border: 2px solid var(--color-sage-dark);
   border-radius: 50%;
   pointer-events: none;
   z-index: var(--z-cursor);
@@ -548,7 +548,7 @@ section {
 .cursor-ring.hover {
   width: 60px;
   height: 60px;
-  background: rgba(74, 124, 89, 0.1);
+  background: rgba(26, 54, 93, 0.1);
   border-color: var(--color-eucalyptus);
 }
 

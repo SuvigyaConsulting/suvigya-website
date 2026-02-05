@@ -89,7 +89,7 @@ export default function HeroSection() {
         >
           {/* Tagline */}
           <motion.p
-            className="text-sage-700 font-medium tracking-widest uppercase text-sm md:text-base mb-6"
+            className="text-sage-600 font-medium tracking-widest uppercase text-sm mb-6"
             initial={reducedMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: reducedMotion ? 0 : 0.3, duration: reducedMotion ? 0 : 0.8 }}

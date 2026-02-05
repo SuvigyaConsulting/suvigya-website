@@ -1,48 +1,14 @@
 'use client'
 
 import { useRef, useEffect, useState } from 'react'
-import { motion, useScroll, useTransform, useInView, useSpring } from 'framer-motion'
+import { motion, useScroll, useTransform, useInView } from 'framer-motion'
 import { useAccessibility } from '@/components/AccessibilityProvider'
-
-// Timeline milestones data
-const milestones = [
-  {
-    year: '2008',
-    title: 'Foundation',
-    description: 'SUVIGYA Consulting established with a mission to transform natural resource management',
-    icon: '🌱',
-  },
-  {
-    year: '2012',
-    title: 'First UN Project',
-    description: 'Partnered with United Nations on watershed management across Southeast Asia',
-    icon: '🌍',
-  },
-  {
-    year: '2016',
-    title: 'GIS Innovation',
-    description: 'Launched proprietary GIS platform for real-time environmental monitoring',
-    icon: '🗺️',
-  },
-  {
-    year: '2020',
-    title: 'Global Expansion',
-    description: 'Extended operations to 20+ countries with World Bank partnership',
-    icon: '🚀',
-  },
-  {
-    year: '2024',
-    title: 'Climate Leadership',
-    description: 'Leading climate adaptation programs impacting 2M+ lives worldwide',
-    icon: '🌿',
-  },
-]
 
 // Stats data
 const stats = [
-  { value: 15, suffix: '+', label: 'Years Experience', color: 'sage' },
+  { value: 13, suffix: '+', label: 'Years Experience', color: 'sage' },
   { value: 50, suffix: '+', label: 'Projects Completed', color: 'eucalyptus' },
-  { value: 20, suffix: '+', label: 'Countries Served', color: 'sky' },
+  { value: 20, suffix: '+', label: 'Sectors Served', color: 'sky' },
   { value: 2, suffix: 'M+', label: 'Lives Impacted', color: 'amber' },
 ]
 
@@ -85,60 +51,12 @@ function AnimatedCounter({ value, suffix = '', inView, reducedMotion = false }: 
   )
 }
 
-// Timeline item component
-function TimelineItem({
-  milestone,
-  index,
-  isActive,
-  reducedMotion = false,
-}: {
-  milestone: typeof milestones[0]
-  index: number
-  isActive: boolean
-  reducedMotion?: boolean
-}) {
-  return (
-    <motion.div
-      className={`relative flex-shrink-0 w-72 md:w-80 p-6 rounded-panel transition-all duration-500 ${
-        isActive ? 'glass scale-105 shadow-elevated' : 'bg-background-card/50 scale-100'
-      }`}
-      initial={reducedMotion ? false : { opacity: 0, y: 50 }}
-      whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={reducedMotion ? { duration: 0 } : { delay: index * 0.1, duration: 0.6 }}
-    >
-      {/* Year badge */}
-      <div className={`inline-flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-full mb-4 ${
-        isActive ? 'bg-sage-500 text-white' : 'bg-sage-100 text-sage-700'
-      }`}>
-        <span className="text-lg">{milestone.icon}</span>
-        <span className="font-bold">{milestone.year}</span>
-      </div>
-
-      {/* Content */}
-      <h3 className={`text-xl font-bold mb-2 ${isActive ? 'text-sage-700' : 'text-text-heading'}`}>
-        {milestone.title}
-      </h3>
-      <p className="text-text-muted text-sm leading-relaxed">
-        {milestone.description}
-      </p>
-
-    </motion.div>
-  )
-}
-
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null)
-  const timelineRef = useRef<HTMLDivElement>(null)
-  const [activeIndex, setActiveIndex] = useState(0)
+  const statsRef = useRef<HTMLDivElement>(null)
   const { reducedMotion } = useAccessibility()
 
-  // Drag-to-scroll state
-  const [isDragging, setIsDragging] = useState(false)
-  const [startX, setStartX] = useState(0)
-  const [scrollLeft, setScrollLeft] = useState(0)
-
-  const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
+  const statsInView = useInView(statsRef, { once: true, margin: '-50px' })
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -148,52 +66,12 @@ export default function AboutSection() {
   // Parallax transforms
   const backgroundY = useTransform(scrollYProgress, [0, 1], [0, -100])
 
-  // Update active timeline item based on scroll within timeline
-  useEffect(() => {
-    const handleScroll = () => {
-      if (timelineRef.current) {
-        const scrollLeft = timelineRef.current.scrollLeft
-        const itemWidth = 320 // approximate width (w-72/w-80) + gap
-        const newIndex = Math.round(scrollLeft / itemWidth)
-        setActiveIndex(Math.min(newIndex, milestones.length - 1))
-      }
-    }
-
-    const timeline = timelineRef.current
-    timeline?.addEventListener('scroll', handleScroll)
-    return () => timeline?.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  // Drag-to-scroll handlers
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!timelineRef.current) return
-    setIsDragging(true)
-    setStartX(e.pageX - timelineRef.current.offsetLeft)
-    setScrollLeft(timelineRef.current.scrollLeft)
-  }
-
-  const handleMouseUp = () => {
-    setIsDragging(false)
-  }
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !timelineRef.current) return
-    e.preventDefault()
-    const x = e.pageX - timelineRef.current.offsetLeft
-    const walk = (x - startX) * 2
-    timelineRef.current.scrollLeft = scrollLeft - walk
-  }
-
-  const handleMouseLeave = () => {
-    setIsDragging(false)
-  }
-
   return (
     <section
       id="about"
       ref={sectionRef}
       aria-label="About us"
-      className="relative min-h-screen py-16 md:py-24 lg:py-32 overflow-hidden"
+      className="relative py-12 md:py-16 lg:py-24 overflow-hidden"
     >
       {/* Background decoration */}
       <motion.div
@@ -204,7 +82,7 @@ export default function AboutSection() {
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
-          className="text-center mb-12 md:mb-16"
+          className="text-center mb-8 md:mb-12"
           initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -220,54 +98,33 @@ export default function AboutSection() {
             Our Journey
           </motion.span>
           <h2 className="text-title font-bold mb-6">
-            <span className="gradient-text">15 Years</span> of Impact
+            <span className="gradient-text">13 Years of Impact</span>
           </h2>
           <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
-            From a small consultancy to a global force for positive change,
+            From a small consultancy to a national force for positive change,
             our journey has been defined by innovation and impact.
-          </p>
-          <p className="text-sm text-text-muted mt-4">
-            Drag to explore our timeline
           </p>
         </motion.div>
 
-        {/* Interactive Timeline */}
-        <div className="relative mb-20">
-
-          {/* Scrollable timeline container with drag support */}
-          <div
-            ref={timelineRef}
-            className={`flex gap-8 overflow-x-auto pb-8 pt-4 snap-x snap-mandatory scrollbar-hide select-none ${
-              isDragging ? 'cursor-grabbing' : 'cursor-grab'
-            }`}
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-          >
-            {/* Spacer for centering first item */}
-            <div className="flex-shrink-0 w-48 lg:w-64 hidden md:block" />
-
-            {milestones.map((milestone, index) => (
-              <div key={milestone.year} className="snap-center">
-                <TimelineItem
-                  milestone={milestone}
-                  index={index}
-                  isActive={index === activeIndex}
-                  reducedMotion={reducedMotion}
-                />
-              </div>
-            ))}
-
-            {/* Spacer for centering last item */}
-            <div className="flex-shrink-0 w-48 lg:w-64 hidden md:block" />
-          </div>
-
-        </div>
+        {/* About Description */}
+        <motion.div
+          className="max-w-3xl mx-auto mb-10 md:mb-14 space-y-4 text-center"
+          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
+          whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={reducedMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
+        >
+          <p className="text-text-body leading-relaxed text-base md:text-lg">
+            We are a specialist consulting and advisory firm that bridges the gap between policy design and ground-level implementation. Since 2013, we have partnered with governments, international agencies, and the private sector to deliver measurable impact in natural resource management, rural livelihoods, climate resilience, and sustainable development.
+          </p>
+          <p className="text-text-body leading-relaxed text-base md:text-lg">
+            We take end-to-end ownership of our work, combining embedded research, strong governance, and on-the-ground presence to support projects from concept through delivery. This ensures continuity, accountability, and practical results across the full project lifecycle.
+          </p>
+        </motion.div>
 
         {/* Stats Grid */}
         <motion.div
+          ref={statsRef}
           className="grid grid-cols-2 lg:grid-cols-4 gap-6"
           initial={reducedMotion ? false : { opacity: 0, y: 50 }}
           whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
@@ -285,7 +142,7 @@ export default function AboutSection() {
               whileHover={reducedMotion ? {} : { y: -8, scale: 1.02 }}
             >
               <div className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 gradient-text">
-                <AnimatedCounter value={stat.value} suffix={stat.suffix} inView={isInView} reducedMotion={reducedMotion} />
+                <AnimatedCounter value={stat.value} suffix={stat.suffix} inView={statsInView} reducedMotion={reducedMotion} />
               </div>
               <div className="text-text-muted font-medium">{stat.label}</div>
 
