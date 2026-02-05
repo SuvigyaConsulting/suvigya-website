@@ -440,7 +440,7 @@ function sanitizeInput(value: string): string {
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error'
 
-const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || ''
+const WEB3FORMS_KEY = '086aed69-5d8c-4990-9d2b-24fe17167fb5'
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
