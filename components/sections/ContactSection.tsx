@@ -438,7 +438,9 @@ function sanitizeInput(value: string): string {
     .replace(/'/g, '&#x27;')
 }
 
-type FormStatus = 'idle' | 'submitting' | 'success'
+type FormStatus = 'idle' | 'submitting' | 'success' | 'error'
+
+const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || ''
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -480,32 +482,51 @@ export default function ContactSection() {
     e.preventDefault()
     if (formStatus !== 'idle') return
 
-    // Sanitize all inputs before processing
-    const sanitizedData = {
-      name: sanitizeInput(formData.name),
-      email: sanitizeInput(formData.email),
-      organization: sanitizeInput(formData.organization),
-      message: sanitizeInput(formData.message),
-    }
-
     setFormStatus('submitting')
 
-    // Simulate form submission with sanitized data
-    void sanitizedData // Will be sent to backend in v2
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `New enquiry from ${formData.name}`,
+          from_name: sanitizeInput(formData.name),
+          email: sanitizeInput(formData.email),
+          organization: sanitizeInput(formData.organization),
+          message: sanitizeInput(formData.message),
+        }),
+      })
 
-    setFormStatus('success')
+      if (!response.ok) throw new Error('Submission failed')
 
-    // Clear any pending reset timer before setting a new one
-    if (resetTimerRef.current) {
-      clearTimeout(resetTimerRef.current)
+      const result = await response.json()
+      if (!result.success) throw new Error(result.message || 'Submission failed')
+
+      setFormStatus('success')
+
+      // Clear any pending reset timer before setting a new one
+      if (resetTimerRef.current) {
+        clearTimeout(resetTimerRef.current)
+      }
+
+      resetTimerRef.current = setTimeout(() => {
+        setFormStatus('idle')
+        setFormData({ name: '', email: '', organization: '', message: '' })
+        resetTimerRef.current = null
+      }, 5000)
+    } catch {
+      setFormStatus('error')
+
+      if (resetTimerRef.current) {
+        clearTimeout(resetTimerRef.current)
+      }
+
+      resetTimerRef.current = setTimeout(() => {
+        setFormStatus('idle')
+        resetTimerRef.current = null
+      }, 4000)
     }
-
-    resetTimerRef.current = setTimeout(() => {
-      setFormStatus('idle')
-      setFormData({ name: '', email: '', organization: '', message: '' })
-      resetTimerRef.current = null
-    }, 5000)
   }, [formStatus, formData])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -597,6 +618,25 @@ export default function ContactSection() {
                   <h3 className="text-2xl font-bold text-text-heading mb-2">Message Sent!</h3>
                   <p className="text-text-body">
                     Thank you for reaching out. We&apos;ll get back to you within 24 hours.
+                  </p>
+                </motion.div>
+              ) : formStatus === 'error' ? (
+                <motion.div
+                  role="alert"
+                  aria-live="assertive"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="glass rounded-panel p-12 text-center"
+                >
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-50 flex items-center justify-center">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-red-500">
+                      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-text-heading mb-2">Something went wrong</h3>
+                  <p className="text-text-body">
+                    Please try again, or email us directly at{' '}
+                    <a href="mailto:contact@suvigya.org" className="text-sage-600 underline">contact@suvigya.org</a>.
                   </p>
                 </motion.div>
               ) : (
