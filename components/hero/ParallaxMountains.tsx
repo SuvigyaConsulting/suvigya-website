@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useEffect, useState } from 'react'
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { useAccessibility } from '@/components/AccessibilityProvider'
 
 // Mountain layer SVG paths - gentle rolling hills with natural undulation
@@ -151,8 +151,6 @@ function MountainLayer({
     [0, -200 * layer.parallaxRate]
   )
 
-  const smoothY = useSpring(y, { stiffness: 80, damping: 25 })
-
   // Subtle scale effect: near layers scale slightly more
   const scale = useTransform(
     scrollYProgress,
@@ -164,12 +162,12 @@ function MountainLayer({
     <motion.div
       className="absolute inset-0 w-full"
       style={{
-        y: smoothY,
+        y,
         scale,
         filter: layer.blur > 0 ? `blur(${layer.blur}px)` : 'none',
       }}
-      initial={{ opacity: 0, y: 30 + index * 10 }}
-      animate={{ opacity: layer.opacity, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: layer.opacity }}
       transition={{ duration: 1, delay: index * 0.12, ease: 'easeOut' }}
     >
       <svg

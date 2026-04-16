@@ -112,24 +112,22 @@ function MetricCard({
       return
     }
 
-    const duration = 2000
-    const steps = 60
-    const increment = metric.value / steps
-    let current = 0
-    let step = 0
+    let startTime: number
+    let animationFrame: number
 
-    const timer = setInterval(() => {
-      step++
-      current = Math.min(metric.value, increment * step)
-      setCount(current)
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp
+      const progress = Math.min((timestamp - startTime) / 2000, 1)
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4)
+      setCount(Math.floor(easeOutQuart * metric.value))
 
-      if (step >= steps) {
-        clearInterval(timer)
-        setCount(metric.value)
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate)
       }
-    }, duration / steps)
+    }
 
-    return () => clearInterval(timer)
+    animationFrame = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(animationFrame)
   }, [inView, metric.value, reducedMotion])
 
   // Format large numbers

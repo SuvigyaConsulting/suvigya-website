@@ -60,13 +60,13 @@ export default function HeroSection() {
       className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 md:px-6 lg:px-8"
     >
       {/* Parallax Mountains Background */}
-      <div className="absolute inset-0 -z-section">
+      <div className="absolute inset-0 z-0">
         <ParallaxMountains />
       </div>
 
       {/* Floating Elements (particles, leaves, birds) */}
       <ErrorBoundary componentName="FloatingElements" fallback={null}>
-        <FloatingElements particleCount={20} leafCount={6} showBirds />
+        <FloatingElements particleCount={10} leafCount={3} showBirds />
       </ErrorBoundary>
 
       {/* Top gradient for smooth nav transition */}

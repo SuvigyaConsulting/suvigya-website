@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, useScroll, useSpring } from 'framer-motion'
 import { usePersonalizationStore } from '@/store/personalization'
 import { useAccessibility } from '@/components/AccessibilityProvider'
@@ -14,13 +14,15 @@ export default function ScrollProgress() {
     restDelta: 0.001,
   })
   const { updateScrollDepth } = usePersonalizationStore()
-  const [scrollDepth, setScrollDepth] = useState(0)
+  const lastDepthRef = useRef(0)
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.on('change', (latest) => {
       const depth = Math.round(latest * 100)
-      setScrollDepth(depth)
-      updateScrollDepth(depth)
+      if (Math.abs(depth - lastDepthRef.current) >= 5) {
+        lastDepthRef.current = depth
+        updateScrollDepth(depth)
+      }
     })
 
     return () => unsubscribe()

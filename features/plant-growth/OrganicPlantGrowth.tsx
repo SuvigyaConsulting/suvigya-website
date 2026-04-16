@@ -12,6 +12,11 @@ if (typeof window !== 'undefined') {
   gsap.defaults({ force3D: true })
 }
 
+// Generate leaf path - pure function, no dependencies
+function generateLeafPath(): string {
+  return `M 10 4 Q 13 7, 11 10 Q 12 12, 10 12 Q 8 12, 9 10 Q 7 7, 10 4`
+}
+
 interface OrganicPlantGrowthProps {
   config?: Partial<PlantGrowthConfig>
   sectionMilestones?: Array<{ id: string; label: string; progress: number }>
@@ -108,11 +113,6 @@ export default function OrganicPlantGrowth({
     return paths
   }, [])
 
-  // Generate leaf path
-  const generateLeafPath = (): string => {
-    return `M 10 4 Q 13 7, 11 10 Q 12 12, 10 12 Q 8 12, 9 10 Q 7 7, 10 4`
-  }
-
   // Update dimensions
   const updateDimensions = useCallback(() => {
     if (typeof window === 'undefined' || !containerRef.current) return
@@ -169,8 +169,15 @@ export default function OrganicPlantGrowth({
     // Generate all paths
     const paths = generateFullScreenPaths(width, height)
     
-    // Create SVG paths and animate them
-    paths.forEach((pathData, index) => {
+    // Pre-parse easing functions ONCE at setup time
+    const growthEaseFn = gsap.parseEase(finalConfig.growthEase)
+    const leafEaseFn = gsap.parseEase('power2.out')
+
+    // Collect all path elements and their metadata for the single master trigger
+    const pathEntries: Array<{ element: SVGPathElement; pathLength: number; progressStart: number }> = []
+
+    // Create SVG paths
+    paths.forEach((pathData) => {
       const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path')
       pathElement.setAttribute('id', pathData.id)
       pathElement.setAttribute('d', pathData.d)
@@ -180,60 +187,35 @@ export default function OrganicPlantGrowth({
       pathElement.setAttribute('stroke-linecap', 'round')
       pathElement.setAttribute('stroke-linejoin', 'round')
       pathElement.setAttribute('opacity', '0.8')
-      
+
       svgRef.current?.appendChild(pathElement)
-      
+
       const pathLength = pathElement.getTotalLength()
-      
+
       // Set initial state
       gsap.set(pathElement, {
         strokeDasharray: pathLength,
         strokeDashoffset: pathLength,
       })
 
-      // Create ScrollTrigger
-      const trigger = ScrollTrigger.create({
-        trigger: 'body',
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true,
-        onUpdate: (self) => {
-          const progress = self.progress
-          const pathStart = pathData.progress
-          
-          if (progress >= pathStart) {
-            const pathProgress = Math.min(1, (progress - pathStart) / (1 - pathStart))
-            const easedProgress = gsap.parseEase(finalConfig.growthEase)(pathProgress)
-            const offset = pathLength * (1 - easedProgress)
-            
-            gsap.set(pathElement, {
-              strokeDashoffset: offset,
-              opacity: 0.6 + (easedProgress * 0.4),
-            })
-          } else {
-            gsap.set(pathElement, {
-              strokeDashoffset: pathLength,
-              opacity: 0,
-            })
-          }
-        },
-      })
-      
-      scrollTriggersRef.current.push(trigger)
+      pathEntries.push({ element: pathElement, pathLength, progressStart: pathData.progress })
     })
+
+    // Collect all leaf elements and their metadata
+    const leafEntries: Array<{ element: SVGGElement; revealStart: number; revealEnd: number }> = []
 
     // Add leaves throughout
     sectionMilestones.forEach((milestone, index) => {
       if (milestone.progress <= 0 || milestone.progress >= 1) return
-      
+
       const leafX = (width / (sectionMilestones.length + 1)) * (index + 1) + (Math.random() - 0.5) * 100
       const leafY = height * milestone.progress
-      
+
       const leafGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       leafGroup.setAttribute('id', `leaf-${milestone.id}`)
       leafGroup.setAttribute('transform', `translate(${leafX}, ${leafY}) rotate(${(index % 2 === 0 ? 1 : -1) * 20})`)
       leafGroup.setAttribute('opacity', '0')
-      
+
       const leafPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
       leafPath.setAttribute('d', generateLeafPath())
       leafPath.setAttribute('fill', 'none')
@@ -241,43 +223,74 @@ export default function OrganicPlantGrowth({
       leafPath.setAttribute('stroke-width', '2')
       leafPath.setAttribute('stroke-linecap', 'round')
       leafPath.setAttribute('stroke-linejoin', 'round')
-      
+
       leafGroup.appendChild(leafPath)
       svgRef.current?.appendChild(leafGroup)
-      
-      // Animate leaf
-      const leafTrigger = ScrollTrigger.create({
-        trigger: 'body',
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true,
-        onUpdate: (self) => {
-          const progress = self.progress
-          const revealStart = milestone.progress
-          const revealEnd = Math.min(1, revealStart + finalConfig.leafRevealDelay)
 
+      leafEntries.push({
+        element: leafGroup,
+        revealStart: milestone.progress,
+        revealEnd: Math.min(1, milestone.progress + finalConfig.leafRevealDelay),
+      })
+    })
+
+    // SINGLE master ScrollTrigger for all paths and leaves
+    const masterTrigger = ScrollTrigger.create({
+      trigger: 'body',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: true,
+      onUpdate: (self) => {
+        const progress = self.progress
+
+        // Update all paths
+        for (let i = 0; i < pathEntries.length; i++) {
+          const { element, pathLength, progressStart } = pathEntries[i]
+          if (progress >= progressStart) {
+            const pathProgress = Math.min(1, (progress - progressStart) / (1 - progressStart))
+            const easedProgress = growthEaseFn(pathProgress)
+            const offset = pathLength * (1 - easedProgress)
+            gsap.set(element, {
+              strokeDashoffset: offset,
+              opacity: 0.6 + (easedProgress * 0.4),
+            })
+          } else {
+            gsap.set(element, {
+              strokeDashoffset: pathLength,
+              opacity: 0,
+            })
+          }
+        }
+
+        // Update all leaves
+        for (let i = 0; i < leafEntries.length; i++) {
+          const { element, revealStart, revealEnd } = leafEntries[i]
           if (progress >= revealStart) {
             const leafProgress = Math.min(1, (progress - revealStart) / (revealEnd - revealStart))
-            const easedProgress = gsap.parseEase('power2.out')(leafProgress)
-            
-            gsap.set(leafGroup, {
+            const easedProgress = leafEaseFn(leafProgress)
+            gsap.set(element, {
               opacity: easedProgress * 0.9,
               scale: 0.7 + (easedProgress * 0.3),
               transformOrigin: 'center center',
             })
           } else {
-            gsap.set(leafGroup, {
+            gsap.set(element, {
               opacity: 0,
               scale: 0.7,
             })
           }
-        },
-      })
-      
-      scrollTriggersRef.current.push(leafTrigger)
+        }
+      },
     })
 
-    // Handle resize
+    scrollTriggersRef.current.push(masterTrigger)
+
+    // Handle resize - use named function to allow proper cleanup
+    const handleResize = () => {
+      updateDimensions()
+      ScrollTrigger.refresh()
+    }
+
     const resizeObserver = new ResizeObserver(() => {
       // Clear and regenerate on resize
       if (svgRef.current) {
@@ -285,23 +298,19 @@ export default function OrganicPlantGrowth({
           svgRef.current.removeChild(svgRef.current.firstChild)
         }
       }
-      updateDimensions()
-      ScrollTrigger.refresh()
+      handleResize()
     })
     resizeObserver.observe(document.body)
-    
-    window.addEventListener('resize', () => {
-      updateDimensions()
-      ScrollTrigger.refresh()
-    })
+
+    window.addEventListener('resize', handleResize)
 
     return () => {
       scrollTriggersRef.current.forEach(trigger => trigger.kill())
       scrollTriggersRef.current = []
       resizeObserver.disconnect()
-      window.removeEventListener('resize', updateDimensions)
+      window.removeEventListener('resize', handleResize)
     }
-  }, [isReady, reducedMotion, isMobile, documentHeight, updateDimensions, finalConfig, sectionMilestones, generateFullScreenPaths, generateLeafPath])
+  }, [isReady, reducedMotion, isMobile, documentHeight, updateDimensions, finalConfig, sectionMilestones, generateFullScreenPaths])
 
   // Early return for mobile
   if (isMobile && typeof window !== 'undefined' && window.innerWidth < 768) {

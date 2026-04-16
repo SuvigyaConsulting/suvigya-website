@@ -148,7 +148,7 @@ function FlappingBird({
             ],
           }}
           transition={{
-            duration: 0.3,
+            duration: 0.6,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
@@ -223,7 +223,7 @@ function BirdFlock({
                 ],
               }}
               transition={{
-                duration: 0.35,
+                duration: 0.7,
                 delay: i * 0.05,
                 repeat: Infinity,
                 ease: 'easeInOut',
@@ -277,7 +277,7 @@ function Butterfly({
         viewBox="0 0 16 14"
         animate={{ scaleX: [1, 0.2, 1] }}
         transition={{
-          duration: 0.15,
+          duration: 0.4,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
@@ -399,8 +399,6 @@ export default function FloatingElements({
   const butterflies = useMemo(() => [
     { delay: 3, color: '#F59E0B', startX: 15, startY: 60 },   // Gold
     { delay: 8, color: '#FBBF24', startX: 75, startY: 55 },   // Gold bright
-    { delay: 14, color: '#FFFFFF', startX: 40, startY: 65 },  // White
-    { delay: 20, color: '#14b8a6', startX: 85, startY: 58 },  // Teal
   ], [])
 
   // Conditional return AFTER all hooks
@@ -415,7 +413,6 @@ export default function FloatingElements({
         <>
           <MistLayer yPosition={65} opacity={0.15} speed={80} />
           <MistLayer yPosition={75} opacity={0.2} speed={70} reverse />
-          <MistLayer yPosition={85} opacity={0.25} speed={90} />
         </>
       )}
 
@@ -455,7 +452,6 @@ export default function FloatingElements({
       {showBirds && (
         <>
           <BirdFlock delay={5} startY={20} direction={1} />
-          <BirdFlock delay={18} startY={12} direction={-1} />
         </>
       )}
 

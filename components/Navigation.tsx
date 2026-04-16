@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import Link from 'next/link'
 import { useAccessibility } from '@/components/AccessibilityProvider'
@@ -44,36 +44,27 @@ export default function Navigation() {
   const { scrollY } = useScroll()
   const { reducedMotion } = useAccessibility()
 
+  const lastSectionCheck = useRef(0)
+
   useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsScrolled(latest > 50)
-  })
 
-  // Track active section (throttled via requestAnimationFrame)
-  const ticking = useRef(false)
+    // Throttle active section detection to every 100ms
+    const now = Date.now()
+    if (now - lastSectionCheck.current < 100) return
+    lastSectionCheck.current = now
 
-  const handleScroll = useCallback(() => {
-    if (ticking.current) return
-    ticking.current = true
+    const sections = navItems.map(item => item.href.slice(1))
+    const scrollPosition = latest + 100
 
-    requestAnimationFrame(() => {
-      const sections = navItems.map(item => item.href.slice(1))
-      const scrollPosition = window.scrollY + 100
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = document.getElementById(sections[i])
-        if (section && section.offsetTop <= scrollPosition) {
-          setActiveSection(sections[i])
-          break
-        }
+    for (let i = sections.length - 1; i >= 0; i--) {
+      const section = document.getElementById(sections[i])
+      if (section && section.offsetTop <= scrollPosition) {
+        setActiveSection(sections[i])
+        break
       }
-      ticking.current = false
-    })
-  }, [])
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [handleScroll])
+    }
+  })
 
   // Close mobile menu on Escape key
   useEffect(() => {
