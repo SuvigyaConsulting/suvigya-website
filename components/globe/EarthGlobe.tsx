@@ -13,18 +13,29 @@ interface EarthGlobeProps {
 const GLOBE_RADIUS = 2.5
 const ATMOSPHERE_RADIUS = 2.56
 
-// Calculate sun direction from current time (approximate solar position)
+// Calculate accurate sun direction from current time
+// Accounts for Earth's axial tilt (23.44°) and day of year for seasonal declination
 function getSunDirection(): THREE.Vector3 {
   const now = new Date()
-  const hours = now.getUTCHours() + now.getUTCMinutes() / 60
-  // Sun is roughly at longitude = (12 - hours) * 15 degrees (noon = 0 longitude)
-  const sunLon = ((12 - hours) * 15) * (Math.PI / 180)
-  // Sun declination ~ 0 for simplicity (equinox)
-  const sunLat = 0
+
+  // Day of year (0-365)
+  const start = new Date(now.getFullYear(), 0, 0)
+  const diff = now.getTime() - start.getTime()
+  const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24))
+
+  // Solar declination angle (accounts for Earth's 23.44° tilt)
+  // Peaks at summer solstice (~day 172), minimum at winter solstice (~day 355)
+  const declination = 23.44 * Math.sin((2 * Math.PI / 365) * (dayOfYear - 81)) * (Math.PI / 180)
+
+  // Hour angle: sun longitude based on UTC time
+  // Solar noon at 0° longitude is ~12:00 UTC
+  const hours = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600
+  const hourAngle = ((12 - hours) * 15) * (Math.PI / 180)
+
   return new THREE.Vector3(
-    Math.cos(sunLat) * Math.cos(sunLon),
-    Math.sin(sunLat),
-    Math.cos(sunLat) * Math.sin(sunLon)
+    Math.cos(declination) * Math.cos(hourAngle),
+    Math.sin(declination),
+    Math.cos(declination) * Math.sin(hourAngle)
   ).normalize()
 }
 
@@ -219,7 +230,7 @@ export default function EarthGlobe({ visible, onReady, children }: EarthGlobePro
 
     // Fade animation
     if (Math.abs(fade.progress - fade.target) > 0.001) {
-      const speed = 1.0 / 0.8
+      const speed = 1.0 / 1.5 // Slower fade-in (1.5s) for smooth crossfade with particles
       if (fade.target > fade.progress) {
         fade.progress = Math.min(fade.progress + delta * speed, fade.target)
       } else {

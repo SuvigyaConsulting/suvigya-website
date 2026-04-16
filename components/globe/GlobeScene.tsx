@@ -80,12 +80,14 @@ export default function GlobeScene({ phase, onPinClick }: GlobeSceneProps) {
       <StarField />
 
       <Suspense fallback={null}>
-        {/* Particles hidden during globe phase to prevent bleed-through */}
-        <group visible={phase !== 'globe'}>
-          <ParticleField morphing={phase === 'morphing' || phase === 'globe'} />
-        </group>
+        {/* Particles always visible — opacity crossfades with earth */}
+        <ParticleField
+          morphing={phase === 'morphing' || phase === 'globe'}
+          opacity={phase === 'globe' ? 0 : 1}
+        />
 
-        <EarthGlobe visible={phase === 'globe'}>
+        {/* Earth starts fading in during morphing phase for smooth overlap */}
+        <EarthGlobe visible={phase === 'morphing' || phase === 'globe'}>
           <ProjectPins
             visible={phase === 'globe'}
             globeRadius={2.5}

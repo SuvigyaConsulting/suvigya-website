@@ -304,8 +304,10 @@ export default function ParticleField({ morphing, opacity = 1 }: { morphing: boo
 
     globalTimeRef.current += delta
 
-    // Update global opacity uniform
-    particleMaterial.uniforms.uGlobalOpacity.value = opacityRef.current
+    // Smooth lerp for global opacity (crossfade with earth, not instant)
+    const currentOp = particleMaterial.uniforms.uGlobalOpacity.value
+    const targetOp = opacityRef.current
+    particleMaterial.uniforms.uGlobalOpacity.value += (targetOp - currentOp) * Math.min(delta * 3, 0.15)
 
     const geometry = pointsRef.current.geometry
     const posAttr = geometry.getAttribute('position') as THREE.BufferAttribute
