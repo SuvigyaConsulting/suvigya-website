@@ -7,6 +7,7 @@ import AccessibilityProvider from '@/components/AccessibilityProvider'
 import KeyboardNavigation from '@/components/KeyboardNavigation'
 import OrganicPlantGrowth from '@/features/plant-growth/OrganicPlantGrowth'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import SmoothScroll from '@/components/layout/SmoothScroll'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -85,6 +86,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         <AccessibilityProvider>
+          <SmoothScroll />
           <MotionProvider>
             <ErrorBoundary componentName="OrganicPlantGrowth" fallback={null}>
               <OrganicPlantGrowth />
