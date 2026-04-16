@@ -178,10 +178,14 @@ function Pin({ project, globeRadius, onPinClick, selectedProjectId }: PinProps) 
     [surfacePos, normal]
   )
 
-  const color = useMemo(() => new THREE.Color(project.color), [project.color])
+  // All pins same color — clean teal
+  const pinColor = '#14b8a6'
+  const color = useMemo(() => new THREE.Color(pinColor), [])
 
-  // Crisp sprite texture
-  const spriteTexture = useMemo(() => createPinTexture(project.color), [project.color])
+  const isSelected = selectedProjectId === project.id
+
+  // Crisp sprite texture — same color for all
+  const spriteTexture = useMemo(() => createPinTexture(pinColor), [])
 
   // Sprite material
   const spriteMaterial = useMemo(() => {
@@ -240,15 +244,23 @@ function Pin({ project, globeRadius, onPinClick, selectedProjectId }: PinProps) 
       spriteRef.current.scale.set(s, s, 1)
     }
 
-    // Slow independent pulse (4-6 seconds per pin, large offset between them)
-    const period = 4.0 + project.id * 0.3
-    const phase = ((t + project.id * 1.7) % period) / period
-    ringMaterial.uniforms.uProgress.value = phase
+    // Only selected pin pulses — rest stay static
+    if (isSelected) {
+      const period = 3.0
+      const phase = (t % period) / period
+      ringMaterial.uniforms.uProgress.value = phase
+    } else {
+      ringMaterial.uniforms.uProgress.value = 0 // static, no pulse
+    }
 
-    // Beam subtle pulse
+    // Beam — brighter on selected, subtle on others
     if (beamRef.current) {
       const mat = beamRef.current.material as THREE.MeshBasicMaterial
-      mat.opacity = 0.3 + Math.sin(t * 2 + project.id) * 0.15
+      if (isSelected) {
+        mat.opacity = 0.5 + Math.sin(t * 1.5) * 0.2
+      } else {
+        mat.opacity = 0.2
+      }
     }
   })
 

@@ -153,7 +153,7 @@ export default function EarthGlobe({ visible, onReady, autoRotate = true, childr
 
   // Textures
   const [dayMap, nightMap, bumpMap] = useTexture([
-    '/textures/earth.jpg',
+    '/textures/earth-8k.jpg',
     '/textures/earth-night.jpg',
     '/textures/earth-topology.png',
   ])
@@ -278,8 +278,8 @@ export default function EarthGlobe({ visible, onReady, autoRotate = true, childr
       />
       <ambientLight intensity={0.08} />
 
-      {/* Rotating group: earth + atmosphere + pins */}
-      <group ref={groupRef} visible={false}>
+      {/* Rotating group: earth + atmosphere + pins. Initial rotation faces India toward camera */}
+      <group ref={groupRef} visible={false} rotation={[0, -1.36, 0]}>
         <mesh
           ref={earthRef}
           geometry={earthGeometry}
@@ -298,7 +298,7 @@ export default function EarthGlobe({ visible, onReady, autoRotate = true, childr
         minPolarAngle={Math.PI * 0.1}
         maxPolarAngle={Math.PI * 0.9}
         autoRotate={autoRotate}
-        autoRotateSpeed={0.3}
+        autoRotateSpeed={0.1}
       />
     </>
   )
