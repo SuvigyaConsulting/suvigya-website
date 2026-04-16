@@ -16,7 +16,7 @@ export default function GlobeScene({ phase, onPinClick }: GlobeSceneProps) {
     <Canvas
       camera={{ position: [0, 0, 7], fov: 45 }}
       gl={{ antialias: true, alpha: true }}
-      dpr={[1, window?.devicePixelRatio ?? 2]}
+      dpr={[1, 2]}
       style={{ position: 'absolute', inset: 0 }}
     >
       <ambientLight intensity={0.15} />
