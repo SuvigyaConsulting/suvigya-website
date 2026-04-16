@@ -11,7 +11,7 @@ const CONNECTION_DISTANCE = 2.0
 const MAX_CONNECTIONS = 200
 const MORPH_DURATION = 2.0
 const UNMORPH_DURATION = 1.5
-const CENTER_PULL_STRENGTH = 0.0005
+const CENTER_PULL_STRENGTH = 0.00003
 
 // Star field constants
 const STAR_COUNT = 1000
@@ -44,6 +44,7 @@ function randomInSphere(radius: number): THREE.Vector3 {
 }
 
 export default function ParticleField({ morphing }: { morphing: boolean }) {
+  const groupRef = useRef<THREE.Group>(null)
   const pointsRef = useRef<THREE.Points>(null)
   const linesRef = useRef<THREE.LineSegments>(null)
   const starsRef = useRef<THREE.Points>(null)
@@ -308,6 +309,12 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
   useFrame((_, delta) => {
     if (!pointsRef.current || !linesRef.current) return
 
+    // Slow rotation like the night sky
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * 0.03
+      groupRef.current.rotation.x += delta * 0.008
+    }
+
     globalTimeRef.current += delta
 
     const geometry = pointsRef.current.geometry
@@ -344,9 +351,26 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
           state.progress = 0
           state.active = false
           state.direction = 1
-          // Restore original random positions to positions array
-          for (let i = 0; i < targetPositions.length; i++) {
-            originalPositions[i] = targetPositions[i]
+          // Snap particles to their random target positions and reset for Brownian motion
+          const geo = pointsRef.current?.geometry
+          if (geo) {
+            const posAttr = geo.getAttribute('position') as THREE.BufferAttribute
+            const arr = posAttr.array as Float32Array
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+              const i3 = i * 3
+              arr[i3] = targetPositions[i3]
+              arr[i3 + 1] = targetPositions[i3 + 1]
+              arr[i3 + 2] = targetPositions[i3 + 2]
+              // Also update originalPositions so they match
+              originalPositions[i3] = targetPositions[i3]
+              originalPositions[i3 + 1] = targetPositions[i3 + 1]
+              originalPositions[i3 + 2] = targetPositions[i3 + 2]
+              // Reset velocities for fresh Brownian motion
+              velocities[i3] = (Math.random() - 0.5) * 0.002
+              velocities[i3 + 1] = (Math.random() - 0.5) * 0.002
+              velocities[i3 + 2] = (Math.random() - 0.5) * 0.002
+            }
+            posAttr.needsUpdate = true
           }
         }
       }
@@ -486,11 +510,19 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
           posArray[i3 + 2] -= tempVec.z / dist * pullback
         }
 
-        // Drift toward center force — creates cloud-like density at center
-        if (dist > 0.1) {
-          posArray[i3] -= tempVec.x / dist * CENTER_PULL_STRENGTH * dist
-          posArray[i3 + 1] -= tempVec.y / dist * CENTER_PULL_STRENGTH * dist
-          posArray[i3 + 2] -= tempVec.z / dist * CENTER_PULL_STRENGTH * dist
+        // Gentle drift toward center (linear, not quadratic — prevents collapse)
+        if (dist > 2.0) {
+          const pull = CENTER_PULL_STRENGTH
+          posArray[i3] -= tempVec.x / dist * pull
+          posArray[i3 + 1] -= tempVec.y / dist * pull
+          posArray[i3 + 2] -= tempVec.z / dist * pull
+        }
+        // Repulsion at close range — prevents particles from clustering at origin
+        if (dist < 1.0 && dist > 0.01) {
+          const push = 0.0003 * (1.0 - dist)
+          posArray[i3] += tempVec.x / dist * push
+          posArray[i3 + 1] += tempVec.y / dist * push
+          posArray[i3 + 2] += tempVec.z / dist * push
         }
       }
     }
@@ -591,7 +623,7 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
   }, [pointsGeometry, lineGeometry, starGeometry, particleMaterial, starMaterial, lineMaterial])
 
   return (
-    <group>
+    <group ref={groupRef}>
       <points ref={starsRef} geometry={starGeometry} material={starMaterial} />
       <points ref={pointsRef} geometry={pointsGeometry} material={particleMaterial} />
       <lineSegments ref={linesRef} geometry={lineGeometry} material={lineMaterial} />
