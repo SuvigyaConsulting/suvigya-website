@@ -1,14 +1,12 @@
 'use client'
 
-import { useState, useCallback, Suspense, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import ProjectDetail from '@/components/globe/ProjectDetail'
 import { projectLocations, type ProjectLocation } from '@/components/globe/ProjectPins'
 
-const Canvas = dynamic(() => import('@react-three/fiber').then(mod => mod.Canvas), { ssr: false })
-const ParticleField = dynamic(() => import('@/components/globe/ParticleField'), { ssr: false })
-const EarthGlobe = dynamic(() => import('@/components/globe/EarthGlobe'), { ssr: false })
-const ProjectPins = dynamic(() => import('@/components/globe/ProjectPins'), { ssr: false })
+// Single dynamic import of the entire 3D scene — avoids issues with named exports
+const GlobeScene = dynamic(() => import('@/components/globe/GlobeScene'), { ssr: false })
 
 type Phase = 'particles' | 'morphing' | 'globe'
 
@@ -23,16 +21,13 @@ export default function GlobeDemo() {
   const handleExplore = useCallback(() => {
     setPhase('morphing')
     setInitializingVisible(true)
-    // Fade out the initializing text after 1.5s
     setTimeout(() => setInitializingVisible(false), 1500)
-    // After morph animation completes (~2.5s), switch to globe
     setTimeout(() => setPhase('globe'), 2500)
   }, [])
 
   const handleBack = useCallback(() => {
     setSelectedProject(null)
     setPhase('morphing')
-    // Reverse: globe disappears, particles scatter back
     setTimeout(() => setPhase('particles'), 1800)
   }, [])
 
@@ -52,46 +47,19 @@ export default function GlobeDemo() {
         background: 'radial-gradient(ellipse at 50% 50%, #0f1629 0%, #080d1a 70%)',
       }}
     >
-      {/* Pulse glow keyframes */}
       <style jsx>{`
         @keyframes pulse-glow {
           0%, 100% { box-shadow: 0 0 20px rgba(20,184,166,0.3); }
           50% { box-shadow: 0 0 40px rgba(20,184,166,0.5), 0 0 60px rgba(20,184,166,0.2); }
         }
-        @keyframes fade-out {
-          0% { opacity: 1; }
-          100% { opacity: 0; }
-        }
       `}</style>
 
-      {/* Three.js Canvas */}
-      {mounted && <Canvas
-        camera={{ position: [0, 0, 12], fov: 45 }}
-        gl={{ antialias: true, alpha: true }}
-        dpr={[1, 2]}
-        style={{ position: 'absolute', inset: 0 }}
-      >
-        <ambientLight intensity={0.15} />
-        <pointLight position={[10, 10, 10]} intensity={0.5} color="#14b8a6" />
-        <pointLight position={[-10, -5, -10]} intensity={0.3} color="#c9a84c" />
-
-        <Suspense fallback={null}>
-          {/* Particles — visible during 'particles' and 'morphing' phases */}
-          {phase !== 'globe' && (
-            <ParticleField morphing={phase === 'morphing'} />
-          )}
-
-          {/* Globe — visible during 'globe' phase */}
-          <EarthGlobe visible={phase === 'globe'} />
-
-          {/* Project pins — visible when globe is showing */}
-          <ProjectPins
-            visible={phase === 'globe'}
-            globeRadius={2.5}
-            onPinClick={handlePinClick}
-          />
-        </Suspense>
-      </Canvas>}
+      {/* Three.js Scene */}
+      {mounted && (
+        <div className="absolute inset-0">
+          <GlobeScene phase={phase} onPinClick={handlePinClick} />
+        </div>
+      )}
 
       {/* UI Overlay */}
       <div className="absolute inset-0 z-10 pointer-events-none">
@@ -113,7 +81,7 @@ export default function GlobeDemo() {
           )}
         </div>
 
-        {/* Center content — only in particles phase */}
+        {/* Center content — particles phase */}
         {phase === 'particles' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
             <p className="text-xs font-semibold tracking-[0.2em] uppercase text-[#14b8a6] mb-6">
@@ -145,49 +113,38 @@ export default function GlobeDemo() {
               Explore Our Projects
             </button>
 
-            {/* Credential strip */}
             <p className="absolute bottom-6 left-0 right-0 text-center text-[10px] tracking-[0.2em] uppercase text-white/20">
               World Bank &middot; ADB &middot; FAO &middot; GCF &middot; GIZ &middot; KfW &middot; NABARD
             </p>
           </div>
         )}
 
-        {/* Morphing phase — Initializing text */}
-        {phase === 'morphing' && (
+        {/* Morphing phase */}
+        {phase === 'morphing' && initializingVisible && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <p
-              className="text-sm tracking-[0.3em] uppercase text-[#14b8a6]"
-              style={{
-                animation: initializingVisible
-                  ? 'none'
-                  : 'fade-out 0.8s ease-out forwards',
-                opacity: initializingVisible ? 1 : undefined,
-              }}
-            >
+            <p className="text-sm tracking-[0.3em] uppercase text-[#14b8a6] animate-pulse">
               Initializing&hellip;
             </p>
           </div>
         )}
 
-        {/* Globe phase — instruction text */}
+        {/* Globe phase instructions */}
         {phase === 'globe' && !selectedProject && (
-          <div className="absolute bottom-8 left-0 right-0 text-center">
-            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-[#4a5568] animate-pulse flex items-center justify-center gap-2">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 19V5M5 12l7-7 7 7" />
-              </svg>
-              Click a pin to explore a project
-            </p>
-          </div>
-        )}
-
-        {/* Globe phase — bottom-left legend */}
-        {phase === 'globe' && !selectedProject && (
-          <div className="absolute bottom-8 left-6">
-            <p className="text-[10px] tracking-wider text-white/15">
-              8 projects across 5 countries
-            </p>
-          </div>
+          <>
+            <div className="absolute bottom-8 left-0 right-0 text-center">
+              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-[#4a5568] animate-pulse flex items-center justify-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 19V5M5 12l7-7 7 7" />
+                </svg>
+                Click a pin to explore a project
+              </p>
+            </div>
+            <div className="absolute bottom-8 left-6">
+              <p className="text-[10px] tracking-wider text-white/15">
+                8 projects across 5 countries
+              </p>
+            </div>
+          </>
         )}
       </div>
 
@@ -197,7 +154,7 @@ export default function GlobeDemo() {
         onClose={handleCloseDetail}
       />
 
-      {/* Subtle gradient at bottom */}
+      {/* Bottom gradient */}
       <div
         className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none z-[5]"
         style={{
