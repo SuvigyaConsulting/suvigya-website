@@ -2,7 +2,8 @@
 
 import { useEffect, Suspense } from 'react'
 import dynamic from 'next/dynamic'
-import HeroSection from '@/components/sections/HeroSection'
+import ParticleHero from '@/components/sections/ParticleHero'
+import SkyTransition from '@/components/sections/SkyTransition'
 import AboutSection from '@/components/sections/AboutSection'
 
 const ServicesSection = dynamic(() => import('@/components/sections/ServicesSection'), {
@@ -27,9 +28,7 @@ const ContactSection = dynamic(() => import('@/components/sections/ContactSectio
 })
 import Footer from '@/components/Footer'
 import ScrollProgress from '@/components/ScrollProgress'
-import LoadingScreen from '@/components/LoadingScreen'
 import ErrorBoundary from '@/components/ErrorBoundary'
-import SkeletonLoader from '@/components/SkeletonLoader'
 import { usePersonalizationStore } from '@/store/personalization'
 
 export default function Home() {
@@ -41,12 +40,16 @@ export default function Home() {
 
   return (
     <>
-      <ErrorBoundary componentName="LoadingScreen" fallback={null}>
-        <LoadingScreen />
-      </ErrorBoundary>
       <ScrollProgress />
-      <Suspense fallback={<SkeletonLoader className="h-screen" />}>
-        <HeroSection />
+
+      {/* Dark space hero with floating particles */}
+      <ParticleHero />
+
+      {/* Cinematic night → day transition: stars fade, sky brightens, clouds pass */}
+      <SkyTransition />
+
+      {/* Light sections — the organic website below the atmosphere */}
+      <Suspense fallback={null}>
         <AboutSection />
         <ServicesSection />
         <ProjectsSection />

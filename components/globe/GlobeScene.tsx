@@ -80,7 +80,7 @@ export default function GlobeScene({ phase, onPinClick, selectedProjectId }: Glo
 
   return (
     <Canvas
-      camera={{ position: [0, 0, 8.5], fov: 45 }}
+      camera={{ position: [1.7, 2.9, -7.7], fov: 45 }}
       gl={{ antialias: true, alpha: true }}
       dpr={[1, 2]}
       style={{ position: 'absolute', inset: 0 }}

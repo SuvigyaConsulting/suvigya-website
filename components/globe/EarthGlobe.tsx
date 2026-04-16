@@ -278,8 +278,8 @@ export default function EarthGlobe({ visible, onReady, autoRotate = true, childr
       />
       <ambientLight intensity={0.08} />
 
-      {/* Rotating group: earth + atmosphere + pins. Initial rotation faces India toward camera */}
-      <group ref={groupRef} visible={false} rotation={[0, -1.36, 0]}>
+      {/* Rotating group: earth + atmosphere + pins */}
+      <group ref={groupRef} visible={false}>
         <mesh
           ref={earthRef}
           geometry={earthGeometry}
