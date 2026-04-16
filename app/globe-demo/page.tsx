@@ -39,6 +39,11 @@ export default function GlobeDemo() {
     setSelectedProject(null)
   }, [])
 
+  const handleNavigate = useCallback((projectId: number) => {
+    const project = projectLocations.find(p => p.id === projectId) || null
+    setSelectedProject(project)
+  }, [])
+
   return (
     <div
       className="relative w-full h-screen overflow-hidden"
@@ -56,7 +61,7 @@ export default function GlobeDemo() {
       {/* Three.js Scene */}
       {mounted && (
         <div className="absolute inset-0">
-          <GlobeScene phase={phase} onPinClick={handlePinClick} />
+          <GlobeScene phase={phase} onPinClick={handlePinClick} selectedProjectId={selectedProject?.id ?? null} />
         </div>
       )}
 
@@ -151,6 +156,7 @@ export default function GlobeDemo() {
       <ProjectDetail
         project={selectedProject}
         onClose={handleCloseDetail}
+        onNavigate={handleNavigate}
       />
 
       {/* Bottom gradient */}

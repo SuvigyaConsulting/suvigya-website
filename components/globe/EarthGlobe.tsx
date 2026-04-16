@@ -8,6 +8,7 @@ import * as THREE from 'three'
 interface EarthGlobeProps {
   visible: boolean
   onReady?: () => void
+  autoRotate?: boolean
 }
 
 const GLOBE_RADIUS = 2.5
@@ -141,7 +142,7 @@ const atmosphereFragmentShader = `
   }
 `
 
-export default function EarthGlobe({ visible, onReady, children }: EarthGlobeProps & { children?: React.ReactNode }) {
+export default function EarthGlobe({ visible, onReady, autoRotate = true, children }: EarthGlobeProps & { children?: React.ReactNode }) {
   const groupRef = useRef<THREE.Group>(null)
   const earthRef = useRef<THREE.Mesh>(null)
   const [hasCalledReady, setHasCalledReady] = useState(false)
@@ -296,7 +297,7 @@ export default function EarthGlobe({ visible, onReady, children }: EarthGlobePro
         dampingFactor={0.05}
         minPolarAngle={Math.PI * 0.1}
         maxPolarAngle={Math.PI * 0.9}
-        autoRotate
+        autoRotate={autoRotate}
         autoRotateSpeed={0.3}
       />
     </>
