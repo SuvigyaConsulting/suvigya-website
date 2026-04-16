@@ -1,22 +1,24 @@
 'use client'
 
 import { useRef, useMemo, useEffect } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
 const PARTICLE_COUNT = 3000
 const SPHERE_RADIUS = 8
 const TARGET_RADIUS = 2.5
-const CONNECTION_DISTANCE = 2.0
-const MAX_CONNECTIONS = 200
-const MORPH_DURATION = 2.0
-const UNMORPH_DURATION = 1.5
+const MORPH_DURATION = 2.5
+const UNMORPH_DURATION = 1.8
 const CENTER_PULL_STRENGTH = 0.00003
 
 // Star field constants
 const STAR_COUNT = 1000
 const STAR_MIN_RADIUS = 40
 const STAR_MAX_RADIUS = 80
+
+// Cursor repulsion constants
+const REPULSION_RADIUS = 2.0
+const REPULSION_STRENGTH = 0.003
 
 function fibonacciSphere(index: number, total: number, radius: number): THREE.Vector3 {
   const goldenAngle = Math.PI * (3 - Math.sqrt(5))
@@ -43,18 +45,20 @@ function randomInSphere(radius: number): THREE.Vector3 {
   )
 }
 
-export default function ParticleField({ morphing }: { morphing: boolean }) {
+export default function ParticleField({ morphing, opacity = 1 }: { morphing: boolean; opacity?: number }) {
   const groupRef = useRef<THREE.Group>(null)
   const pointsRef = useRef<THREE.Points>(null)
-  const linesRef = useRef<THREE.LineSegments>(null)
   const starsRef = useRef<THREE.Points>(null)
+  const opacityRef = useRef(1)
   const morphStateRef = useRef({
     active: false,
     direction: 1, // 1 = morphing in, -1 = morphing out
     progress: 0,
-    connectionOpacity: 1,
     elapsedSinceMorphStart: 0,
   })
+
+  // Keep opacity ref in sync with prop
+  opacityRef.current = opacity
 
   // Pre-allocate all data arrays
   const {
@@ -69,8 +73,6 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     pulseFlags,
     pulseFrequencies,
     pulsePhases,
-    linePositions,
-    lineColors,
   } = useMemo(() => {
     const pos = new Float32Array(PARTICLE_COUNT * 3)
     const origPos = new Float32Array(PARTICLE_COUNT * 3)
@@ -107,10 +109,10 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
       targPos[i3 + 1] = target.y
       targPos[i3 + 2] = target.z
 
-      // Random velocity for Brownian motion
-      vel[i3] = (Math.random() - 0.5) * 0.002
-      vel[i3 + 1] = (Math.random() - 0.5) * 0.002
-      vel[i3 + 2] = (Math.random() - 0.5) * 0.002
+      // Random velocity for Brownian motion (4x slower)
+      vel[i3] = (Math.random() - 0.5) * 0.0005
+      vel[i3 + 1] = (Math.random() - 0.5) * 0.0005
+      vel[i3 + 2] = (Math.random() - 0.5) * 0.0005
 
       // Random color from palette
       const color = palette[Math.floor(Math.random() * palette.length)]
@@ -132,10 +134,6 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
       pPhases[i] = Math.random() * Math.PI * 2 // random phase offset
     }
 
-    // Connection lines buffer (2 vertices per line, 3 components each)
-    const linePosBuffer = new Float32Array(MAX_CONNECTIONS * 2 * 3)
-    const lineColBuffer = new Float32Array(MAX_CONNECTIONS * 2 * 4)
-
     return {
       positions: pos,
       originalPositions: origPos,
@@ -148,8 +146,6 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
       pulseFlags: pFlags,
       pulseFrequencies: pFreqs,
       pulsePhases: pPhases,
-      linePositions: linePosBuffer,
-      lineColors: lineColBuffer,
     }
   }, [])
 
@@ -181,12 +177,15 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     return { starPositions: sPos, starSizes: sSz, starOpacities: sOp }
   }, [])
 
-  // Particle shader material
+  // Particle shader material with global opacity uniform
   const particleMaterial = useMemo(() => {
     return new THREE.ShaderMaterial({
       transparent: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
+      uniforms: {
+        uGlobalOpacity: { value: 1.0 },
+      },
       vertexShader: `
         attribute float size;
         attribute float opacity;
@@ -201,13 +200,14 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
         }
       `,
       fragmentShader: `
+        uniform float uGlobalOpacity;
         varying float vOpacity;
         varying vec3 vColor;
         void main() {
           float dist = length(gl_PointCoord - vec2(0.5));
           if (dist > 0.5) discard;
           float alpha = smoothstep(0.5, 0.1, dist) * vOpacity;
-          gl_FragColor = vec4(vColor, alpha);
+          gl_FragColor = vec4(vColor, alpha * uGlobalOpacity);
         }
       `,
       vertexColors: true,
@@ -243,17 +243,6 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     })
   }, [])
 
-  // Line material
-  const lineMaterial = useMemo(() => {
-    return new THREE.LineBasicMaterial({
-      transparent: true,
-      opacity: 0.15,
-      color: new THREE.Color('#14b8a6'),
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    })
-  }, [])
-
   // Track morphing prop changes
   useEffect(() => {
     const state = morphStateRef.current
@@ -280,8 +269,6 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
         // Store current positions for reverse animation and regenerate random targets
         const geo = pointsRef.current?.geometry
         if (geo) {
-          const posAttr = geo.getAttribute('position') as THREE.BufferAttribute
-          const arr = posAttr.array as Float32Array
           for (let i = 0; i < PARTICLE_COUNT; i++) {
             const i3 = i * 3
             // Current position becomes the start for reverse
@@ -299,23 +286,26 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     }
   }, [morphing, originalPositions, targetPositions])
 
-  // Temp vectors to avoid allocations in the frame loop
+  // Pre-allocate temp vectors for frame loop (avoid GC pressure)
   const tempVec = useMemo(() => new THREE.Vector3(), [])
   const tempVec2 = useMemo(() => new THREE.Vector3(), [])
 
   // Track global time for pulsing
   const globalTimeRef = useRef(0)
 
-  useFrame((_, delta) => {
-    if (!pointsRef.current || !linesRef.current) return
+  useFrame((state, delta) => {
+    if (!pointsRef.current) return
 
-    // Slow rotation like the night sky
+    // Slow night-sky rotation
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.03
-      groupRef.current.rotation.x += delta * 0.008
+      groupRef.current.rotation.y += delta * 0.008
+      groupRef.current.rotation.x += delta * 0.002
     }
 
     globalTimeRef.current += delta
+
+    // Update global opacity uniform
+    particleMaterial.uniforms.uGlobalOpacity.value = opacityRef.current
 
     const geometry = pointsRef.current.geometry
     const posAttr = geometry.getAttribute('position') as THREE.BufferAttribute
@@ -323,8 +313,14 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     const sizeAttr = geometry.getAttribute('size') as THREE.BufferAttribute
     const sizeArray = sizeAttr.array as Float32Array
 
-    const state = morphStateRef.current
+    const morphState = morphStateRef.current
     const time = globalTimeRef.current
+
+    // Cursor ray for repulsion
+    const { pointer, camera, raycaster } = state
+    raycaster.setFromCamera(pointer, camera)
+    const rayOrigin = raycaster.ray.origin
+    const rayDir = raycaster.ray.direction
 
     // Update pulsing particles
     for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -337,25 +333,25 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     sizeAttr.needsUpdate = true
 
     // Update morph progress
-    if (state.active) {
-      state.elapsedSinceMorphStart += delta
-      if (state.direction === 1) {
-        state.progress += delta / MORPH_DURATION
-        if (state.progress >= 1) {
-          state.progress = 1
-          state.active = false
+    if (morphState.active) {
+      morphState.elapsedSinceMorphStart += delta
+      if (morphState.direction === 1) {
+        morphState.progress += delta / MORPH_DURATION
+        if (morphState.progress >= 1) {
+          morphState.progress = 1
+          morphState.active = false
         }
       } else {
-        state.progress -= delta / UNMORPH_DURATION
-        if (state.progress <= 0) {
-          state.progress = 0
-          state.active = false
-          state.direction = 1
+        morphState.progress -= delta / UNMORPH_DURATION
+        if (morphState.progress <= 0) {
+          morphState.progress = 0
+          morphState.active = false
+          morphState.direction = 1
           // Snap particles to their random target positions and reset for Brownian motion
           const geo = pointsRef.current?.geometry
           if (geo) {
-            const posAttr = geo.getAttribute('position') as THREE.BufferAttribute
-            const arr = posAttr.array as Float32Array
+            const pAttr = geo.getAttribute('position') as THREE.BufferAttribute
+            const arr = pAttr.array as Float32Array
             for (let i = 0; i < PARTICLE_COUNT; i++) {
               const i3 = i * 3
               arr[i3] = targetPositions[i3]
@@ -365,33 +361,33 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
               originalPositions[i3] = targetPositions[i3]
               originalPositions[i3 + 1] = targetPositions[i3 + 1]
               originalPositions[i3 + 2] = targetPositions[i3 + 2]
-              // Reset velocities for fresh Brownian motion
-              velocities[i3] = (Math.random() - 0.5) * 0.002
-              velocities[i3 + 1] = (Math.random() - 0.5) * 0.002
-              velocities[i3 + 2] = (Math.random() - 0.5) * 0.002
+              // Reset velocities for fresh Brownian motion (slow)
+              velocities[i3] = (Math.random() - 0.5) * 0.0005
+              velocities[i3 + 1] = (Math.random() - 0.5) * 0.0005
+              velocities[i3 + 2] = (Math.random() - 0.5) * 0.0005
             }
-            posAttr.needsUpdate = true
+            pAttr.needsUpdate = true
           }
         }
       }
     }
 
-    const t = state.progress
-    // Smooth ease in-out
-    const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+    const t = morphState.progress
+    // Smoothstep easing (very smooth)
+    const eased = t * t * (3 - 2 * t)
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3
 
-      if (state.active || t > 0) {
+      if (morphState.active || t > 0) {
         const ox = originalPositions[i3]
         const oy = originalPositions[i3 + 1]
         const oz = originalPositions[i3 + 2]
 
         let tx: number, ty: number, tz: number
 
-        if (state.direction === 1 || t > 0) {
-          if (state.direction === 1) {
+        if (morphState.direction === 1 || t > 0) {
+          if (morphState.direction === 1) {
             // Fibonacci sphere target
             const fibTarget = fibonacciSphere(i, PARTICLE_COUNT, TARGET_RADIUS)
             tx = fibTarget.x
@@ -409,16 +405,16 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
         }
 
         // SPIRAL VORTEX morph (only when morphing IN, direction === 1)
-        if (state.active && state.direction === 1) {
-          const elapsed = state.elapsedSinceMorphStart
+        if (morphState.active && morphState.direction === 1) {
+          const elapsed = morphState.elapsedSinceMorphStart
           const totalDuration = MORPH_DURATION
 
-          // Phase 1 (0-0.5s): Chaotic acceleration — particles speed up 3x
-          // Phase 2 (0.5-1.5s): Spiral vortex inward — angular velocity around Y
-          // Phase 3 (1.5-2.0s): Settle onto sphere surface
-
-          const phase1End = 0.25 * totalDuration  // 0.5s at 2.0 duration
-          const phase2End = 0.75 * totalDuration   // 1.5s at 2.0 duration
+          // Phase 1: Chaotic acceleration
+          // Phase 2: Spiral vortex inward
+          // Phase 3: Settle onto sphere surface
+          // Proportionally longer phases for slower morph
+          const phase1End = 0.25 * totalDuration
+          const phase2End = 0.75 * totalDuration
 
           // Base lerp position
           let lerpX = ox + (tx - ox) * eased
@@ -426,10 +422,9 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
           let lerpZ = oz + (tz - oz) * eased
 
           if (elapsed < phase1End) {
-            // Phase 1: Chaotic burst — add velocity-like displacement
-            const chaosIntensity = 1.0 - (elapsed / phase1End) // fades out
-            const chaos = chaosIntensity * 3.0
-            // Each particle gets a unique chaotic offset based on its index
+            // Phase 1: Gentler chaotic burst (reduced from 3.0 to 1.5)
+            const chaosIntensity = 1.0 - (elapsed / phase1End)
+            const chaos = chaosIntensity * 1.5
             const seed = i * 1.618033988749
             const cx = Math.sin(seed * 3.7 + elapsed * 12.0) * chaos * 0.5
             const cy = Math.cos(seed * 2.3 + elapsed * 10.0) * chaos * 0.3
@@ -438,15 +433,12 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
             lerpY += cy
             lerpZ += cz
           } else if (elapsed < phase2End) {
-            // Phase 2: Spiral vortex — rotate around Y axis while converging
+            // Phase 2: Slower, wider spiral vortex
             const phase2Progress = (elapsed - phase1End) / (phase2End - phase1End)
-            // Angular velocity increases over time then stabilizes
-            const angularSpeed = phase2Progress * 6.0 // max ~6 radians/sec
+            const angularSpeed = phase2Progress * 4.0 // slower max angular speed
             const angle = angularSpeed * (elapsed - phase1End) + i * 0.002
-            // Spiral radius decreases as particles converge
-            const spiralRadius = (1.0 - eased) * 2.5
+            const spiralRadius = (1.0 - eased) * 3.0 // wider spiral
 
-            // Rotate the offset (from center) around Y axis
             const dx = lerpX
             const dz = lerpZ
             const cosA = Math.cos(angle)
@@ -454,10 +446,9 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
             lerpX = dx * cosA - dz * sinA + Math.cos(angle + i * 0.01) * spiralRadius * (1.0 - phase2Progress)
             lerpZ = dx * sinA + dz * cosA + Math.sin(angle + i * 0.01) * spiralRadius * (1.0 - phase2Progress)
           } else {
-            // Phase 3: Settle — damped oscillation toward target
+            // Phase 3: Settle with damped oscillation
             const phase3Progress = (elapsed - phase2End) / (totalDuration - phase2End)
             const settleOscillation = Math.sin(phase3Progress * Math.PI * 3 + i * 0.1) * (1.0 - phase3Progress) * 0.15
-            // Diminishing angular rotation
             const residualAngle = (1.0 - phase3Progress) * 1.5 * (elapsed - phase2End)
             const dx = lerpX
             const dz = lerpZ
@@ -470,9 +461,9 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
           posArray[i3] = lerpX
           posArray[i3 + 1] = lerpY
           posArray[i3 + 2] = lerpZ
-        } else if (state.active && state.direction === -1) {
+        } else if (morphState.active && morphState.direction === -1) {
           // Un-morphing: simpler reverse with some spiral flair
-          const elapsed = state.elapsedSinceMorphStart
+          const elapsed = morphState.elapsedSinceMorphStart
           const reverseSpiral = Math.sin(elapsed * 4 + i * 0.01) * (1.0 - (1.0 - t)) * 0.5
 
           posArray[i3] = ox + (tx - ox) * eased + reverseSpiral
@@ -485,20 +476,20 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
           posArray[i3 + 2] = oz + (tz - oz) * eased
         }
       } else {
-        // Brownian motion when not morphing
+        // Brownian motion when not morphing (much slower)
         posArray[i3] += velocities[i3]
         posArray[i3 + 1] += velocities[i3 + 1]
         posArray[i3 + 2] += velocities[i3 + 2]
 
-        // Slight random perturbation
-        velocities[i3] += (Math.random() - 0.5) * 0.0004
-        velocities[i3 + 1] += (Math.random() - 0.5) * 0.0004
-        velocities[i3 + 2] += (Math.random() - 0.5) * 0.0004
+        // Very slight random perturbation (5x less)
+        velocities[i3] += (Math.random() - 0.5) * 0.00008
+        velocities[i3 + 1] += (Math.random() - 0.5) * 0.00008
+        velocities[i3 + 2] += (Math.random() - 0.5) * 0.00008
 
-        // Damping
-        velocities[i3] *= 0.99
-        velocities[i3 + 1] *= 0.99
-        velocities[i3 + 2] *= 0.99
+        // Less damping for smoother drift
+        velocities[i3] *= 0.995
+        velocities[i3 + 1] *= 0.995
+        velocities[i3 + 2] *= 0.995
 
         // Soft boundary: pull back toward sphere
         tempVec.set(posArray[i3], posArray[i3 + 1], posArray[i3 + 2])
@@ -510,14 +501,14 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
           posArray[i3 + 2] -= tempVec.z / dist * pullback
         }
 
-        // Gentle drift toward center (linear, not quadratic — prevents collapse)
+        // Gentle drift toward center (linear, not quadratic -- prevents collapse)
         if (dist > 2.0) {
           const pull = CENTER_PULL_STRENGTH
           posArray[i3] -= tempVec.x / dist * pull
           posArray[i3 + 1] -= tempVec.y / dist * pull
           posArray[i3 + 2] -= tempVec.z / dist * pull
         }
-        // Repulsion at close range — prevents particles from clustering at origin
+        // Repulsion at close range -- prevents particles from clustering at origin
         if (dist < 1.0 && dist > 0.01) {
           const push = 0.0003 * (1.0 - dist)
           posArray[i3] += tempVec.x / dist * push
@@ -525,63 +516,27 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
           posArray[i3 + 2] += tempVec.z / dist * push
         }
       }
-    }
 
-    posAttr.needsUpdate = true
+      // Cursor repulsion (applied regardless of morph state)
+      tempVec.set(posArray[i3], posArray[i3 + 1], posArray[i3 + 2])
+      tempVec2.copy(tempVec).sub(rayOrigin)
+      const proj = tempVec2.dot(rayDir)
+      // Distance from particle to closest point on cursor ray
+      const dx = tempVec.x - (rayOrigin.x + rayDir.x * proj)
+      const dy = tempVec.y - (rayOrigin.y + rayDir.y * proj)
+      const dz = tempVec.z - (rayOrigin.z + rayDir.z * proj)
+      const distToRay = Math.sqrt(dx * dx + dy * dy + dz * dz)
 
-    // Update connection lines
-    const lineGeo = linesRef.current.geometry
-    const linePosAttr = lineGeo.getAttribute('position') as THREE.BufferAttribute
-    const linePosArray = linePosAttr.array as Float32Array
-
-    // Fade connections during morph
-    const connectionOpacity = state.active && state.direction === 1
-      ? Math.max(0, 1 - eased * 3)
-      : state.progress > 0 ? 0 : 1
-    lineMaterial.opacity = 0.15 * connectionOpacity
-
-    let lineCount = 0
-
-    if (connectionOpacity > 0) {
-      // Only check a subset of particles for connections (performance)
-      const step = Math.max(1, Math.floor(PARTICLE_COUNT / 300))
-      outer:
-      for (let i = 0; i < PARTICLE_COUNT; i += step) {
-        const i3 = i * 3
-        tempVec.set(posArray[i3], posArray[i3 + 1], posArray[i3 + 2])
-
-        for (let j = i + step; j < PARTICLE_COUNT; j += step) {
-          const j3 = j * 3
-          tempVec2.set(posArray[j3], posArray[j3 + 1], posArray[j3 + 2])
-
-          const dx = tempVec.x - tempVec2.x
-          const dy = tempVec.y - tempVec2.y
-          const dz = tempVec.z - tempVec2.z
-          const distSq = dx * dx + dy * dy + dz * dz
-
-          if (distSq < CONNECTION_DISTANCE * CONNECTION_DISTANCE) {
-            const idx = lineCount * 6
-            linePosArray[idx] = tempVec.x
-            linePosArray[idx + 1] = tempVec.y
-            linePosArray[idx + 2] = tempVec.z
-            linePosArray[idx + 3] = tempVec2.x
-            linePosArray[idx + 4] = tempVec2.y
-            linePosArray[idx + 5] = tempVec2.z
-            lineCount++
-
-            if (lineCount >= MAX_CONNECTIONS) break outer
-          }
-        }
+      if (distToRay < REPULSION_RADIUS && distToRay > 0.01) {
+        const force = (REPULSION_RADIUS - distToRay) * REPULSION_STRENGTH
+        // Push away from ray (normalize the offset direction)
+        velocities[i3] += (dx / distToRay) * force
+        velocities[i3 + 1] += (dy / distToRay) * force
+        velocities[i3 + 2] += (dz / distToRay) * force
       }
     }
 
-    // Zero out unused line vertices
-    for (let i = lineCount * 6; i < linePosArray.length; i++) {
-      linePosArray[i] = 0
-    }
-
-    linePosAttr.needsUpdate = true
-    lineGeo.setDrawRange(0, lineCount * 2)
+    posAttr.needsUpdate = true
   })
 
   // Geometry setup
@@ -593,13 +548,6 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     geo.setAttribute('opacity', new THREE.BufferAttribute(opacities, 1))
     return geo
   }, [positions, colors, sizes, opacities])
-
-  const lineGeometry = useMemo(() => {
-    const geo = new THREE.BufferGeometry()
-    geo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3))
-    geo.setDrawRange(0, 0)
-    return geo
-  }, [linePositions])
 
   // Star field geometry (static, no animation)
   const starGeometry = useMemo(() => {
@@ -614,19 +562,16 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
   useEffect(() => {
     return () => {
       pointsGeometry.dispose()
-      lineGeometry.dispose()
       starGeometry.dispose()
       particleMaterial.dispose()
       starMaterial.dispose()
-      lineMaterial.dispose()
     }
-  }, [pointsGeometry, lineGeometry, starGeometry, particleMaterial, starMaterial, lineMaterial])
+  }, [pointsGeometry, starGeometry, particleMaterial, starMaterial])
 
   return (
     <group ref={groupRef}>
       <points ref={starsRef} geometry={starGeometry} material={starMaterial} />
       <points ref={pointsRef} geometry={pointsGeometry} material={particleMaterial} />
-      <lineSegments ref={linesRef} geometry={lineGeometry} material={lineMaterial} />
     </group>
   )
 }

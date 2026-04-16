@@ -21,8 +21,8 @@ export default function GlobeDemo() {
   const handleExplore = useCallback(() => {
     setPhase('morphing')
     setInitializingVisible(true)
-    setTimeout(() => setInitializingVisible(false), 1500)
-    setTimeout(() => setPhase('globe'), 2500)
+    setTimeout(() => setInitializingVisible(false), 1200)
+    setTimeout(() => setPhase('globe'), 2800)
   }, [])
 
   const handleBack = useCallback(() => {
