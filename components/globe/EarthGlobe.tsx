@@ -11,7 +11,7 @@ interface EarthGlobeProps {
 }
 
 const GLOBE_RADIUS = 2.5
-const ATMOSPHERE_RADIUS = 2.62
+const ATMOSPHERE_RADIUS = 2.68
 
 // Calculate sun direction from current time (approximate solar position)
 function getSunDirection(): THREE.Vector3 {
@@ -36,7 +36,8 @@ const earthVertexShader = `
 
   void main() {
     vUv = uv;
-    vNormal = normalize(normalMatrix * normal);
+    // Normal in WORLD space (not view space) so sun direction comparison is correct
+    vNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
     vec4 worldPos = modelMatrix * vec4(position, 1.0);
     vWorldPosition = worldPos.xyz;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
@@ -86,7 +87,7 @@ const atmosphereVertexShader = `
   varying vec3 vWorldPosition;
 
   void main() {
-    vNormal = normalize(normalMatrix * normal);
+    vNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
     vec4 worldPos = modelMatrix * vec4(position, 1.0);
     vWorldPosition = worldPos.xyz;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
@@ -101,21 +102,39 @@ const atmosphereFragmentShader = `
 
   void main() {
     vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
-    float fresnel = pow(1.0 - dot(viewDirection, vNormal), 3.0);
+    float fresnel = pow(1.0 - dot(viewDirection, vNormal), 2.5);
 
-    // Atmosphere color shifts based on sun angle — warmer near sun, cooler in shadow
-    float sunFactor = dot(vNormal, uSunDirection) * 0.5 + 0.5;
-    vec3 warmColor = vec3(0.4, 0.6, 0.9);
-    vec3 coolColor = vec3(0.15, 0.25, 0.5);
-    vec3 glowColor = mix(coolColor, warmColor, sunFactor);
+    // Sun angle relative to this point on the atmosphere
+    float sunDot = dot(vNormal, uSunDirection);
 
-    float alpha = fresnel * 0.18 * uOpacity;
+    // Rayleigh-like scattering: blue on sunlit side
+    vec3 rayleighColor = vec3(0.3, 0.5, 1.0);
 
-    gl_FragColor = vec4(glowColor, alpha);
+    // Mie-like scattering: warm orange/gold at terminator (sunset/sunrise edge)
+    float terminatorFactor = 1.0 - abs(sunDot);
+    terminatorFactor = pow(terminatorFactor, 4.0) * smoothstep(-0.3, 0.1, sunDot);
+    vec3 sunsetColor = vec3(1.0, 0.5, 0.2);
+
+    // Night side: very faint blue
+    vec3 nightColor = vec3(0.05, 0.08, 0.2);
+
+    // Day side intensity
+    float dayIntensity = smoothstep(-0.1, 0.5, sunDot);
+
+    // Blend atmosphere color
+    vec3 atmosColor = mix(nightColor, rayleighColor, dayIntensity);
+    atmosColor = mix(atmosColor, sunsetColor, terminatorFactor * 0.7);
+
+    // Atmosphere is brighter on the sunlit limb
+    float limbBrightening = fresnel * (0.12 + dayIntensity * 0.15);
+
+    float alpha = limbBrightening * uOpacity;
+
+    gl_FragColor = vec4(atmosColor, alpha);
   }
 `
 
-export default function EarthGlobe({ visible, onReady }: EarthGlobeProps) {
+export default function EarthGlobe({ visible, onReady, children }: EarthGlobeProps & { children?: React.ReactNode }) {
   const groupRef = useRef<THREE.Group>(null)
   const earthRef = useRef<THREE.Mesh>(null)
   const [hasCalledReady, setHasCalledReady] = useState(false)
@@ -227,10 +246,7 @@ export default function EarthGlobe({ visible, onReady }: EarthGlobeProps) {
     const scale = 0.9 + 0.1 * t
     groupRef.current.scale.setScalar(scale)
 
-    // Auto-rotate slowly
-    if (t > 0.001 && earthRef.current) {
-      earthRef.current.rotation.y += delta * 0.05
-    }
+    // Auto-rotation handled by OrbitControls autoRotate — no manual rotation needed
 
     // Call onReady once
     if (t > 0.95 && !hasCalledReady && onReady) {
@@ -246,36 +262,35 @@ export default function EarthGlobe({ visible, onReady }: EarthGlobeProps) {
 
   return (
     <>
-      <group ref={groupRef} visible={false}>
-        {/* Sun light positioned according to actual time */}
-        <directionalLight
-          position={[sunDirection.x * 10, sunDirection.y * 10, sunDirection.z * 10]}
-          intensity={2}
-          color="#ffeedd"
-        />
-        <ambientLight intensity={0.08} />
+      {/* Sun light OUTSIDE the rotating group — stays fixed in space */}
+      <directionalLight
+        position={[sunDirection.x * 10, sunDirection.y * 10, sunDirection.z * 10]}
+        intensity={2}
+        color="#ffeedd"
+      />
+      <ambientLight intensity={0.08} />
 
-        {/* Earth with day/night shader */}
+      {/* Rotating group: earth + atmosphere + pins */}
+      <group ref={groupRef} visible={false}>
         <mesh
           ref={earthRef}
           geometry={earthGeometry}
           material={earthMaterial}
         />
-
-        {/* Atmosphere */}
         <mesh geometry={atmosphereGeometry} material={atmosphereMaterial} />
+        {children}
       </group>
 
       <OrbitControls
         makeDefault
-        enableZoom={true}
+        enableZoom={false}
         enablePan={false}
         enableDamping
         dampingFactor={0.05}
-        minDistance={4}
-        maxDistance={15}
         minPolarAngle={Math.PI * 0.1}
         maxPolarAngle={Math.PI * 0.9}
+        autoRotate
+        autoRotateSpeed={0.3}
       />
     </>
   )
