@@ -11,16 +11,16 @@ gsap.registerPlugin(ScrollTrigger)
 const SKY_COLORS: [number, string, string, string][] = [
   [0.00, '#080d1a', '#0a1020', '#0c1428'],  // Deep night
   [0.10, '#0d1530', '#121d3d', '#18284a'],  // Late night
-  [0.20, '#141e45', '#1f2f5a', '#2a4070'],  // Pre-dawn navy
-  [0.30, '#1a2850', '#2d4575', '#45628e'],  // First light
-  [0.40, '#2a3d68', '#4a6a98', '#7090b5'],  // Dawn blue
-  [0.50, '#3d5580', '#6a90b8', '#95b8d5'],  // Early morning
-  [0.55, '#4a6590', '#80a5c8', '#aacce0'],  // Morning blue
-  [0.60, '#5878a0', '#8cb5d5', '#b5d8ea'],  // Mid morning
-  [0.70, '#7098b8', '#a5cce0', '#c8e2f0'],  // Late morning
-  [0.80, '#88b0cc', '#bcdae8', '#daeef5'],  // Bright sky
-  [0.90, '#a0c5d8', '#d0e8f2', '#eaf4f8'],  // Near noon
-  [1.00, '#c0d8e8', '#e5f0f5', '#f8fafb'],  // Pale sky (matches site bg)
+  [0.15, '#0f1835', '#141e45', '#1a2855'],  // Pre-dawn navy
+  [0.25, '#151f48', '#1e3060', '#2d4575'],  // First hint of light
+  [0.35, '#1a2855', '#2d4575', '#456090'],  // Dawn begins
+  [0.45, '#223565', '#3d5a8a', '#5a80a8'],  // Dawn blue
+  [0.55, '#2d4575', '#4a7098', '#6a95b8'],  // Morning blue
+  [0.65, '#3d5a8a', '#5a88b0', '#80aac8'],  // Mid morning
+  [0.75, '#4a70a0', '#70a0c0', '#95c0d8'],  // Late morning
+  [0.85, '#5a88b5', '#88b8d5', '#aad5e8'],  // Bright sky
+  [0.92, '#70a0c8', '#a0cce0', '#c0e0ef'],  // Near noon
+  [1.00, '#90b8d8', '#c0dce8', '#f8fafb'],  // Light sky (matches site bg)
 ]
 
 function lerpColor(a: string, b: string, t: number): string {
@@ -97,36 +97,37 @@ export default function SkyTransition() {
         },
       })
 
-      // Stars fade (0-20%)
-      tl.to(starsRef.current, { opacity: 0, duration: 0.2 }, 0)
+      // Stars fade slowly (0-25%)
+      tl.to(starsRef.current, { opacity: 0, duration: 0.25 }, 0)
 
-      // Horizon glow appears (20-40%)
+      // Horizon glow — BRIGHT, warm, dramatic (15-50%)
       tl.fromTo(horizonRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.2 }, 0.15)
+        { opacity: 1, duration: 0.3 }, 0.12)
 
-      // Sun rises from below (25-50%)
+      // Sun rises from bottom — BIG and visible (20-55%)
       tl.fromTo(sunRef.current,
-        { y: 200, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.25, ease: 'power1.out' }, 0.25)
+        { y: 300, opacity: 0 },
+        { y: -50, opacity: 1, duration: 0.35, ease: 'power1.out' }, 0.2)
 
-      // High wispy clouds enter (35-55%)
+      // High wispy clouds — visible and dramatic (30-50%)
       tl.fromTo(cloudsHighRef.current,
-        { opacity: 0, x: -100 },
-        { opacity: 0.7, x: 0, duration: 0.2 }, 0.35)
+        { opacity: 0, x: -200 },
+        { opacity: 1, x: 0, duration: 0.2 }, 0.3)
 
-      // Low thick clouds enter (45-65%)
+      // Low thick clouds — VERY visible, dramatic entrance (40-60%)
       tl.fromTo(cloudsLowRef.current,
-        { opacity: 0, y: 100 },
-        { opacity: 0.9, y: 0, duration: 0.2 }, 0.45)
+        { opacity: 0, y: 200 },
+        { opacity: 1, y: 0, duration: 0.2, ease: 'power1.out' }, 0.4)
 
-      // Clouds pass through (65-90%)
-      tl.to(cloudsHighRef.current, { y: -200, opacity: 0, duration: 0.25 }, 0.65)
-      tl.to(cloudsLowRef.current, { y: -300, opacity: 0, duration: 0.25 }, 0.7)
+      // Hold clouds visible for a beat (60-70%)
+      // Then descend through them (70-90%)
+      tl.to(cloudsHighRef.current, { y: -400, opacity: 0, duration: 0.2 }, 0.7)
+      tl.to(cloudsLowRef.current, { y: -500, opacity: 0, duration: 0.2 }, 0.72)
 
-      // Sun and horizon fade into white (80-100%)
-      tl.to(sunRef.current, { opacity: 0, y: -100, duration: 0.2 }, 0.8)
-      tl.to(horizonRef.current, { opacity: 0, duration: 0.2 }, 0.8)
+      // Sun fades and horizon dissolves (85-100%)
+      tl.to(sunRef.current, { opacity: 0, y: -200, duration: 0.15 }, 0.85)
+      tl.to(horizonRef.current, { opacity: 0, duration: 0.15 }, 0.85)
 
     }, section)
 
@@ -140,7 +141,7 @@ export default function SkyTransition() {
     <div
       ref={sectionRef}
       className="relative overflow-hidden"
-      style={{ height: '300vh' }}
+      style={{ height: '200vh' }}
     >
       <div className="sticky top-0 w-full h-screen overflow-hidden">
         {/* Sky canvas — gradient updated per frame */}
@@ -173,52 +174,58 @@ export default function SkyTransition() {
           })}
         </div>
 
-        {/* Horizon glow — warm gradient at the bottom during dawn */}
+        {/* Horizon glow — DRAMATIC warm gradient covering bottom half */}
         <div
           ref={horizonRef}
           className="absolute bottom-0 left-0 right-0 opacity-0 pointer-events-none"
           style={{
-            height: '40%',
-            background: 'linear-gradient(0deg, rgba(255,160,80,0.25) 0%, rgba(255,120,60,0.12) 30%, rgba(255,100,50,0.04) 60%, transparent 100%)',
+            height: '60%',
+            background: 'linear-gradient(0deg, rgba(255,140,50,0.5) 0%, rgba(255,100,40,0.3) 20%, rgba(255,80,30,0.15) 40%, rgba(200,60,40,0.05) 60%, transparent 100%)',
           }}
         />
 
-        {/* Sun disc */}
+        {/* Sun disc — LARGE and bright */}
         <div
           ref={sunRef}
           className="absolute opacity-0 pointer-events-none"
           style={{
-            bottom: '25%',
+            bottom: '20%',
             left: '50%',
-            transform: 'translateX(-50%) translateY(200px)',
-            width: '300px',
-            height: '300px',
+            transform: 'translateX(-50%) translateY(300px)',
+            width: '500px',
+            height: '500px',
           }}
         >
-          {/* Core */}
+          {/* Bright core */}
           <div className="absolute inset-0 rounded-full" style={{
-            background: 'radial-gradient(circle at 50% 60%, rgba(255,250,220,0.9) 0%, rgba(255,220,150,0.5) 25%, rgba(255,180,80,0.2) 50%, transparent 70%)',
+            background: 'radial-gradient(circle at 50% 55%, rgba(255,255,240,1) 0%, rgba(255,230,160,0.8) 15%, rgba(255,190,90,0.5) 35%, rgba(255,150,50,0.2) 55%, transparent 75%)',
           }} />
-          {/* Outer glow */}
-          <div className="absolute -inset-20 rounded-full" style={{
-            background: 'radial-gradient(circle at 50% 55%, rgba(255,200,100,0.15) 0%, rgba(255,160,60,0.06) 40%, transparent 65%)',
+          {/* Wide outer glow */}
+          <div className="absolute -inset-32 rounded-full" style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(255,200,100,0.35) 0%, rgba(255,160,60,0.15) 30%, rgba(255,120,40,0.05) 55%, transparent 70%)',
+          }} />
+          {/* Lens flare streaks */}
+          <div className="absolute -inset-16" style={{
+            background: 'radial-gradient(ellipse 200% 50% at 50% 50%, rgba(255,220,150,0.12) 0%, transparent 50%)',
           }} />
         </div>
 
-        {/* High wispy clouds */}
+        {/* High cirrus clouds — wispy, golden-lit from dawn */}
         <div ref={cloudsHighRef} className="absolute inset-0 pointer-events-none opacity-0">
-          <div className="absolute" style={{ top: '20%', left: '-5%', width: '45%', height: '8%', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3) 30%, rgba(255,255,255,0.5) 60%, rgba(255,255,255,0.2) 85%, transparent)', borderRadius: '50%', filter: 'blur(8px)' }} />
-          <div className="absolute" style={{ top: '28%', right: '-8%', width: '40%', height: '6%', background: 'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.25) 40%, rgba(255,255,255,0.4) 70%, transparent 95%)', borderRadius: '50%', filter: 'blur(6px)' }} />
-          <div className="absolute" style={{ top: '15%', left: '30%', width: '25%', height: '5%', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2) 50%, transparent)', borderRadius: '50%', filter: 'blur(10px)' }} />
+          <div className="absolute" style={{ top: '15%', left: '-10%', width: '55%', height: '12%', background: 'linear-gradient(90deg, transparent 5%, rgba(255,240,220,0.5) 25%, rgba(255,255,255,0.7) 50%, rgba(255,240,220,0.4) 75%, transparent 95%)', borderRadius: '50%', filter: 'blur(6px)' }} />
+          <div className="absolute" style={{ top: '22%', right: '-12%', width: '50%', height: '10%', background: 'linear-gradient(90deg, transparent 8%, rgba(255,235,210,0.4) 30%, rgba(255,255,255,0.6) 55%, rgba(255,245,230,0.3) 80%, transparent 92%)', borderRadius: '50%', filter: 'blur(8px)' }} />
+          <div className="absolute" style={{ top: '10%', left: '25%', width: '35%', height: '8%', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35) 40%, rgba(255,250,240,0.45) 60%, transparent)', borderRadius: '50%', filter: 'blur(10px)' }} />
+          <div className="absolute" style={{ top: '30%', left: '40%', width: '30%', height: '6%', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3) 50%, transparent)', borderRadius: '50%', filter: 'blur(5px)' }} />
         </div>
 
-        {/* Low thick clouds — blurred for realism */}
+        {/* Low cumulus clouds — THICK, bright, dramatic */}
         <div ref={cloudsLowRef} className="absolute inset-0 pointer-events-none opacity-0">
-          <div className="absolute" style={{ top: '50%', left: '-10%', width: '55%', height: '15%', background: 'radial-gradient(ellipse, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 60%, transparent 85%)', filter: 'blur(12px)' }} />
-          <div className="absolute" style={{ top: '55%', right: '-5%', width: '50%', height: '18%', background: 'radial-gradient(ellipse, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 55%, transparent 80%)', filter: 'blur(15px)' }} />
-          <div className="absolute" style={{ top: '62%', left: '10%', width: '80%', height: '20%', background: 'radial-gradient(ellipse, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.5) 50%, transparent 80%)', filter: 'blur(18px)' }} />
-          {/* Bottom cloud blanket */}
-          <div className="absolute" style={{ top: '72%', left: '-15%', width: '130%', height: '30%', background: 'linear-gradient(0deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 40%, rgba(255,255,255,0.4) 70%, transparent 100%)', filter: 'blur(10px)' }} />
+          {/* Individual cloud masses */}
+          <div className="absolute" style={{ top: '42%', left: '-15%', width: '60%', height: '20%', background: 'radial-gradient(ellipse 100% 80%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 50%, transparent 80%)', filter: 'blur(10px)' }} />
+          <div className="absolute" style={{ top: '48%', right: '-10%', width: '55%', height: '22%', background: 'radial-gradient(ellipse 100% 80%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 45%, transparent 75%)', filter: 'blur(12px)' }} />
+          <div className="absolute" style={{ top: '55%', left: '5%', width: '90%', height: '25%', background: 'radial-gradient(ellipse 100% 70%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.6) 40%, transparent 75%)', filter: 'blur(15px)' }} />
+          {/* Dense cloud floor — you descend through this */}
+          <div className="absolute" style={{ top: '65%', left: '-20%', width: '140%', height: '38%', background: 'linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 30%, rgba(255,255,255,0.7) 55%, rgba(255,255,255,0.3) 75%, transparent 100%)', filter: 'blur(8px)' }} />
         </div>
 
       </div>
