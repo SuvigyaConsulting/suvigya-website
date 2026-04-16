@@ -4,13 +4,19 @@ import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-const PARTICLE_COUNT = 2000
+const PARTICLE_COUNT = 3000
 const SPHERE_RADIUS = 8
 const TARGET_RADIUS = 2.5
-const CONNECTION_DISTANCE = 1.5
-const MAX_CONNECTIONS = 100
+const CONNECTION_DISTANCE = 2.0
+const MAX_CONNECTIONS = 200
 const MORPH_DURATION = 2.0
 const UNMORPH_DURATION = 1.5
+const CENTER_PULL_STRENGTH = 0.0005
+
+// Star field constants
+const STAR_COUNT = 1000
+const STAR_MIN_RADIUS = 40
+const STAR_MAX_RADIUS = 80
 
 function fibonacciSphere(index: number, total: number, radius: number): THREE.Vector3 {
   const goldenAngle = Math.PI * (3 - Math.sqrt(5))
@@ -40,11 +46,13 @@ function randomInSphere(radius: number): THREE.Vector3 {
 export default function ParticleField({ morphing }: { morphing: boolean }) {
   const pointsRef = useRef<THREE.Points>(null)
   const linesRef = useRef<THREE.LineSegments>(null)
+  const starsRef = useRef<THREE.Points>(null)
   const morphStateRef = useRef({
     active: false,
     direction: 1, // 1 = morphing in, -1 = morphing out
     progress: 0,
     connectionOpacity: 1,
+    elapsedSinceMorphStart: 0,
   })
 
   // Pre-allocate all data arrays
@@ -55,7 +63,11 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     velocities,
     colors,
     sizes,
+    baseSizes,
     opacities,
+    pulseFlags,
+    pulseFrequencies,
+    pulsePhases,
     linePositions,
     lineColors,
   } = useMemo(() => {
@@ -65,7 +77,11 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     const vel = new Float32Array(PARTICLE_COUNT * 3)
     const col = new Float32Array(PARTICLE_COUNT * 3)
     const sz = new Float32Array(PARTICLE_COUNT)
+    const bsz = new Float32Array(PARTICLE_COUNT)
     const op = new Float32Array(PARTICLE_COUNT)
+    const pFlags = new Float32Array(PARTICLE_COUNT)
+    const pFreqs = new Float32Array(PARTICLE_COUNT)
+    const pPhases = new Float32Array(PARTICLE_COUNT)
 
     const teal = new THREE.Color('#14b8a6')
     const white = new THREE.Color('#f0f2f5')
@@ -101,11 +117,18 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
       col[i3 + 1] = color.g
       col[i3 + 2] = color.b
 
-      // Random size
-      sz[i] = 0.03 + Math.random() * 0.03
+      // Random size (larger range: 0.04-0.1)
+      const baseSize = 0.04 + Math.random() * 0.06
+      sz[i] = baseSize
+      bsz[i] = baseSize
 
-      // Random opacity
-      op[i] = 0.3 + Math.random() * 0.5
+      // Random opacity (brighter: 0.5-1.0)
+      op[i] = 0.5 + Math.random() * 0.5
+
+      // ~20% of particles pulse
+      pFlags[i] = Math.random() < 0.2 ? 1.0 : 0.0
+      pFreqs[i] = 0.5 + Math.random() * 2.0 // frequency between 0.5 and 2.5 Hz
+      pPhases[i] = Math.random() * Math.PI * 2 // random phase offset
     }
 
     // Connection lines buffer (2 vertices per line, 3 components each)
@@ -119,10 +142,42 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
       velocities: vel,
       colors: col,
       sizes: sz,
+      baseSizes: bsz,
       opacities: op,
+      pulseFlags: pFlags,
+      pulseFrequencies: pFreqs,
+      pulsePhases: pPhases,
       linePositions: linePosBuffer,
       lineColors: lineColBuffer,
     }
+  }, [])
+
+  // Star field data
+  const { starPositions, starSizes, starOpacities } = useMemo(() => {
+    const sPos = new Float32Array(STAR_COUNT * 3)
+    const sSz = new Float32Array(STAR_COUNT)
+    const sOp = new Float32Array(STAR_COUNT)
+
+    for (let i = 0; i < STAR_COUNT; i++) {
+      // Random position in a shell between STAR_MIN_RADIUS and STAR_MAX_RADIUS
+      const u = Math.random()
+      const v = Math.random()
+      const theta = 2 * Math.PI * u
+      const phi = Math.acos(2 * v - 1)
+      const r = STAR_MIN_RADIUS + Math.random() * (STAR_MAX_RADIUS - STAR_MIN_RADIUS)
+      const i3 = i * 3
+      sPos[i3] = r * Math.sin(phi) * Math.cos(theta)
+      sPos[i3 + 1] = r * Math.sin(phi) * Math.sin(theta)
+      sPos[i3 + 2] = r * Math.cos(phi)
+
+      // Very small sizes (0.02-0.04)
+      sSz[i] = 0.02 + Math.random() * 0.02
+
+      // Low opacity (0.2-0.6)
+      sOp[i] = 0.2 + Math.random() * 0.4
+    }
+
+    return { starPositions: sPos, starSizes: sSz, starOpacities: sOp }
   }, [])
 
   // Particle shader material
@@ -158,11 +213,40 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     })
   }, [])
 
+  // Star shader material (white, static)
+  const starMaterial = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      vertexShader: `
+        attribute float size;
+        attribute float opacity;
+        varying float vOpacity;
+        void main() {
+          vOpacity = opacity;
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = size * (300.0 / -mvPosition.z);
+          gl_Position = projectionMatrix * mvPosition;
+        }
+      `,
+      fragmentShader: `
+        varying float vOpacity;
+        void main() {
+          float dist = length(gl_PointCoord - vec2(0.5));
+          if (dist > 0.5) discard;
+          float alpha = smoothstep(0.5, 0.05, dist) * vOpacity;
+          gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
+        }
+      `,
+    })
+  }, [])
+
   // Line material
   const lineMaterial = useMemo(() => {
     return new THREE.LineBasicMaterial({
       transparent: true,
-      opacity: 0.1,
+      opacity: 0.15,
       color: new THREE.Color('#14b8a6'),
       blending: THREE.AdditiveBlending,
       depthWrite: false,
@@ -176,6 +260,7 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
       state.active = true
       state.direction = 1
       state.progress = 0
+      state.elapsedSinceMorphStart = 0
       // Store current positions as originals for the morph animation
       const geo = pointsRef.current?.geometry
       if (geo) {
@@ -190,6 +275,7 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
         state.active = true
         state.direction = -1
         state.progress = 1
+        state.elapsedSinceMorphStart = 0
         // Store current positions for reverse animation and regenerate random targets
         const geo = pointsRef.current?.geometry
         if (geo) {
@@ -216,17 +302,36 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
   const tempVec = useMemo(() => new THREE.Vector3(), [])
   const tempVec2 = useMemo(() => new THREE.Vector3(), [])
 
+  // Track global time for pulsing
+  const globalTimeRef = useRef(0)
+
   useFrame((_, delta) => {
     if (!pointsRef.current || !linesRef.current) return
+
+    globalTimeRef.current += delta
 
     const geometry = pointsRef.current.geometry
     const posAttr = geometry.getAttribute('position') as THREE.BufferAttribute
     const posArray = posAttr.array as Float32Array
+    const sizeAttr = geometry.getAttribute('size') as THREE.BufferAttribute
+    const sizeArray = sizeAttr.array as Float32Array
 
     const state = morphStateRef.current
+    const time = globalTimeRef.current
+
+    // Update pulsing particles
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      if (pulseFlags[i] > 0.5) {
+        const pulse = Math.sin(time * pulseFrequencies[i] * Math.PI * 2 + pulsePhases[i])
+        // Oscillate size between 0.7x and 1.3x of base size
+        sizeArray[i] = baseSizes[i] * (1.0 + pulse * 0.3)
+      }
+    }
+    sizeAttr.needsUpdate = true
 
     // Update morph progress
     if (state.active) {
+      state.elapsedSinceMorphStart += delta
       if (state.direction === 1) {
         state.progress += delta / MORPH_DURATION
         if (state.progress >= 1) {
@@ -255,7 +360,6 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
       const i3 = i * 3
 
       if (state.active || t > 0) {
-        // During morph: lerp between original and target, with spiral effect
         const ox = originalPositions[i3]
         const oy = originalPositions[i3 + 1]
         const oz = originalPositions[i3 + 2]
@@ -263,17 +367,16 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
         let tx: number, ty: number, tz: number
 
         if (state.direction === 1 || t > 0) {
-          // Morphing toward globe or holding at globe
-          tx = state.direction === -1 ? targetPositions[i3] : targetPositions[i3]
-          ty = state.direction === -1 ? targetPositions[i3 + 1] : targetPositions[i3 + 1]
-          tz = state.direction === -1 ? targetPositions[i3 + 2] : targetPositions[i3 + 2]
-
           if (state.direction === 1) {
             // Fibonacci sphere target
             const fibTarget = fibonacciSphere(i, PARTICLE_COUNT, TARGET_RADIUS)
             tx = fibTarget.x
             ty = fibTarget.y
             tz = fibTarget.z
+          } else {
+            tx = targetPositions[i3]
+            ty = targetPositions[i3 + 1]
+            tz = targetPositions[i3 + 2]
           }
         } else {
           tx = targetPositions[i3]
@@ -281,19 +384,82 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
           tz = targetPositions[i3 + 2]
         }
 
-        // Add spiral during active morph
-        let spiralX = 0
-        let spiralZ = 0
-        if (state.active) {
-          const spiralIntensity = Math.sin(eased * Math.PI) * 0.8
-          const angle = eased * Math.PI * 4 + i * 0.01
-          spiralX = Math.cos(angle) * spiralIntensity * (1 - eased)
-          spiralZ = Math.sin(angle) * spiralIntensity * (1 - eased)
-        }
+        // SPIRAL VORTEX morph (only when morphing IN, direction === 1)
+        if (state.active && state.direction === 1) {
+          const elapsed = state.elapsedSinceMorphStart
+          const totalDuration = MORPH_DURATION
 
-        posArray[i3] = ox + (tx - ox) * eased + spiralX
-        posArray[i3 + 1] = oy + (ty - oy) * eased
-        posArray[i3 + 2] = oz + (tz - oz) * eased + spiralZ
+          // Phase 1 (0-0.5s): Chaotic acceleration — particles speed up 3x
+          // Phase 2 (0.5-1.5s): Spiral vortex inward — angular velocity around Y
+          // Phase 3 (1.5-2.0s): Settle onto sphere surface
+
+          const phase1End = 0.25 * totalDuration  // 0.5s at 2.0 duration
+          const phase2End = 0.75 * totalDuration   // 1.5s at 2.0 duration
+
+          // Base lerp position
+          let lerpX = ox + (tx - ox) * eased
+          let lerpY = oy + (ty - oy) * eased
+          let lerpZ = oz + (tz - oz) * eased
+
+          if (elapsed < phase1End) {
+            // Phase 1: Chaotic burst — add velocity-like displacement
+            const chaosIntensity = 1.0 - (elapsed / phase1End) // fades out
+            const chaos = chaosIntensity * 3.0
+            // Each particle gets a unique chaotic offset based on its index
+            const seed = i * 1.618033988749
+            const cx = Math.sin(seed * 3.7 + elapsed * 12.0) * chaos * 0.5
+            const cy = Math.cos(seed * 2.3 + elapsed * 10.0) * chaos * 0.3
+            const cz = Math.sin(seed * 5.1 + elapsed * 14.0) * chaos * 0.5
+            lerpX += cx
+            lerpY += cy
+            lerpZ += cz
+          } else if (elapsed < phase2End) {
+            // Phase 2: Spiral vortex — rotate around Y axis while converging
+            const phase2Progress = (elapsed - phase1End) / (phase2End - phase1End)
+            // Angular velocity increases over time then stabilizes
+            const angularSpeed = phase2Progress * 6.0 // max ~6 radians/sec
+            const angle = angularSpeed * (elapsed - phase1End) + i * 0.002
+            // Spiral radius decreases as particles converge
+            const spiralRadius = (1.0 - eased) * 2.5
+
+            // Rotate the offset (from center) around Y axis
+            const dx = lerpX
+            const dz = lerpZ
+            const cosA = Math.cos(angle)
+            const sinA = Math.sin(angle)
+            lerpX = dx * cosA - dz * sinA + Math.cos(angle + i * 0.01) * spiralRadius * (1.0 - phase2Progress)
+            lerpZ = dx * sinA + dz * cosA + Math.sin(angle + i * 0.01) * spiralRadius * (1.0 - phase2Progress)
+          } else {
+            // Phase 3: Settle — damped oscillation toward target
+            const phase3Progress = (elapsed - phase2End) / (totalDuration - phase2End)
+            const settleOscillation = Math.sin(phase3Progress * Math.PI * 3 + i * 0.1) * (1.0 - phase3Progress) * 0.15
+            // Diminishing angular rotation
+            const residualAngle = (1.0 - phase3Progress) * 1.5 * (elapsed - phase2End)
+            const dx = lerpX
+            const dz = lerpZ
+            const cosA = Math.cos(residualAngle * 0.3)
+            const sinA = Math.sin(residualAngle * 0.3)
+            lerpX = dx * cosA - dz * sinA + settleOscillation
+            lerpZ = dx * sinA + dz * cosA + settleOscillation * 0.5
+          }
+
+          posArray[i3] = lerpX
+          posArray[i3 + 1] = lerpY
+          posArray[i3 + 2] = lerpZ
+        } else if (state.active && state.direction === -1) {
+          // Un-morphing: simpler reverse with some spiral flair
+          const elapsed = state.elapsedSinceMorphStart
+          const reverseSpiral = Math.sin(elapsed * 4 + i * 0.01) * (1.0 - (1.0 - t)) * 0.5
+
+          posArray[i3] = ox + (tx - ox) * eased + reverseSpiral
+          posArray[i3 + 1] = oy + (ty - oy) * eased
+          posArray[i3 + 2] = oz + (tz - oz) * eased + reverseSpiral * 0.7
+        } else {
+          // Holding at morphed position (not active but t > 0)
+          posArray[i3] = ox + (tx - ox) * eased
+          posArray[i3 + 1] = oy + (ty - oy) * eased
+          posArray[i3 + 2] = oz + (tz - oz) * eased
+        }
       } else {
         // Brownian motion when not morphing
         posArray[i3] += velocities[i3]
@@ -319,6 +485,13 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
           posArray[i3 + 1] -= tempVec.y / dist * pullback
           posArray[i3 + 2] -= tempVec.z / dist * pullback
         }
+
+        // Drift toward center force — creates cloud-like density at center
+        if (dist > 0.1) {
+          posArray[i3] -= tempVec.x / dist * CENTER_PULL_STRENGTH * dist
+          posArray[i3 + 1] -= tempVec.y / dist * CENTER_PULL_STRENGTH * dist
+          posArray[i3 + 2] -= tempVec.z / dist * CENTER_PULL_STRENGTH * dist
+        }
       }
     }
 
@@ -333,7 +506,7 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     const connectionOpacity = state.active && state.direction === 1
       ? Math.max(0, 1 - eased * 3)
       : state.progress > 0 ? 0 : 1
-    lineMaterial.opacity = 0.1 * connectionOpacity
+    lineMaterial.opacity = 0.15 * connectionOpacity
 
     let lineCount = 0
 
@@ -396,18 +569,30 @@ export default function ParticleField({ morphing }: { morphing: boolean }) {
     return geo
   }, [linePositions])
 
+  // Star field geometry (static, no animation)
+  const starGeometry = useMemo(() => {
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3))
+    geo.setAttribute('size', new THREE.BufferAttribute(starSizes, 1))
+    geo.setAttribute('opacity', new THREE.BufferAttribute(starOpacities, 1))
+    return geo
+  }, [starPositions, starSizes, starOpacities])
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       pointsGeometry.dispose()
       lineGeometry.dispose()
+      starGeometry.dispose()
       particleMaterial.dispose()
+      starMaterial.dispose()
       lineMaterial.dispose()
     }
-  }, [pointsGeometry, lineGeometry, particleMaterial, lineMaterial])
+  }, [pointsGeometry, lineGeometry, starGeometry, particleMaterial, starMaterial, lineMaterial])
 
   return (
     <group>
+      <points ref={starsRef} geometry={starGeometry} material={starMaterial} />
       <points ref={pointsRef} geometry={pointsGeometry} material={particleMaterial} />
       <lineSegments ref={linesRef} geometry={lineGeometry} material={lineMaterial} />
     </group>

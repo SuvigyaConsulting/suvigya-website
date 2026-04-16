@@ -12,6 +12,7 @@ interface EarthGlobeProps {
 
 const GLOBE_RADIUS = 2.5
 const ATMOSPHERE_RADIUS = 2.7
+const OUTER_ATMOSPHERE_RADIUS = 2.95
 const SEGMENTS = 64
 
 // Custom shader for the globe surface with grid lines
@@ -127,8 +128,8 @@ const globeFragmentShader = `
     float lonLine = abs(fract(lon / (pi / 6.0) + 0.5) - 0.5);
     float lonGrid = 1.0 - smoothstep(0.01, 0.03, lonLine);
 
-    float grid = max(latGrid, lonGrid) * 0.15;
-    vec3 gridColor = vec3(0.078, 0.722, 0.651); // teal
+    float grid = max(latGrid, lonGrid) * 0.3;
+    vec3 gridColor = vec3(0.1, 0.82, 0.74); // brighter teal for data-driven look
 
     surfaceColor = mix(surfaceColor, gridColor, grid);
 
@@ -142,10 +143,10 @@ const globeFragmentShader = `
     vec3 dotColor = vec3(0.788, 0.659, 0.298); // gold #c9a84c
     surfaceColor += dotColor * dots * 0.6;
 
-    // Fresnel rim light for depth
+    // Fresnel rim light for depth — intensified
     float fresnel = 1.0 - max(dot(vNormal, vec3(0.0, 0.0, 1.0)), 0.0);
-    fresnel = pow(fresnel, 2.5);
-    surfaceColor += gridColor * fresnel * 0.2;
+    fresnel = pow(fresnel, 2.0);
+    surfaceColor += gridColor * fresnel * 0.4;
 
     gl_FragColor = vec4(surfaceColor, uOpacity);
   }
@@ -172,10 +173,33 @@ const atmosphereFragmentShader = `
   void main() {
     vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
     float fresnel = 1.0 - max(dot(viewDirection, vNormal), 0.0);
-    fresnel = pow(fresnel, 3.0);
+    float sharpFresnel = pow(fresnel, 2.5);
+    float softFresnel = pow(fresnel, 1.5);
 
-    vec3 glowColor = vec3(0.078, 0.722, 0.651); // teal
-    float alpha = fresnel * 0.6 * uOpacity;
+    // Brighter teal at edges with a warm core blend
+    vec3 edgeColor = vec3(0.12, 0.85, 0.78); // brighter teal
+    vec3 coreColor = vec3(0.078, 0.722, 0.651); // standard teal
+    vec3 glowColor = mix(coreColor, edgeColor, sharpFresnel);
+
+    float alpha = (sharpFresnel * 0.8 + softFresnel * 0.2) * uOpacity;
+
+    gl_FragColor = vec4(glowColor, alpha);
+  }
+`
+
+// Outer atmosphere (second glow layer) — larger, softer
+const outerAtmosphereFragmentShader = `
+  uniform float uOpacity;
+  varying vec3 vNormal;
+  varying vec3 vWorldPosition;
+
+  void main() {
+    vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
+    float fresnel = 1.0 - max(dot(viewDirection, vNormal), 0.0);
+    fresnel = pow(fresnel, 2.0);
+
+    vec3 glowColor = vec3(0.06, 0.55, 0.50); // softer teal
+    float alpha = fresnel * 0.35 * uOpacity;
 
     gl_FragColor = vec4(glowColor, alpha);
   }
@@ -194,6 +218,11 @@ export default function EarthGlobe({ visible, onReady }: EarthGlobeProps) {
   // Atmosphere geometry
   const atmosphereGeometry = useMemo(() => {
     return new THREE.SphereGeometry(ATMOSPHERE_RADIUS, SEGMENTS, SEGMENTS)
+  }, [])
+
+  // Outer atmosphere geometry (second glow layer)
+  const outerAtmosphereGeometry = useMemo(() => {
+    return new THREE.SphereGeometry(OUTER_ATMOSPHERE_RADIUS, SEGMENTS, SEGMENTS)
   }, [])
 
   // Globe shader material
@@ -226,6 +255,21 @@ export default function EarthGlobe({ visible, onReady }: EarthGlobeProps) {
     })
   }, [])
 
+  // Outer atmosphere shader material (second glow layer)
+  const outerAtmosphereMaterial = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      vertexShader: atmosphereVertexShader,
+      fragmentShader: outerAtmosphereFragmentShader,
+      uniforms: {
+        uOpacity: { value: 0 },
+      },
+      transparent: true,
+      side: THREE.BackSide,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    })
+  }, [])
+
   // Track visibility changes
   useEffect(() => {
     fadeRef.current.target = visible ? 1 : 0
@@ -236,12 +280,14 @@ export default function EarthGlobe({ visible, onReady }: EarthGlobeProps) {
     return () => {
       globeGeometry.dispose()
       atmosphereGeometry.dispose()
+      outerAtmosphereGeometry.dispose()
       globeMaterial.dispose()
       atmosphereMaterial.dispose()
+      outerAtmosphereMaterial.dispose()
     }
-  }, [globeGeometry, atmosphereGeometry, globeMaterial, atmosphereMaterial])
+  }, [globeGeometry, atmosphereGeometry, outerAtmosphereGeometry, globeMaterial, atmosphereMaterial, outerAtmosphereMaterial])
 
-  useFrame((_, delta) => {
+  useFrame(({ clock }, delta) => {
     if (!groupRef.current) return
 
     const fade = fadeRef.current
@@ -257,13 +303,20 @@ export default function EarthGlobe({ visible, onReady }: EarthGlobeProps) {
     globeMaterial.uniforms.uOpacity.value = fade.opacity
     globeMaterial.uniforms.uTime.value += delta
     atmosphereMaterial.uniforms.uOpacity.value = fade.opacity
+    outerAtmosphereMaterial.uniforms.uOpacity.value = fade.opacity
 
     // Show/hide the group
     groupRef.current.visible = fade.opacity > 0.001
 
-    // Auto-rotate
+    // Scale pop: 0.8 → 1.0 as opacity goes 0 → 1
+    const scale = 0.8 + 0.2 * fade.opacity
+    groupRef.current.scale.setScalar(scale)
+
+    // Auto-rotate with subtle X-axis wobble
     if (fade.opacity > 0.001) {
+      const t = clock.getElapsedTime()
       groupRef.current.rotation.y += 0.002
+      groupRef.current.rotation.x = Math.sin(t * 0.3) * 0.04
     }
 
     // Call onReady once fully visible
@@ -286,11 +339,15 @@ export default function EarthGlobe({ visible, onReady }: EarthGlobeProps) {
         {/* Main globe */}
         <mesh geometry={globeGeometry} material={globeMaterial} />
 
-        {/* Atmosphere glow */}
+        {/* Atmosphere glow — inner layer */}
         <mesh geometry={atmosphereGeometry} material={atmosphereMaterial} />
+
+        {/* Atmosphere glow — outer layer (double-glow effect) */}
+        <mesh geometry={outerAtmosphereGeometry} material={outerAtmosphereMaterial} />
       </group>
 
       <OrbitControls
+        makeDefault
         enableZoom={false}
         enablePan={false}
         enableDamping

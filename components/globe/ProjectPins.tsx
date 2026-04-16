@@ -1,9 +1,10 @@
 'use client'
 
 import { useRef, useMemo, useCallback } from 'react'
-import { useFrame } from '@react-three/fiber'
-import { Line } from '@react-three/drei'
+import { useFrame, useThree } from '@react-three/fiber'
+import { Line, Html } from '@react-three/drei'
 import * as THREE from 'three'
+import gsap from 'gsap'
 
 // ── Project location data ──────────────────────────────────────────────────────
 
@@ -116,6 +117,8 @@ function Pin({ project, globeRadius, onPinClick }: PinProps) {
   const ringRef = useRef<THREE.Mesh>(null)
   const hoveredRef = useRef(false)
   const scaleRef = useRef(1)
+  const { camera } = useThree()
+  const getControls = useThree((state) => () => state.controls)
 
   const surfacePos = useMemo(
     () => latLongToVector3(project.lat, project.lon, globeRadius),
@@ -127,8 +130,14 @@ function Pin({ project, globeRadius, onPinClick }: PinProps) {
 
   // Pin tip position (end of the line extending outward)
   const pinTipPos = useMemo(
-    () => surfacePos.clone().add(normal.clone().multiplyScalar(0.15)),
+    () => surfacePos.clone().add(normal.clone().multiplyScalar(0.25)),
     [surfacePos, normal],
+  )
+
+  // Label position (slightly above and offset from pin tip)
+  const labelPos = useMemo(
+    () => pinTipPos.clone().add(normal.clone().multiplyScalar(0.08)),
+    [pinTipPos, normal],
   )
 
   // Line points (from surface to pin tip)
@@ -165,21 +174,45 @@ function Pin({ project, globeRadius, onPinClick }: PinProps) {
       if (e && typeof (e as any).stopPropagation === 'function') {
         ;(e as any).stopPropagation()
       }
+
+      // Camera fly-to: position camera ~4 units along pin's outward normal
+      const flyTarget = normal.clone().multiplyScalar(4)
+      gsap.to(camera.position, {
+        x: flyTarget.x,
+        y: flyTarget.y,
+        z: flyTarget.z,
+        duration: 1.5,
+        ease: 'power2.inOut',
+      })
+
+      // Animate OrbitControls target to look at the pin
+      const controls = getControls() as any
+      if (controls && controls.target) {
+        gsap.to(controls.target, {
+          x: pinTipPos.x,
+          y: pinTipPos.y,
+          z: pinTipPos.z,
+          duration: 1.5,
+          ease: 'power2.inOut',
+          onUpdate: () => controls.update?.(),
+        })
+      }
+
       onPinClick(project.id)
     },
-    [onPinClick, project.id],
+    [onPinClick, project.id, camera, getControls, normal, pinTipPos],
   )
 
   // Animate ring pulse and hover scale
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
 
-    // Pulsing ring animation
+    // Pulsing ring animation — bigger pulse range (1 → 2.0)
     if (ringRef.current) {
-      const pulse = 1 + 0.5 * (0.5 + 0.5 * Math.sin(t * 2 + project.id))
+      const pulse = 1 + 1.0 * (0.5 + 0.5 * Math.sin(t * 2 + project.id))
       ringRef.current.scale.set(pulse, pulse, 1)
       const material = ringRef.current.material as THREE.MeshBasicMaterial
-      material.opacity = 0.6 * (1 - (pulse - 1) / 0.5)
+      material.opacity = 0.8 * (1 - (pulse - 1) / 1.0)
     }
 
     // Hover scale interpolation
@@ -198,29 +231,50 @@ function Pin({ project, globeRadius, onPinClick }: PinProps) {
         color={color}
         transparent
         opacity={0.7}
-        lineWidth={1}
+        lineWidth={1.5}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
         onClick={handleClick}
       />
 
-      {/* Pin head sphere */}
+      {/* Pin head sphere — larger and more emissive */}
       <mesh
         position={pinTipPos}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
         onClick={handleClick}
       >
-        <sphereGeometry args={[0.04, 16, 16]} />
+        <sphereGeometry args={[0.07, 16, 16]} />
         <meshStandardMaterial
           color={color}
           emissive={color}
-          emissiveIntensity={0.8}
+          emissiveIntensity={2.0}
           toneMapped={false}
         />
       </mesh>
 
-      {/* Pulsing glow ring at pin base */}
+      {/* Value label floating next to pin */}
+      <Html
+        position={labelPos}
+        center
+        sprite
+        distanceFactor={8}
+        style={{
+          fontSize: '11px',
+          fontWeight: 700,
+          color: '#f0f2f5',
+          background: 'rgba(8,13,26,0.8)',
+          padding: '2px 6px',
+          borderRadius: '4px',
+          border: '1px solid rgba(255,255,255,0.1)',
+          pointerEvents: 'none',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {project.value}
+      </Html>
+
+      {/* Pulsing glow ring at pin base — bigger ring */}
       <mesh
         ref={ringRef}
         position={surfacePos}
@@ -229,11 +283,11 @@ function Pin({ project, globeRadius, onPinClick }: PinProps) {
         onPointerOut={handlePointerOut}
         onClick={handleClick}
       >
-        <ringGeometry args={[0.04, 0.08, 32]} />
+        <ringGeometry args={[0.06, 0.12, 32]} />
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={0.6}
+          opacity={0.8}
           side={THREE.DoubleSide}
           depthWrite={false}
         />
