@@ -261,27 +261,29 @@ export default function ParticleField({ morphing, opacity = 1 }: { morphing: boo
         }
       }
     } else {
-      if (state.progress > 0) {
-        state.active = true
-        state.direction = -1
-        state.progress = 1
-        state.elapsedSinceMorphStart = 0
-        // Store current positions for reverse animation and regenerate random targets
-        const geo = pointsRef.current?.geometry
-        if (geo) {
-          for (let i = 0; i < PARTICLE_COUNT; i++) {
-            const i3 = i * 3
-            // Current position becomes the start for reverse
-            originalPositions[i3] = targetPositions[i3]
-            originalPositions[i3 + 1] = targetPositions[i3 + 1]
-            originalPositions[i3 + 2] = targetPositions[i3 + 2]
-            // Generate new random target positions for un-morph
-            const point = randomInSphere(SPHERE_RADIUS)
-            targetPositions[i3] = point.x
-            targetPositions[i3 + 1] = point.y
-            targetPositions[i3 + 2] = point.z
-          }
+      // Instantly reset to scattered positions — no visible sphere on back transition
+      state.active = false
+      state.direction = 1
+      state.progress = 0
+      state.elapsedSinceMorphStart = 0
+      const geo = pointsRef.current?.geometry
+      if (geo) {
+        const posAttr = geo.getAttribute('position') as THREE.BufferAttribute
+        const arr = posAttr.array as Float32Array
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          const i3 = i * 3
+          const point = randomInSphere(SPHERE_RADIUS)
+          arr[i3] = point.x
+          arr[i3 + 1] = point.y
+          arr[i3 + 2] = point.z
+          originalPositions[i3] = point.x
+          originalPositions[i3 + 1] = point.y
+          originalPositions[i3 + 2] = point.z
+          velocities[i3] = (Math.random() - 0.5) * 0.0005
+          velocities[i3 + 1] = (Math.random() - 0.5) * 0.0005
+          velocities[i3 + 2] = (Math.random() - 0.5) * 0.0005
         }
+        posAttr.needsUpdate = true
       }
     }
   }, [morphing, originalPositions, targetPositions])
