@@ -6,57 +6,57 @@ import { useAccessibility } from '@/components/AccessibilityProvider'
 
 // Mountain layer SVG paths - gentle rolling hills with natural undulation
 const mountainLayers = [
-  // Layer 1: Very far distant rolling hills (hazy)
+  // Layer 1: Very far distant range (hazy, jagged skyline)
   {
-    path: 'M0,100 L0,58 Q70,54 140,52 Q210,48 280,50 Q350,54 420,52 Q490,48 560,50 Q630,54 700,52 Q770,48 840,50 Q910,54 1000,52 L1000,100 Z',
+    path: 'M0,100 L0,56 L60,54 L110,48 L150,51 L200,45 L240,50 L300,47 L360,52 L410,46 L470,49 L530,44 L580,50 L640,47 L700,51 L750,45 L810,49 L870,46 L920,50 L960,48 L1000,52 L1000,100 Z',
     color: '#3A6B4A',
     parallaxRate: 0.05,
     opacity: 0.25,
     blur: 2,
   },
-  // Layer 2: Far rolling hills
+  // Layer 2: Far mountain range with distinct peaks
   {
-    path: 'M0,100 L0,60 Q50,56 100,54 Q160,50 220,48 Q290,52 360,56 Q430,60 500,58 Q570,54 640,50 Q710,48 780,52 Q850,56 920,58 Q960,56 1000,54 L1000,100 Z',
+    path: 'M0,100 L0,58 L70,55 L120,42 L160,52 L220,38 L270,50 L340,46 L400,55 L450,40 L500,52 L560,48 L620,36 L670,50 L730,44 L790,54 L850,42 L900,50 L950,46 L1000,52 L1000,100 Z',
     color: '#2D5A3D',
     parallaxRate: 0.1,
     opacity: 0.35,
     blur: 1.5,
   },
-  // Layer 3: Mid-distant gentle hills
+  // Layer 3: Mid-range with a dominant peak left-center
   {
-    path: 'M0,100 L0,62 Q60,56 120,52 Q180,46 250,44 Q320,48 390,54 Q450,60 520,62 Q580,58 640,52 Q700,46 770,44 Q840,48 910,56 Q960,60 1000,58 L1000,100 Z',
+    path: 'M0,100 L0,60 L80,54 L140,48 L190,36 L230,28 L270,40 L320,50 L380,44 L440,52 L500,58 L550,50 L610,42 L660,34 L700,44 L760,52 L820,48 L880,54 L940,50 L1000,56 L1000,100 Z',
     color: '#4A7C59',
     parallaxRate: 0.2,
     opacity: 0.5,
     blur: 1,
   },
-  // Layer 4: Main rolling hills with varied rhythm
+  // Layer 4: Main range — tallest peak right of center, varied ridgeline
   {
-    path: 'M0,100 L0,66 Q40,60 80,56 Q130,50 180,46 Q230,44 280,48 Q340,54 400,60 Q450,64 500,62 Q550,58 600,52 Q650,48 700,46 Q750,50 800,56 Q860,62 920,66 Q960,64 1000,62 L1000,100 Z',
+    path: 'M0,100 L0,62 L50,58 L100,52 L160,48 L210,55 L260,50 L310,44 L350,38 L390,46 L440,54 L490,48 L540,36 L580,26 L620,34 L670,46 L720,52 L770,48 L830,54 L880,50 L940,58 L1000,54 L1000,100 Z',
     color: '#5A8C69',
     parallaxRate: 0.35,
     opacity: 0.7,
     blur: 0.5,
   },
-  // Layer 5: Nearer rolling hills
+  // Layer 5: Nearer foothills — angular but lower
   {
-    path: 'M0,100 L0,72 Q50,66 110,62 Q170,58 230,56 Q300,60 370,66 Q440,72 510,74 Q570,72 630,66 Q690,60 750,58 Q820,62 890,68 Q950,74 1000,72 L1000,100 Z',
+    path: 'M0,100 L0,70 L60,66 L130,60 L190,64 L250,58 L320,62 L380,56 L440,62 L510,68 L570,64 L640,58 L710,62 L770,56 L840,60 L900,66 L960,62 L1000,68 L1000,100 Z',
     color: '#6B9E78',
     parallaxRate: 0.5,
     opacity: 0.85,
     blur: 0,
   },
-  // Layer 6: Close soft hills
+  // Layer 6: Close hills — softer but still natural
   {
-    path: 'M0,100 L0,82 Q60,76 130,74 Q200,72 280,76 Q360,80 440,84 Q520,86 600,84 Q680,80 760,76 Q840,74 920,78 Q960,82 1000,80 L1000,100 Z',
+    path: 'M0,100 L0,80 L80,76 L160,72 L240,75 L330,70 L420,74 L500,78 L580,74 L660,70 L740,73 L820,76 L900,72 L960,76 L1000,78 L1000,100 Z',
     color: '#8CB369',
     parallaxRate: 0.65,
     opacity: 0.95,
     blur: 0,
   },
-  // Layer 7: Foreground gentle rise
+  // Layer 7: Foreground ridge — gentle slope
   {
-    path: 'M0,100 L0,90 Q80,86 170,84 Q270,86 370,90 Q470,92 570,90 Q670,86 770,84 Q870,86 940,90 L1000,88 L1000,100 Z',
+    path: 'M0,100 L0,88 L100,86 L200,84 L320,86 L450,88 L560,85 L680,84 L800,86 L900,88 L1000,86 L1000,100 Z',
     color: '#A8D5BA',
     parallaxRate: 0.8,
     opacity: 1,
