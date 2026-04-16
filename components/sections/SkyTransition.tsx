@@ -65,7 +65,6 @@ export default function SkyTransition() {
   const starsRef = useRef<HTMLDivElement>(null)
   const cloudsLowRef = useRef<HTMLDivElement>(null)
   const cloudsHighRef = useRef<HTMLDivElement>(null)
-  const sunRef = useRef<HTMLDivElement>(null)
   const horizonRef = useRef<HTMLDivElement>(null)
 
   const updateSky = useCallback((progress: number) => {
@@ -100,34 +99,28 @@ export default function SkyTransition() {
       // Stars fade slowly (0-25%)
       tl.to(starsRef.current, { opacity: 0, duration: 0.25 }, 0)
 
-      // Horizon glow — BRIGHT, warm, dramatic (15-50%)
+      // Warm horizon diffusion — grows from bottom, no sun disc (10-60%)
       tl.fromTo(horizonRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.3 }, 0.12)
+        { opacity: 1, duration: 0.35 }, 0.1)
 
-      // Sun rises from bottom — BIG and visible (20-55%)
-      tl.fromTo(sunRef.current,
-        { y: 300, opacity: 0 },
-        { y: -50, opacity: 1, duration: 0.35, ease: 'power1.out' }, 0.2)
-
-      // High wispy clouds — visible and dramatic (30-50%)
+      // High wispy clouds drift in (25-45%)
       tl.fromTo(cloudsHighRef.current,
         { opacity: 0, x: -200 },
-        { opacity: 1, x: 0, duration: 0.2 }, 0.3)
+        { opacity: 1, x: 0, duration: 0.2 }, 0.25)
 
-      // Low thick clouds — VERY visible, dramatic entrance (40-60%)
+      // Low thick clouds rise from below (35-55%)
       tl.fromTo(cloudsLowRef.current,
         { opacity: 0, y: 200 },
-        { opacity: 1, y: 0, duration: 0.2, ease: 'power1.out' }, 0.4)
+        { opacity: 1, y: 0, duration: 0.2, ease: 'power1.out' }, 0.35)
 
-      // Hold clouds visible for a beat (60-70%)
+      // Hold clouds visible (55-70%)
       // Then descend through them (70-90%)
       tl.to(cloudsHighRef.current, { y: -400, opacity: 0, duration: 0.2 }, 0.7)
       tl.to(cloudsLowRef.current, { y: -500, opacity: 0, duration: 0.2 }, 0.72)
 
-      // Sun fades and horizon dissolves (85-100%)
-      tl.to(sunRef.current, { opacity: 0, y: -200, duration: 0.15 }, 0.85)
-      tl.to(horizonRef.current, { opacity: 0, duration: 0.15 }, 0.85)
+      // Horizon diffusion fades as sky brightens (80-100%)
+      tl.to(horizonRef.current, { opacity: 0, duration: 0.2 }, 0.8)
 
     }, section)
 
@@ -183,32 +176,6 @@ export default function SkyTransition() {
             background: 'linear-gradient(0deg, rgba(255,140,50,0.5) 0%, rgba(255,100,40,0.3) 20%, rgba(255,80,30,0.15) 40%, rgba(200,60,40,0.05) 60%, transparent 100%)',
           }}
         />
-
-        {/* Sun disc — LARGE and bright */}
-        <div
-          ref={sunRef}
-          className="absolute opacity-0 pointer-events-none"
-          style={{
-            bottom: '20%',
-            left: '50%',
-            transform: 'translateX(-50%) translateY(300px)',
-            width: '500px',
-            height: '500px',
-          }}
-        >
-          {/* Bright core */}
-          <div className="absolute inset-0 rounded-full" style={{
-            background: 'radial-gradient(circle at 50% 55%, rgba(255,255,240,1) 0%, rgba(255,230,160,0.8) 15%, rgba(255,190,90,0.5) 35%, rgba(255,150,50,0.2) 55%, transparent 75%)',
-          }} />
-          {/* Wide outer glow */}
-          <div className="absolute -inset-32 rounded-full" style={{
-            background: 'radial-gradient(circle at 50% 50%, rgba(255,200,100,0.35) 0%, rgba(255,160,60,0.15) 30%, rgba(255,120,40,0.05) 55%, transparent 70%)',
-          }} />
-          {/* Lens flare streaks */}
-          <div className="absolute -inset-16" style={{
-            background: 'radial-gradient(ellipse 200% 50% at 50% 50%, rgba(255,220,150,0.12) 0%, transparent 50%)',
-          }} />
-        </div>
 
         {/* High cirrus clouds — wispy, golden-lit from dawn */}
         <div ref={cloudsHighRef} className="absolute inset-0 pointer-events-none opacity-0">
