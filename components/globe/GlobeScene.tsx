@@ -14,9 +14,9 @@ interface GlobeSceneProps {
 export default function GlobeScene({ phase, onPinClick }: GlobeSceneProps) {
   return (
     <Canvas
-      camera={{ position: [0, 0, 12], fov: 45 }}
+      camera={{ position: [0, 0, 7], fov: 45 }}
       gl={{ antialias: true, alpha: true }}
-      dpr={[1, 2]}
+      dpr={[1, window?.devicePixelRatio ?? 2]}
       style={{ position: 'absolute', inset: 0 }}
     >
       <ambientLight intensity={0.15} />
@@ -24,9 +24,8 @@ export default function GlobeScene({ phase, onPinClick }: GlobeSceneProps) {
       <pointLight position={[-10, -5, -10]} intensity={0.3} color="#c9a84c" />
 
       <Suspense fallback={null}>
-        {phase !== 'globe' && (
-          <ParticleField morphing={phase === 'morphing'} />
-        )}
+        {/* ParticleField always rendered — maintains morph state across phase changes */}
+        <ParticleField morphing={phase === 'morphing' || phase === 'globe'} />
 
         <EarthGlobe visible={phase === 'globe'} />
 

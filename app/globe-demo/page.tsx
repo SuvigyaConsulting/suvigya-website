@@ -27,8 +27,7 @@ export default function GlobeDemo() {
 
   const handleBack = useCallback(() => {
     setSelectedProject(null)
-    setPhase('morphing')
-    setTimeout(() => setPhase('particles'), 1800)
+    setPhase('particles') // Direct — ParticleField un-morphs from sphere state
   }, [])
 
   const handlePinClick = useCallback((projectId: number) => {
