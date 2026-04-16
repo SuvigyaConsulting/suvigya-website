@@ -57,7 +57,7 @@ export default function HeroSection() {
       id="home"
       ref={sectionRef}
       aria-label="Hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 md:px-6 lg:px-8"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 md:px-6 lg:px-8 pt-20"
     >
       {/* Parallax Mountains Background */}
       <div className="absolute inset-0 z-0">
