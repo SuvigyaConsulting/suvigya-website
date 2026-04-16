@@ -11,7 +11,7 @@ interface EarthGlobeProps {
 }
 
 const GLOBE_RADIUS = 2.5
-const ATMOSPHERE_RADIUS = 2.68
+const ATMOSPHERE_RADIUS = 2.56
 
 // Calculate sun direction from current time (approximate solar position)
 function getSunDirection(): THREE.Vector3 {
@@ -102,33 +102,29 @@ const atmosphereFragmentShader = `
 
   void main() {
     vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
-    float fresnel = pow(1.0 - dot(viewDirection, vNormal), 2.5);
+    // Sharp falloff — only visible as a thin rim, not a glass shell
+    float fresnel = pow(1.0 - dot(viewDirection, vNormal), 5.0);
 
-    // Sun angle relative to this point on the atmosphere
     float sunDot = dot(vNormal, uSunDirection);
 
-    // Rayleigh-like scattering: blue on sunlit side
-    vec3 rayleighColor = vec3(0.3, 0.5, 1.0);
+    // Rayleigh blue on sunlit side
+    vec3 rayleighColor = vec3(0.35, 0.55, 1.0);
 
-    // Mie-like scattering: warm orange/gold at terminator (sunset/sunrise edge)
+    // Sunset orange at terminator
     float terminatorFactor = 1.0 - abs(sunDot);
-    terminatorFactor = pow(terminatorFactor, 4.0) * smoothstep(-0.3, 0.1, sunDot);
-    vec3 sunsetColor = vec3(1.0, 0.5, 0.2);
+    terminatorFactor = pow(terminatorFactor, 6.0) * smoothstep(-0.2, 0.05, sunDot);
+    vec3 sunsetColor = vec3(1.0, 0.45, 0.15);
 
-    // Night side: very faint blue
-    vec3 nightColor = vec3(0.05, 0.08, 0.2);
+    // Night side: nearly invisible
+    vec3 nightColor = vec3(0.02, 0.04, 0.12);
 
-    // Day side intensity
-    float dayIntensity = smoothstep(-0.1, 0.5, sunDot);
+    float dayIntensity = smoothstep(-0.05, 0.4, sunDot);
 
-    // Blend atmosphere color
     vec3 atmosColor = mix(nightColor, rayleighColor, dayIntensity);
-    atmosColor = mix(atmosColor, sunsetColor, terminatorFactor * 0.7);
+    atmosColor = mix(atmosColor, sunsetColor, terminatorFactor * 0.5);
 
-    // Atmosphere is brighter on the sunlit limb
-    float limbBrightening = fresnel * (0.12 + dayIntensity * 0.15);
-
-    float alpha = limbBrightening * uOpacity;
+    // Very thin rim — barely visible except at the very edge
+    float alpha = fresnel * (0.04 + dayIntensity * 0.06) * uOpacity;
 
     gl_FragColor = vec4(atmosColor, alpha);
   }
