@@ -575,14 +575,38 @@ export default function ContactSection() {
 
           {/* Main Content Grid */}
           <div className="grid lg:grid-cols-2 gap-12 items-stretch">
-            {/* Left: Growing Plant Visualization */}
+            {/* Left: Contact info + credentials */}
             <motion.div
-              className="hidden lg:flex glass rounded-panel p-6 items-center justify-center"
+              className="hidden lg:flex flex-col justify-center glass rounded-panel p-10"
               initial={{ opacity: 0, x: -50 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              <GrowingPlant progress={formProgress} />
+              <h3 className="text-2xl font-bold text-text-heading mb-4">Get in Touch</h3>
+              <p className="text-text-body mb-8 leading-relaxed">
+                Whether you&apos;re planning a new initiative or need expert support for an ongoing project, we&apos;re here to help.
+              </p>
+              <div className="space-y-4 mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-sage-100 flex items-center justify-center text-sage-600">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-text-muted">Email</p>
+                    <a href="mailto:contact@suvigya.org" className="text-text-heading font-medium hover:text-sage-600 transition-colors">contact@suvigya.org</a>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-sage-100 flex items-center justify-center text-sage-600">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-text-muted">Phone</p>
+                    <a href="tel:+919900393800" className="text-text-heading font-medium hover:text-sage-600 transition-colors">+91 9900 393 800</a>
+                  </div>
+                </div>
+              </div>
+              <p className="text-xs text-text-muted uppercase tracking-wider">Trusted by World Bank · ADB · FAO · GCF · GIZ · KfW</p>
             </motion.div>
 
             {/* Right: Contact Form */}
