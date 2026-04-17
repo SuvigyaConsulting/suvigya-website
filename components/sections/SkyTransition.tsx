@@ -76,7 +76,7 @@ export default function SkyTransition() {
       ref={sectionRef}
       className="relative"
       style={{
-        height: '200vh',
+        height: '130vh',
         background: `linear-gradient(180deg,
           #080d1a 0%,
           #0a1225 5%,
@@ -173,6 +173,22 @@ export default function SkyTransition() {
             opacity: 0.5,
             maskImage: 'radial-gradient(ellipse 90% 80% at center, black 30%, transparent 70%)',
             WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at center, black 30%, transparent 70%)',
+          }}
+          draggable={false}
+        />
+
+        {/* Third cloud layer — lower, adds density */}
+        <img
+          src="/textures/clouds/cloud3.png"
+          alt=""
+          className="absolute pointer-events-none"
+          style={{
+            top: '35%',
+            left: '5%',
+            width: '80%',
+            opacity: 0.6,
+            maskImage: 'radial-gradient(ellipse 85% 75% at center, black 30%, transparent 70%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 85% 75% at center, black 30%, transparent 70%)',
           }}
           draggable={false}
         />
