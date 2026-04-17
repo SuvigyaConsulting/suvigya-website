@@ -154,7 +154,7 @@ export default function EarthGlobe({ visible, onReady, autoRotate = true, childr
   // Textures
   const [dayMap, nightMap, bumpMap] = useTexture([
     '/textures/earth-8k.jpg',
-    '/textures/earth-night.jpg',
+    '/textures/earth-night-hd.jpg',
     '/textures/earth-topology.png',
   ])
 

@@ -139,18 +139,60 @@ export default function SkyTransition() {
         className="absolute left-0 right-0 pointer-events-none"
         style={{
           opacity: 0,
-          top: '50%',
-          height: '50%',
-          background: `
-            radial-gradient(ellipse 60% 30% at 20% 50%, rgba(255,255,255,0.3) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 25% at 70% 45%, rgba(255,255,255,0.25) 0%, transparent 65%),
-            radial-gradient(ellipse 70% 35% at 45% 55%, rgba(255,255,255,0.35) 0%, transparent 70%),
-            radial-gradient(ellipse 80% 40% at 55% 60%, rgba(255,255,255,0.4) 0%, transparent 65%),
-            linear-gradient(0deg, rgba(248,250,251,0.95) 0%, rgba(255,255,255,0.6) 30%, transparent 60%)
-          `,
-          filter: 'blur(40px)',
+          top: '45%',
+          height: '55%',
         }}
-      />
+      >
+        {/* Real cloud photograph — wide, masked edges */}
+        <img
+          src="/textures/clouds/cloud-wide.png"
+          alt=""
+          className="absolute pointer-events-none"
+          style={{
+            top: '5%',
+            left: '-10%',
+            width: '120%',
+            opacity: 0.7,
+            maskImage: 'linear-gradient(0deg, transparent 0%, black 20%, black 60%, transparent 85%), linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(0deg, transparent 0%, black 20%, black 60%, transparent 85%), linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)',
+            maskComposite: 'intersect',
+            WebkitMaskComposite: 'source-in' as any,
+          }}
+          draggable={false}
+        />
+
+        {/* Second cloud layer offset for depth */}
+        <img
+          src="/textures/clouds/cloud1.png"
+          alt=""
+          className="absolute pointer-events-none"
+          style={{
+            top: '20%',
+            right: '-15%',
+            width: '70%',
+            opacity: 0.5,
+            maskImage: 'radial-gradient(ellipse 90% 80% at center, black 30%, transparent 70%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at center, black 30%, transparent 70%)',
+          }}
+          draggable={false}
+        />
+
+        {/* Soft radial blobs behind the photos for extra haze */}
+        <div className="absolute inset-0" style={{
+          background: `
+            radial-gradient(ellipse 60% 30% at 25% 40%, rgba(255,255,255,0.2) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 25% at 75% 35%, rgba(255,255,255,0.15) 0%, transparent 65%)
+          `,
+          filter: 'blur(30px)',
+        }} />
+
+        {/* White floor — descend through to the site */}
+        <div className="absolute left-0 right-0" style={{
+          top: '50%',
+          height: '55%',
+          background: 'linear-gradient(0deg, rgba(248,250,251,1) 0%, rgba(248,250,251,0.9) 30%, rgba(255,255,255,0.5) 55%, transparent 85%)',
+        }} />
+      </div>
     </div>
   )
 }
