@@ -17,10 +17,12 @@ const SKY_COLORS: [number, string, string, string][] = [
   [0.45, '#223565', '#3d5a8a', '#5a80a8'],  // Dawn blue
   [0.55, '#2d4575', '#4a7098', '#6a95b8'],  // Morning blue
   [0.65, '#3d5a8a', '#5a88b0', '#80aac8'],  // Mid morning
-  [0.75, '#4a70a0', '#70a0c0', '#95c0d8'],  // Late morning
-  [0.85, '#5a88b5', '#88b8d5', '#aad5e8'],  // Bright sky
-  [0.92, '#70a0c8', '#a0cce0', '#c0e0ef'],  // Near noon
-  [1.00, '#90b8d8', '#c0dce8', '#f8fafb'],  // Light sky (matches site bg)
+  [0.70, '#4a70a0', '#70a0c0', '#95c0d8'],  // Late morning
+  [0.78, '#6a90b8', '#95c0d8', '#bee0ef'],  // Bright sky
+  [0.85, '#90b8d0', '#bcdae8', '#dceef5'],  // Brightening
+  [0.90, '#b8d5e5', '#d8eaf2', '#eef6fa'],  // Almost white
+  [0.95, '#d8e8f0', '#e8f2f8', '#f4f9fb'],  // Near white
+  [1.00, '#f8fafb', '#f8fafb', '#f8fafb'],  // Pure match with site bg
 ]
 
 function lerpColor(a: string, b: string, t: number): string {
