@@ -72,6 +72,7 @@ export default function AboutSection() {
       ref={sectionRef}
       aria-label="About us"
       className="relative py-12 md:py-16 lg:py-24 overflow-hidden"
+      style={{ backgroundColor: '#f9fafb' }}
     >
       {/* Background decoration */}
       <motion.div

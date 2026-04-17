@@ -78,16 +78,16 @@ const earthFragmentShader = `
     // Smooth transition between day and night (terminator)
     float dayFactor = smoothstep(-0.15, 0.25, sunDot);
 
-    // Boost city lights — make them pop with warm yellow glow
-    vec3 boostedNight = nightColor.rgb * 2.5;
-    // Add warm tint to city lights (yellow-orange)
-    boostedNight += nightColor.rgb * vec3(0.8, 0.5, 0.1) * 1.5;
+    // City lights — subtle warm glow, NOT brighter than day
+    vec3 cityLights = nightColor.rgb * 1.2;
+    // Gentle warm tint so lights look like actual city light (yellowish)
+    cityLights += nightColor.rgb * vec3(0.3, 0.15, 0.0) * 0.8;
 
-    // Blend day and night textures
-    vec3 color = mix(boostedNight, dayColor.rgb, dayFactor);
+    // Blend day and night — day side always dominant
+    vec3 color = mix(cityLights, dayColor.rgb, dayFactor);
 
-    // Subtle ambient on night side so oceans aren't pure black
-    color += vec3(0.01, 0.015, 0.03) * (1.0 - dayFactor);
+    // Very subtle blue ambient on night side oceans
+    color += vec3(0.008, 0.012, 0.025) * (1.0 - dayFactor);
 
     // Specular highlight for ocean areas (darker areas in the texture)
     float spec = pow(max(dot(reflect(-uSunDirection, normal), normalize(cameraPosition - vWorldPosition)), 0.0), 20.0);
