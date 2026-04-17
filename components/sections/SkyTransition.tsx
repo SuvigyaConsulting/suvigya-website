@@ -119,18 +119,34 @@ export default function SkyTransition() {
         }}
       />
 
-      {/* Cloud layers — in the middle-lower section */}
-      <div ref={cloudsRef} className="absolute left-0 right-0 opacity-0 pointer-events-none" style={{ top: '35%', height: '45%' }}>
-        {/* Wispy high clouds */}
-        <div className="absolute" style={{ top: '0%', left: '-8%', width: '50%', height: '15%', background: 'linear-gradient(90deg, transparent 5%, rgba(255,245,230,0.5) 25%, rgba(255,255,255,0.65) 50%, rgba(255,245,230,0.35) 80%, transparent)', borderRadius: '50%', filter: 'blur(8px)' }} />
-        <div className="absolute" style={{ top: '8%', right: '-10%', width: '45%', height: '12%', background: 'linear-gradient(90deg, transparent 10%, rgba(255,240,220,0.4) 35%, rgba(255,255,255,0.55) 60%, transparent 90%)', borderRadius: '50%', filter: 'blur(6px)' }} />
-
-        {/* Mid cumulus */}
-        <div className="absolute" style={{ top: '30%', left: '-12%', width: '58%', height: '22%', background: 'radial-gradient(ellipse, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.4) 50%, transparent 80%)', filter: 'blur(12px)' }} />
-        <div className="absolute" style={{ top: '35%', right: '-8%', width: '52%', height: '24%', background: 'radial-gradient(ellipse, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.45) 45%, transparent 75%)', filter: 'blur(14px)' }} />
-
-        {/* Dense cloud floor */}
-        <div className="absolute" style={{ top: '55%', left: '-15%', width: '130%', height: '48%', background: 'linear-gradient(0deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.85) 35%, rgba(255,255,255,0.5) 60%, rgba(255,255,255,0.15) 80%, transparent 100%)', filter: 'blur(10px)' }} />
+      {/* Real cloud images — actual PNG photographs */}
+      <div ref={cloudsRef} className="absolute left-0 right-0 opacity-0 pointer-events-none" style={{ top: '30%', height: '50%' }}>
+        {/* High cloud layer */}
+        <img
+          src="/textures/clouds/cloud1.png"
+          alt=""
+          className="absolute pointer-events-none"
+          style={{ top: '0%', left: '-10%', width: '70%', opacity: 0.85 }}
+          draggable={false}
+        />
+        {/* Mid cloud layer — right side */}
+        <img
+          src="/textures/clouds/cloud2.png"
+          alt=""
+          className="absolute pointer-events-none"
+          style={{ top: '25%', right: '-15%', width: '65%', opacity: 0.9 }}
+          draggable={false}
+        />
+        {/* Lower cloud — left side */}
+        <img
+          src="/textures/clouds/cloud3.png"
+          alt=""
+          className="absolute pointer-events-none"
+          style={{ top: '15%', left: '20%', width: '50%', opacity: 0.7 }}
+          draggable={false}
+        />
+        {/* Dense bottom cloud floor — white fade */}
+        <div className="absolute" style={{ top: '60%', left: '-15%', width: '130%', height: '45%', background: 'linear-gradient(0deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.8) 40%, rgba(255,255,255,0.3) 70%, transparent 100%)' }} />
       </div>
     </div>
   )
