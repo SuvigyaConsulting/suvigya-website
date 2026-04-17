@@ -76,7 +76,7 @@ export default function SkyTransition() {
       ref={sectionRef}
       className="relative"
       style={{
-        height: '130vh',
+        height: '150vh',
         background: `linear-gradient(180deg,
           #080d1a 0%,
           #0a1225 5%,
@@ -98,11 +98,13 @@ export default function SkyTransition() {
           #a8cee4 72%,
           #b8d8ea 76%,
           #c8e2f0 80%,
-          #d5eaf4 84%,
-          #e2f0f7 88%,
-          #eef5fa 92%,
-          #f4f8fb 96%,
-          #f8fafb 100%
+          #d5eaf4 83%,
+          #e2f0f7 86%,
+          #edf5fa 89%,
+          #f3f8fb 92%,
+          #f7f9fb 95%,
+          #f9fafb 97%,
+          #f9fafb 100%
         )`,
       }}
     >
