@@ -24,7 +24,7 @@ function NavLink({ item, onClick, isActive }: { item: typeof navItems[0]; onClic
       onClick={(e) => onClick(e, item.href)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative font-medium hover:text-sage-600 transition-all py-2 px-1 min-h-[44px] inline-flex items-center ${isActive ? 'text-base font-bold text-text-heading' : 'text-sm text-text-muted'}`}
+      className={`relative font-medium transition-all py-2 px-1 min-h-[44px] inline-flex items-center nav-link ${isActive ? 'text-base font-bold' : 'text-sm'}`}
     >
       {item.name}
       <motion.span
@@ -143,9 +143,10 @@ export default function Navigation() {
         aria-label="Main navigation"
         className={`fixed top-0 left-0 right-0 z-nav transition-all duration-500 ${
           isScrolled
-            ? 'glass py-3 shadow-soft'
+            ? 'py-3 shadow-soft backdrop-blur-xl'
             : 'py-5 bg-transparent'
         }`}
+        style={isScrolled ? { backgroundColor: 'rgba(249, 250, 251, 0.85)' } : {}}
         initial={reducedMotion ? false : { y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 100, damping: 20, delay: 0.5 }}
@@ -154,7 +155,7 @@ export default function Navigation() {
           {/* Logo */}
           <Link href="/" className="relative group">
             <motion.span
-              className="text-2xl font-bold gradient-text"
+              className={`text-2xl font-bold ${isScrolled ? 'gradient-text' : 'text-white'}`}
               whileHover={{ scale: 1.05 }}
               transition={{ type: 'spring', stiffness: 400 }}
             >

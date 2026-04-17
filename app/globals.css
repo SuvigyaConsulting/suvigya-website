@@ -558,6 +558,21 @@ section {
   border-color: var(--color-eucalyptus);
 }
 
+/* Nav link colors — adapt to dark/light background */
+nav[aria-label="Main navigation"]:not(.glass):not([style*="background"]) .nav-link,
+nav[aria-label="Main navigation"][style*="rgba(249"] .nav-link {
+  color: var(--color-sage-dark);
+}
+nav[aria-label="Main navigation"].bg-transparent .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+}
+nav[aria-label="Main navigation"].bg-transparent .nav-link:hover {
+  color: #ffffff;
+}
+nav[aria-label="Main navigation"]:not(.bg-transparent) .nav-link:hover {
+  color: var(--color-sage);
+}
+
 /* Hide custom cursor on touch devices */
 @media (hover: none) and (pointer: coarse) {
   .cursor-dot,
