@@ -1,19 +1,44 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useMemo } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
+/** Deterministic pseudo-random — same seed always gives the same value. */
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453
+  return x - Math.floor(x)
+}
+
 export default function SkyTransition() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const starsRef = useRef<HTMLDivElement>(null)
-  const haze1Ref = useRef<HTMLDivElement>(null)
-  const haze2Ref = useRef<HTMLDivElement>(null)
-  const haze3Ref = useRef<HTMLDivElement>(null)
   const atmosphereRef = useRef<HTMLDivElement>(null)
 
+  /* ── Stars: generated once, positions never change ── */
+  const stars = useMemo(
+    () =>
+      Array.from({ length: 120 }, (_, i) => {
+        const bright = seededRandom(i * 3 + 2) < 0.08
+        const size = bright
+          ? 2 + seededRandom(i * 7) * 1.5
+          : 0.8 + seededRandom(i * 7) * 0.8
+        return {
+          x: seededRandom(i * 3) * 100,
+          y: seededRandom(i * 3 + 1) * 80,
+          size,
+          bright,
+          opacity: bright
+            ? 0.6 + seededRandom(i * 5) * 0.4
+            : 0.1 + seededRandom(i * 5) * 0.3,
+        }
+      }),
+    [],
+  )
+
+  /* ── Scroll-driven animation ── */
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
@@ -28,32 +53,19 @@ export default function SkyTransition() {
         },
       })
 
-      // Stars fade (0-20%)
-      tl.to(starsRef.current, { opacity: 0, duration: 0.2 }, 0)
+      // Stars fade out: 0-25% of the timeline
+      tl.to(starsRef.current, { opacity: 0, duration: 0.25 }, 0)
 
-      // Thin atmospheric haze layers drift in at different times
-      // These are CSS-only — wide, soft, blurred bands (not PNG cutouts)
-      tl.fromTo(haze1Ref.current,
+      // Cloud atmosphere fades in: 25-60% of the timeline
+      tl.fromTo(
+        atmosphereRef.current,
         { opacity: 0 },
-        { opacity: 0.4, duration: 0.3 }, 0.15)
+        { opacity: 1, duration: 0.35 },
+        0.25,
+      )
 
-      tl.fromTo(haze2Ref.current,
-        { opacity: 0 },
-        { opacity: 0.5, duration: 0.3 }, 0.25)
-
-      tl.fromTo(haze3Ref.current,
-        { opacity: 0 },
-        { opacity: 0.6, duration: 0.3 }, 0.35)
-
-      // Full atmosphere blanket fades in (the "breaking through" moment)
-      tl.fromTo(atmosphereRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.3 }, 0.45)
-
-      // Haze layers stay and INTENSIFY — never go back to blue
-      tl.to(haze1Ref.current, { opacity: 0.7, duration: 0.2 }, 0.55)
-      tl.to(haze2Ref.current, { opacity: 0.8, duration: 0.2 }, 0.55)
-      tl.to(haze3Ref.current, { opacity: 0.9, duration: 0.2 }, 0.55)
+      // 60-100%: atmosphere stays at full opacity (nothing to animate — it
+      // naturally holds at opacity 1 for the remainder of the scrub).
     }, section)
 
     return () => ctx.revert()
@@ -94,77 +106,49 @@ export default function SkyTransition() {
         )`,
       }}
     >
-      {/* Stars */}
-      <div ref={starsRef} className="absolute top-0 left-0 right-0" style={{ height: '45%' }}>
-        {Array.from({ length: 120 }).map((_, i) => {
-          const isBright = Math.random() < 0.08
-          const size = isBright ? 2 + Math.random() * 1.5 : 0.8 + Math.random() * 0.8
-          return (
-            <div
-              key={i}
-              className="absolute rounded-full"
-              style={{
-                width: `${size}px`,
-                height: `${size}px`,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 80}%`,
-                opacity: isBright ? 0.6 + Math.random() * 0.4 : 0.1 + Math.random() * 0.3,
-                backgroundColor: isBright ? '#fff' : `rgba(200,215,255,${0.5 + Math.random() * 0.5})`,
-                boxShadow: isBright ? `0 0 ${size * 2}px rgba(200,220,255,0.5)` : 'none',
-              }}
-            />
-          )
-        })}
+      {/* ── Stars ── */}
+      <div
+        ref={starsRef}
+        className="absolute top-0 left-0 right-0"
+        style={{ height: '45%' }}
+      >
+        {stars.map((star, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              left: `${star.x}%`,
+              top: `${star.y}%`,
+              opacity: star.opacity,
+              backgroundColor: star.bright
+                ? '#fff'
+                : `rgba(200,215,255,${0.5 + seededRandom(i * 11) * 0.5})`,
+              boxShadow: star.bright
+                ? `0 0 ${star.size * 2}px rgba(200,220,255,0.5)`
+                : 'none',
+            }}
+          />
+        ))}
       </div>
 
-      {/* Atmospheric haze layers — soft full-width bands, not individual cloud cutouts */}
-      {/* These create a seamless atmospheric feel without looking like pasted images */}
-
-      {/* Thin high-altitude haze */}
-      <div
-        ref={haze1Ref}
-        className="absolute left-0 right-0 opacity-0 pointer-events-none"
-        style={{
-          top: '25%',
-          height: '15%',
-          background: 'linear-gradient(0deg, transparent 0%, rgba(255,255,255,0.15) 30%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.15) 70%, transparent 100%)',
-          filter: 'blur(20px)',
-        }}
-      />
-
-      {/* Mid-altitude haze — slightly thicker */}
-      <div
-        ref={haze2Ref}
-        className="absolute left-0 right-0 opacity-0 pointer-events-none"
-        style={{
-          top: '33%',
-          height: '18%',
-          background: 'linear-gradient(0deg, transparent 0%, rgba(255,255,255,0.25) 25%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.25) 75%, transparent 100%)',
-          filter: 'blur(25px)',
-        }}
-      />
-
-      {/* Low thick atmospheric layer */}
-      <div
-        ref={haze3Ref}
-        className="absolute left-0 right-0 opacity-0 pointer-events-none"
-        style={{
-          top: '40%',
-          height: '22%',
-          background: 'linear-gradient(0deg, transparent 0%, rgba(255,255,255,0.4) 20%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.4) 80%, transparent 100%)',
-          filter: 'blur(30px)',
-        }}
-      />
-
-      {/* Full atmosphere blanket — the cloud floor you descend through */}
+      {/* ── Atmospheric cloud layer ── */}
       <div
         ref={atmosphereRef}
-        className="absolute left-0 right-0 opacity-0 pointer-events-none"
+        className="absolute left-0 right-0 pointer-events-none"
         style={{
-          top: '45%',
-          height: '35%',
-          background: 'linear-gradient(0deg, rgba(248,250,251,1) 0%, rgba(248,250,251,0.95) 20%, rgba(255,255,255,0.8) 40%, rgba(255,255,255,0.5) 60%, rgba(255,255,255,0.2) 80%, transparent 100%)',
-          filter: 'blur(15px)',
+          opacity: 0,
+          top: '50%',
+          height: '50%',
+          background: `
+            radial-gradient(ellipse 60% 30% at 20% 50%, rgba(255,255,255,0.3) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 25% at 70% 45%, rgba(255,255,255,0.25) 0%, transparent 65%),
+            radial-gradient(ellipse 70% 35% at 45% 55%, rgba(255,255,255,0.35) 0%, transparent 70%),
+            radial-gradient(ellipse 80% 40% at 55% 60%, rgba(255,255,255,0.4) 0%, transparent 65%),
+            linear-gradient(0deg, rgba(248,250,251,0.95) 0%, rgba(255,255,255,0.6) 30%, transparent 60%)
+          `,
+          filter: 'blur(40px)',
         }}
       />
     </div>
