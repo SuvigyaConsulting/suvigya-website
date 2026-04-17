@@ -148,17 +148,17 @@ export default function SkyTransition() {
         style={{
           top: '22%',
           height: '35%',
-          background: 'radial-gradient(ellipse 130% 90% at 50% 85%, rgba(255,150,60,0.3) 0%, rgba(255,110,40,0.15) 30%, rgba(255,80,30,0.05) 55%, transparent 75%)',
+          background: 'radial-gradient(ellipse 200% 120% at 50% 100%, rgba(255,160,70,0.2) 0%, rgba(255,120,50,0.1) 25%, rgba(255,90,30,0.04) 45%, transparent 65%)',
         }}
       />
 
-      {/* Cloud layer 1 — far, upper left, wispy */}
+      {/* Cloud layer 1 — far, upper left */}
       <img
         ref={cloud1Ref}
         src="/textures/clouds/cloud1.png"
         alt=""
         className="absolute pointer-events-none opacity-0"
-        style={{ top: '28%', left: '-8%', width: '50%', maxWidth: '700px' }}
+        style={{ top: '28%', left: '-15%', width: '60%', maxWidth: '900px', maskImage: 'radial-gradient(ellipse 90% 80% at center, black 40%, transparent 75%)', WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at center, black 40%, transparent 75%)' }}
         draggable={false}
       />
 
@@ -168,7 +168,7 @@ export default function SkyTransition() {
         src="/textures/clouds/cloud5.png"
         alt=""
         className="absolute pointer-events-none opacity-0"
-        style={{ top: '30%', right: '-5%', width: '40%', maxWidth: '550px' }}
+        style={{ top: '30%', right: '-12%', width: '50%', maxWidth: '700px', maskImage: 'radial-gradient(ellipse 90% 80% at center, black 40%, transparent 75%)', WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at center, black 40%, transparent 75%)' }}
         draggable={false}
       />
 
@@ -178,7 +178,7 @@ export default function SkyTransition() {
         src="/textures/clouds/cloud2.png"
         alt=""
         className="absolute pointer-events-none opacity-0"
-        style={{ top: '36%', right: '-12%', width: '55%', maxWidth: '750px' }}
+        style={{ top: '34%', right: '-18%', width: '65%', maxWidth: '900px', maskImage: 'radial-gradient(ellipse 85% 75% at center, black 35%, transparent 70%)', WebkitMaskImage: 'radial-gradient(ellipse 85% 75% at center, black 35%, transparent 70%)' }}
         draggable={false}
       />
 
@@ -188,7 +188,7 @@ export default function SkyTransition() {
         src="/textures/clouds/cloud4.png"
         alt=""
         className="absolute pointer-events-none opacity-0"
-        style={{ top: '38%', left: '-5%', width: '45%', maxWidth: '600px' }}
+        style={{ top: '36%', left: '-12%', width: '55%', maxWidth: '750px', maskImage: 'radial-gradient(ellipse 85% 75% at center, black 35%, transparent 70%)', WebkitMaskImage: 'radial-gradient(ellipse 85% 75% at center, black 35%, transparent 70%)' }}
         draggable={false}
       />
 
@@ -198,7 +198,7 @@ export default function SkyTransition() {
         src="/textures/clouds/cloud3.png"
         alt=""
         className="absolute pointer-events-none opacity-0"
-        style={{ top: '40%', left: '5%', width: '90%', maxWidth: '1200px' }}
+        style={{ top: '38%', left: '-5%', width: '110%', maxWidth: '1500px', maskImage: 'radial-gradient(ellipse 80% 70% at center, black 30%, transparent 65%)', WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at center, black 30%, transparent 65%)' }}
         draggable={false}
       />
 

@@ -4,28 +4,7 @@ import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
-// Dynamic import of Three.js scene — no SSR
-const ParticleBackground = dynamic(
-  () => import('@/components/globe/ParticleField').then((mod) => {
-    // Wrap in a Canvas since ParticleField needs R3F context
-    const { Canvas } = require('@react-three/fiber')
-    const ParticleField = mod.default
-
-    return function ParticleBg() {
-      return (
-        <Canvas
-          camera={{ position: [0, 0, 8.5], fov: 45 }}
-          gl={{ antialias: true, alpha: true }}
-          dpr={[1, 2]}
-          style={{ position: 'absolute', inset: 0 }}
-        >
-          <ParticleField morphing={false} opacity={1} />
-        </Canvas>
-      )
-    }
-  }),
-  { ssr: false }
-)
+const ParticleScene = dynamic(() => import('@/components/globe/ParticleScene'), { ssr: false })
 
 export default function ParticleHero() {
   const [mounted, setMounted] = useState(false)
@@ -39,14 +18,12 @@ export default function ParticleHero() {
         background: 'radial-gradient(ellipse at 50% 50%, #0f1629 0%, #080d1a 70%)',
       }}
     >
-      {/* Three.js particle background */}
       {mounted && (
         <div className="absolute inset-0">
-          <ParticleBackground />
+          <ParticleScene />
         </div>
       )}
 
-      {/* Content overlay */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
         <p className="text-xs font-semibold tracking-[0.2em] uppercase text-[#14b8a6] mb-8">
           Natural Resource Management Consultancy
@@ -80,7 +57,6 @@ export default function ParticleHero() {
           Explore Our Projects
         </Link>
 
-        {/* Credential bar */}
         <p className="absolute bottom-6 left-0 right-0 text-center text-[10px] tracking-[0.2em] uppercase text-white/20">
           World Bank &middot; ADB &middot; FAO &middot; GCF &middot; GIZ &middot; KfW &middot; NABARD
         </p>
