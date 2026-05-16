@@ -112,10 +112,14 @@ function CameraStateReset({
 
       orbitCtrl.enabled = false
 
+      // Match the cinematic morph end-position from CameraAnimator (0, 0.8, 7),
+      // not the pre-morph (0, 0, 8.5). Otherwise the globe visibly *shrinks*
+      // when the user closes a detail panel — first-entry uses one position,
+      // post-close used another, and the size mismatch is perceptible.
       const camTween = gsap.to(camera.position, {
         x: 0,
-        y: 0,
-        z: 8.5,
+        y: 0.8,
+        z: 7,
         duration: 1.2,
         ease: 'power2.inOut',
         onUpdate: () => orbitCtrl.update?.(),
