@@ -257,8 +257,13 @@ export default function EarthGlobe({ visible, onReady, autoRotate = true, childr
 
     // Auto-rotation handled by OrbitControls autoRotate — no manual rotation needed
 
-    // Call onReady once
-    if (t > 0.95 && !hasCalledReady && onReady) {
+    // Call onReady once — gated on `visible` so we don't spuriously fire when
+    // the fade is decaying *out* (fade.progress can still be > 0.95 for one
+    // frame after visible flips to false). Without this gate, the spurious
+    // fire sets hasCalledReady=true while we're leaving globe phase, and on
+    // re-entry hasCalledReady never resets (the reset effect only fires on
+    // !visible, which doesn't re-trigger). Result: no pins on second Explore.
+    if (visible && t > 0.95 && !hasCalledReady && onReady) {
       setHasCalledReady(true)
       onReady()
     }
