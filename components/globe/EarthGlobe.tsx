@@ -298,7 +298,7 @@ export default function EarthGlobe({ visible, onReady, autoRotate = true, childr
         enablePan={false}
         enableDamping
         dampingFactor={0.08}
-        minDistance={3.8}
+        minDistance={3.0}
         maxDistance={9}
         zoomSpeed={0.7}
         rotateSpeed={0.6}

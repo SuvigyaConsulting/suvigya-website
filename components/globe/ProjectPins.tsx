@@ -151,8 +151,14 @@ function Pin({ project, globeRadius, onPinClick, selectedProjectId }: PinProps) 
     spriteRef.current.getWorldPosition(worldSurfacePos)
     const worldNormal = worldSurfacePos.clone().normalize()
 
-    // Camera distance — closer for the "zoom into location" feel
-    const targetCamPos = worldNormal.clone().multiplyScalar(4.2)
+    // Camera sits 3.0 units beyond the pin along the outward normal.
+    // Distance from OrbitControls target (= pin surface) to camera is 3.0,
+    // which is exactly the OrbitControls minDistance — so when controls
+    // re-enable, the spherical-radius clamp finds the camera already inside
+    // bounds and doesn't kick it back. Distance from globe center: 2.5 + 3.0 = 5.5.
+    const targetCamPos = worldSurfacePos
+      .clone()
+      .add(worldNormal.clone().multiplyScalar(3.0))
 
     // Temporarily disable OrbitControls during fly-in so damping/input doesn't
     // fight the GSAP tween. Re-enable on completion.

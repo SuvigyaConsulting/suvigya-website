@@ -3,6 +3,7 @@
 import { Suspense, useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import gsap from 'gsap'
 import ParticleField from './ParticleField'
 import EarthGlobe from './EarthGlobe'
 import ProjectPins from './ProjectPins'
@@ -70,6 +71,84 @@ function StarField() {
   return <points geometry={geometry} material={material} />
 }
 
+// Watches selectedProjectId and phase, restores camera + OrbitControls.target
+// when the user closes a pin or leaves the globe phase. Without this, the
+// camera stays close to the pin and the orbit pivot stays on the pin surface
+// after the detail panel is dismissed — making rotation feel "off-center" and
+// preventing re-zoom on a fresh entry to globe phase.
+function CameraStateReset({
+  selectedProjectId,
+  phase,
+}: {
+  selectedProjectId: number | null
+  phase: 'particles' | 'morphing' | 'globe'
+}) {
+  const camera = useThree((s) => s.camera)
+  const controls = useThree((s) => s.controls)
+  const prevSelRef = useRef<number | null>(null)
+  const prevPhaseRef = useRef<string>('particles')
+  const tweensRef = useRef<gsap.core.Tween[]>([])
+
+  useEffect(() => {
+    const prevSel = prevSelRef.current
+    const prevPhase = prevPhaseRef.current
+    prevSelRef.current = selectedProjectId
+    prevPhaseRef.current = phase
+
+    const orbitCtrl =
+      controls && 'enabled' in (controls as object)
+        ? (controls as unknown as {
+            enabled: boolean
+            target: THREE.Vector3
+            update?: () => void
+          })
+        : null
+
+    // Pin closed during globe phase → fly camera back to wide overview.
+    if (prevSel !== null && selectedProjectId === null && phase === 'globe' && orbitCtrl) {
+      // Kill any in-flight reset tweens before starting new ones.
+      tweensRef.current.forEach((t) => t.kill())
+      tweensRef.current = []
+
+      orbitCtrl.enabled = false
+
+      const camTween = gsap.to(camera.position, {
+        x: 0,
+        y: 0,
+        z: 8.5,
+        duration: 1.2,
+        ease: 'power2.inOut',
+        onUpdate: () => orbitCtrl.update?.(),
+        onComplete: () => {
+          orbitCtrl.enabled = true
+        },
+      })
+
+      const targetTween = gsap.to(orbitCtrl.target, {
+        x: 0,
+        y: 0,
+        z: 0,
+        duration: 1.2,
+        ease: 'power2.inOut',
+      })
+
+      tweensRef.current = [camTween, targetTween]
+    }
+
+    // Leaving globe phase entirely (e.g. Back to Home) → snap target back to
+    // origin so the next entry is clean. Phase change drives the morph
+    // animation; we just clear the orbital state instantly.
+    if (prevPhase === 'globe' && phase !== 'globe' && orbitCtrl) {
+      tweensRef.current.forEach((t) => t.kill())
+      tweensRef.current = []
+      orbitCtrl.target.set(0, 0, 0)
+      orbitCtrl.enabled = true
+    }
+  }, [selectedProjectId, phase, camera, controls])
+
+  return null
+}
+
 // Camera zooms in slightly during morph, then hands off to OrbitControls
 function CameraAnimator({ phase }: { phase: string }) {
   const { camera } = useThree()
@@ -130,6 +209,7 @@ export default function GlobeScene({ phase, onPinClick, selectedProjectId }: Glo
       <pointLight position={[-10, -5, -10]} intensity={0.3} color="#c9a84c" />
 
       <CameraAnimator phase={phase} />
+      <CameraStateReset selectedProjectId={selectedProjectId} phase={phase} />
       <StarField />
 
       <Suspense fallback={null}>
