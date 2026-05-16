@@ -142,22 +142,23 @@ export default function SkyTransition() {
           height: 'calc(100% + 30vh)',
         }}
       >
-        {/* Stars */}
+        {/* Stars — values rounded to 4 decimals to keep SSR/client strings identical
+            (Math.sin floats can drift in the 10th+ decimal across V8 instances) */}
         {stars.map((star, i) => (
           <div
             key={`s${i}`}
             className="absolute rounded-full"
             style={{
-              width: `${star.size}px`,
-              height: `${star.size}px`,
-              left: `${star.x}%`,
-              top: `${star.y * 0.6}%`, // compress into top 60%
-              opacity: star.opacity,
+              width: `${star.size.toFixed(3)}px`,
+              height: `${star.size.toFixed(3)}px`,
+              left: `${star.x.toFixed(4)}%`,
+              top: `${(star.y * 0.6).toFixed(4)}%`,
+              opacity: Number(star.opacity.toFixed(4)),
               backgroundColor: star.bright
                 ? '#fff'
-                : `rgba(200,215,255,${0.5 + seededRandom(i * 11) * 0.5})`,
+                : `rgba(200,215,255,${(0.5 + seededRandom(i * 11) * 0.5).toFixed(4)})`,
               boxShadow: star.bright
-                ? `0 0 ${star.size * 3}px rgba(200,220,255,0.6)`
+                ? `0 0 ${(star.size * 3).toFixed(3)}px rgba(200,220,255,0.6)`
                 : 'none',
             }}
           />
@@ -169,14 +170,14 @@ export default function SkyTransition() {
             key={`p${i}`}
             className="absolute rounded-full"
             style={{
-              width: `${p.size}px`,
-              height: `${p.size}px`,
-              left: `${p.x}%`,
-              top: `${p.y * 0.4}%`, // top 20% of container
-              opacity: p.opacity,
+              width: `${p.size.toFixed(3)}px`,
+              height: `${p.size.toFixed(3)}px`,
+              left: `${p.x.toFixed(4)}%`,
+              top: `${(p.y * 0.4).toFixed(4)}%`,
+              opacity: Number(p.opacity.toFixed(4)),
               backgroundColor: p.color,
-              boxShadow: `0 0 ${p.size * 4}px ${p.color}`,
-              animation: `pf${i % 4} ${p.duration}s ease-in-out infinite`,
+              boxShadow: `0 0 ${(p.size * 4).toFixed(3)}px ${p.color}`,
+              animation: `pf${i % 4} ${p.duration.toFixed(3)}s ease-in-out infinite`,
               willChange: 'transform',
             }}
           />

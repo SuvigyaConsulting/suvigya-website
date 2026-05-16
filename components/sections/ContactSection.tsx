@@ -182,7 +182,9 @@ export default function ContactSection() {
                 </div>
               </div>
               <div className="mt-auto pt-6 border-t border-sage-100">
-                <p className="text-sm text-text-muted">Bengaluru, India</p>
+                <p className="text-sm text-text-muted leading-relaxed">
+                  We respond within 24 hours on business days.
+                </p>
               </div>
             </motion.div>
 

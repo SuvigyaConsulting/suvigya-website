@@ -25,7 +25,12 @@ const teamMembers = [
   },
 ]
 
-export default function TeamSection() {
+interface TeamSectionProps {
+  /** Hide the in-section header (use when the host page already provides a hero/title) */
+  hideHeader?: boolean
+}
+
+export default function TeamSection({ hideHeader = false }: TeamSectionProps = {}) {
   const { reducedMotion } = useAccessibility()
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 })
 
@@ -37,30 +42,32 @@ export default function TeamSection() {
       style={{ backgroundColor: '#FAF8F5' }}
     >
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
-        {/* Section Header */}
-        <motion.div
-          className="text-center mb-8 md:mb-12"
-          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
-          whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
-        >
-          <motion.span
-            className="text-sage-600 font-medium tracking-widest uppercase text-sm mb-4 block"
-            initial={reducedMotion ? false : { opacity: 0 }}
-            whileInView={reducedMotion ? {} : { opacity: 1 }}
+        {/* Section Header — suppressed when host route owns the title */}
+        {!hideHeader && (
+          <motion.div
+            className="text-center mb-8 md:mb-12"
+            initial={reducedMotion ? false : { opacity: 0, y: 30 }}
+            whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={reducedMotion ? { duration: 0 } : { delay: 0.2 }}
+            transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
           >
-            Leadership
-          </motion.span>
-          <h2 className="text-title font-bold mb-6">
-            <span className="gradient-text">The People Behind the Work</span>
-          </h2>
-          <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
-            A senior team with decades of combined experience across development consulting, public policy, and field operations.
-          </p>
-        </motion.div>
+            <motion.span
+              className="text-sage-600 font-medium tracking-widest uppercase text-sm mb-4 block"
+              initial={reducedMotion ? false : { opacity: 0 }}
+              whileInView={reducedMotion ? {} : { opacity: 1 }}
+              viewport={{ once: true }}
+              transition={reducedMotion ? { duration: 0 } : { delay: 0.2 }}
+            >
+              Leadership
+            </motion.span>
+            <h2 className="text-title font-bold mb-6">
+              <span className="gradient-text">The People Behind the Work</span>
+            </h2>
+            <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
+              A senior team with decades of combined experience across development consulting, public policy, and field operations.
+            </p>
+          </motion.div>
+        )}
 
         {/* Team Cards Grid */}
         <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-6">
