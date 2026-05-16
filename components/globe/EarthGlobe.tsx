@@ -277,8 +277,10 @@ export default function EarthGlobe({ visible, onReady, autoRotate = true, childr
       />
       <ambientLight intensity={0.08} />
 
-      {/* Rotating group: earth + atmosphere + pins — rotated so India faces camera */}
-      <group ref={groupRef} visible={false} rotation={[0, -1.36, 0]}>
+      {/* Rotating group: earth + atmosphere + pins — rotated so India/South Asia faces the camera.
+          The lat→vec3 helper places India at world (~2.35, ~0.86, ~0) under the prior -1.36 rotation,
+          i.e. on the right horizon. -2.93 swings the pin cluster directly in front of the camera. */}
+      <group ref={groupRef} visible={false} rotation={[0, -2.93, 0]}>
         <mesh
           ref={earthRef}
           geometry={earthGeometry}
@@ -290,14 +292,18 @@ export default function EarthGlobe({ visible, onReady, autoRotate = true, childr
 
       <OrbitControls
         makeDefault
-        enableZoom={false}
+        enableZoom
         enablePan={false}
         enableDamping
-        dampingFactor={0.05}
+        dampingFactor={0.08}
+        minDistance={3.8}
+        maxDistance={9}
+        zoomSpeed={0.7}
+        rotateSpeed={0.6}
         minPolarAngle={Math.PI * 0.1}
         maxPolarAngle={Math.PI * 0.9}
         autoRotate={autoRotate}
-        autoRotateSpeed={0.1}
+        autoRotateSpeed={0.25}
       />
     </>
   )

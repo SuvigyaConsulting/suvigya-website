@@ -141,30 +141,56 @@ function Pin({ project, globeRadius, onPinClick, selectedProjectId }: PinProps) 
   // Fly camera to pin when this pin is selected
   useEffect(() => {
     if (selectedProjectId !== project.id) return
+    if (!spriteRef.current) return
 
-    // Camera position: 5 units from globe center along the pin's outward normal
-    const targetCamPos = normal.clone().multiplyScalar(5)
+    // Convert pin LOCAL position to WORLD position (accounts for the earth
+    // group's rotation). Globe center is at world origin, so the world
+    // outward-normal is just the normalized world position.
+    spriteRef.current.updateMatrixWorld(true)
+    const worldSurfacePos = new THREE.Vector3()
+    spriteRef.current.getWorldPosition(worldSurfacePos)
+    const worldNormal = worldSurfacePos.clone().normalize()
 
-    gsap.to(camera.position, {
+    // Camera distance — closer for the "zoom into location" feel
+    const targetCamPos = worldNormal.clone().multiplyScalar(4.2)
+
+    // Temporarily disable OrbitControls during fly-in so damping/input doesn't
+    // fight the GSAP tween. Re-enable on completion.
+    const orbitCtrl = (controls && 'enabled' in controls)
+      ? (controls as unknown as { enabled: boolean; target: THREE.Vector3; update: () => void })
+      : null
+
+    if (orbitCtrl) orbitCtrl.enabled = false
+
+    const camTween = gsap.to(camera.position, {
       x: targetCamPos.x,
       y: targetCamPos.y,
       z: targetCamPos.z,
       duration: 1.5,
       ease: 'power2.inOut',
+      onUpdate: () => orbitCtrl?.update(),
+      onComplete: () => {
+        if (orbitCtrl) orbitCtrl.enabled = true
+      },
     })
 
-    // Animate OrbitControls target to the pin surface position
-    if (controls && 'target' in controls) {
-      const orbitControls = controls as unknown as { target: THREE.Vector3 }
-      gsap.to(orbitControls.target, {
-        x: surfacePos.x,
-        y: surfacePos.y,
-        z: surfacePos.z,
+    let targetTween: gsap.core.Tween | undefined
+    if (orbitCtrl) {
+      targetTween = gsap.to(orbitCtrl.target, {
+        x: worldSurfacePos.x,
+        y: worldSurfacePos.y,
+        z: worldSurfacePos.z,
         duration: 1.5,
         ease: 'power2.inOut',
       })
     }
-  }, [selectedProjectId, project.id, camera, controls, normal, surfacePos])
+
+    return () => {
+      camTween.kill()
+      targetTween?.kill()
+      if (orbitCtrl) orbitCtrl.enabled = true
+    }
+  }, [selectedProjectId, project.id, camera, controls])
 
   // Slightly above surface for the pin
   const pinPos = useMemo(

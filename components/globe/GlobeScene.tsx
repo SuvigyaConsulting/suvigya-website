@@ -115,7 +115,11 @@ export default function GlobeScene({ phase, onPinClick, selectedProjectId }: Glo
       camera={{ position: [0, 0, 8.5], fov: 45 }}
       gl={{ antialias: true, alpha: true }}
       dpr={[1, 2]}
-      style={{ position: 'absolute', inset: 0 }}
+      style={{
+        position: 'absolute',
+        inset: 0,
+        cursor: phase === 'globe' ? 'grab' : 'default',
+      }}
     >
       <ambientLight intensity={0.15} />
       <pointLight position={[10, 10, 10]} intensity={0.5} color="#14b8a6" />
@@ -132,7 +136,7 @@ export default function GlobeScene({ phase, onPinClick, selectedProjectId }: Glo
 
         <EarthGlobe
           visible={phase === 'globe'}
-          autoRotate={!selectedProjectId}
+          autoRotate={false}
           onReady={handleEarthReady}
         >
           <ProjectPins
