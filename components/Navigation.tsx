@@ -9,7 +9,6 @@ import { useAccessibility } from '@/components/AccessibilityProvider'
 const navItems = [
   { name: 'Home', href: '#home' },
   { name: 'About', href: '#about' },
-  { name: 'Team', href: '/team' },
   { name: 'Services', href: '#services' },
   { name: 'Projects', href: '#projects' },
   { name: 'Impact', href: '#impact' },
@@ -112,7 +111,7 @@ export default function Navigation() {
   }, [isOpen])
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // Page routes (e.g. /team) — let Next Link handle navigation, just close mobile menu
+    // Page routes (href starts with "/") — let Next Link handle navigation, just close mobile menu
     if (href.startsWith('/')) {
       setIsOpen(false)
       return
