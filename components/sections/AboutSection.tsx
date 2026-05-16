@@ -72,7 +72,7 @@ export default function AboutSection() {
       ref={sectionRef}
       aria-label="About us"
       className="relative py-12 md:py-16 lg:py-24 overflow-hidden"
-      style={{ backgroundColor: '#f9fafb' }}
+      style={{ backgroundColor: '#FAF8F5' }}
     >
       {/* Background decoration */}
       <motion.div
@@ -96,14 +96,13 @@ export default function AboutSection() {
             viewport={{ once: true }}
             transition={reducedMotion ? { duration: 0 } : { delay: 0.2 }}
           >
-            Our Journey
+            Who We Are
           </motion.span>
           <h2 className="text-title font-bold mb-6">
-            <span className="gradient-text">13 Years of Impact</span>
+            <span className="gradient-text">A Decade of Impact</span>
           </h2>
           <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
-            From a small consultancy to a national force for positive change,
-            our journey has been defined by innovation and impact.
+            Built on deep sector expertise and trusted partnerships with the world&apos;s leading development institutions.
           </p>
         </motion.div>
 
@@ -116,10 +115,10 @@ export default function AboutSection() {
           transition={reducedMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
         >
           <p className="text-text-body leading-relaxed text-base md:text-lg">
-            We are a specialist consulting and advisory firm that bridges the gap between policy design and ground-level implementation. Since 2013, we have partnered with governments, international agencies, and the private sector to deliver measurable impact in natural resource management, rural livelihoods, climate resilience, and sustainable development.
+            Suvigya is a specialist consulting firm that turns policy into practice. Since 2013, we have worked alongside the World Bank, ADB, FAO, GCF, GIZ, KfW, and NABARD to deliver results in natural resource management, rural livelihoods, climate resilience, and sustainable development.
           </p>
           <p className="text-text-body leading-relaxed text-base md:text-lg">
-            We take end-to-end ownership of our work, combining embedded research, strong governance, and on-the-ground presence to support projects from concept through delivery. This ensures continuity, accountability, and practical results across the full project lifecycle.
+            We own every stage of a project, from strategy and design through field execution and evaluation. Our teams embed directly in the geographies we serve, ensuring accountability, speed, and outcomes that hold up long after we leave.
           </p>
         </motion.div>
 

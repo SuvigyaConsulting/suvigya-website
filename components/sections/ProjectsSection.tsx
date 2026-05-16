@@ -141,14 +141,14 @@ function ProjectCard({
   return (
     <motion.div
       className="absolute inset-0 flex items-center justify-center px-4 md:px-6"
-      initial={reducedMotion ? false : { opacity: 0, x: direction > 0 ? 300 : -300, scale: 0.9 }}
+      initial={reducedMotion ? false : { opacity: 0, x: direction > 0 ? 120 : -120, scale: 0.95 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
-      exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: direction > 0 ? -300 : 300, scale: 0.9 }}
-      transition={reducedMotion ? { duration: 0 } : { duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: direction > 0 ? -120 : 120, scale: 0.95 }}
+      transition={reducedMotion ? { duration: 0 } : { duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="w-full max-w-6xl mx-auto">
         <div
-          className={`glass rounded-panel p-5 md:p-6 lg:p-8 bg-gradient-to-br ${
+          className={`glass-dark rounded-panel p-5 md:p-6 lg:p-8 bg-gradient-to-br ${
             colorClasses[project.color as keyof typeof colorClasses]
           } border`}
         >
@@ -168,30 +168,30 @@ function ProjectCard({
 
               {/* Title */}
               <motion.h3
-                className="text-2xl md:text-3xl lg:text-4xl font-bold text-text-heading mb-4"
-                initial={{ opacity: 0, y: 20 }}
+                className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4"
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
               >
                 {project.title}
               </motion.h3>
 
               {/* Region */}
               <motion.p
-                className="text-sage-600 font-medium mb-4"
+                className="text-eucalyptus-400 font-medium mb-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.45, duration: 0.5 }}
               >
                 {project.region}
               </motion.p>
 
               {/* Description */}
               <motion.p
-                className="text-text-body leading-relaxed mb-6"
-                initial={{ opacity: 0, y: 10 }}
+                className="text-white/70 leading-relaxed mb-6"
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.55, duration: 0.5 }}
               >
                 {project.description}
               </motion.p>
@@ -201,12 +201,12 @@ function ProjectCard({
                 className="flex flex-wrap gap-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.65, duration: 0.5 }}
               >
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1.5 glass rounded-full text-sm text-text-muted"
+                    className="px-3 py-1.5 bg-white/10 rounded-full text-sm text-white/50"
                   >
                     {tag}
                   </span>
@@ -217,9 +217,9 @@ function ProjectCard({
             {/* Right: Impact visualization */}
             <motion.div
               className="relative flex flex-col items-center justify-center text-center w-full h-[180px] md:h-[220px]"
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
+              transition={{ delay: 0.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
               {/* Spinning background icon - fills the container */}
               {!reducedMotion && (
@@ -297,19 +297,19 @@ function ProjectCard({
               {/* Number + label centered on top */}
               <div className="relative z-10 flex flex-col items-center justify-center">
                 <motion.div
-                  className="text-5xl md:text-7xl lg:text-8xl font-bold gradient-text"
-                  initial={{ scale: 0.5 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.4, type: 'spring', stiffness: 200 }}
+                  className="text-5xl md:text-7xl lg:text-8xl font-bold gradient-text-light"
+                  initial={{ scale: 0.85, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 >
                   {project.impact.value}
                 </motion.div>
 
                 <motion.p
-                  className="text-lg text-text-muted max-w-[200px] mt-2"
-                  initial={{ opacity: 0, y: 10 }}
+                  className="text-lg text-white/40 max-w-[200px] mt-2"
+                  initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
+                  transition={{ delay: 0.65, duration: 0.5 }}
                 >
                   {project.impact.label}
                 </motion.p>

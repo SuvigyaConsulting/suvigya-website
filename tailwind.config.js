@@ -8,10 +8,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Corporate Palette - Navy / Teal / Gold (matching brochure)
+        // Corporate Palette - Navy / Teal / Gold
+        // Color theory: Split-complementary with warm neutrals
+        // Navy (trust) + Teal (growth) + Gold (achievement) on warm earth tones
         background: {
-          page: '#f9fafb',        // Neutral white-gray
+          page: '#FAF8F5',        // Warm cream — earthy, natural feel
           card: '#ffffff',        // Pure white cards
+          alt: '#F5F1EB',         // Warm sand — alternating sections
           dark: '#06101e',        // Deep navy for dark sections
         },
         text: {
@@ -87,30 +90,12 @@ module.exports = {
           800: '#1e40af',
           900: '#1e3a8a',
         },
-        // Legacy compatibility
-        accent: {
-          50: '#f0f4fa',
-          100: '#d9e3f0',
-          200: '#b3c7e0',
-          300: '#8dabc9',
-          400: '#5c84ad',
-          500: '#2c5282',
-          600: '#1a365d',
-          700: '#0f2442',
-          800: '#0a1930',
-          900: '#06101e',
-        },
-        organic: {
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
-          800: '#115e59',
-          900: '#134e4a',
+        // Earth tones for warm section backgrounds
+        earth: {
+          50: '#FAF8F5',           // Warm cream
+          100: '#F5F1EB',          // Warm sand
+          200: '#EBE4DA',          // Light clay
+          300: '#D4C9B8',          // Warm stone
         },
       },
       borderRadius: {

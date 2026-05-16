@@ -9,11 +9,12 @@ import OrganicPlantGrowth from '@/features/plant-growth/OrganicPlantGrowth'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import SmoothScroll from '@/components/layout/SmoothScroll'
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
 })
+
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://suvigya.com'),

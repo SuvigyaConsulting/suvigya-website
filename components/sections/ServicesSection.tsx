@@ -6,11 +6,118 @@ import { useInView } from 'react-intersection-observer'
 import { usePersonalizationStore } from '@/store/personalization'
 import { useAccessibility } from '@/components/AccessibilityProvider'
 
-const services = [
+// Professional inline SVG icons for each service
+const PolicyIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 4L6 12v2h28v-2L20 4z" />
+    <line x1="10" y1="14" x2="10" y2="30" />
+    <line x1="17" y1="14" x2="17" y2="30" />
+    <line x1="23" y1="14" x2="23" y2="30" />
+    <line x1="30" y1="14" x2="30" y2="30" />
+    <rect x="4" y="30" width="32" height="3" rx="0.5" />
+    <rect x="6" y="33" width="28" height="3" rx="0.5" />
+  </svg>
+)
+
+const GlobeIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="20" cy="20" r="16" />
+    <ellipse cx="20" cy="20" rx="8" ry="16" />
+    <line x1="4" y1="20" x2="36" y2="20" />
+    <path d="M6.5 12h27" />
+    <path d="M6.5 28h27" />
+  </svg>
+)
+
+const AgricultureIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 36V18" />
+    <path d="M20 18c-2-4-8-8-8-14 0 6 6 10 8 14z" />
+    <path d="M20 18c2-4 8-8 8-14 0 6-6 10-8 14z" />
+    <path d="M20 24c-2-3-7-6-7-11 0 5 5 8 7 11z" />
+    <path d="M20 24c2-3 7-6 7-11 0 5-5 8-7 11z" />
+    <path d="M20 30c-1.5-2.5-5-4.5-5-8 0 3.5 3.5 5.5 5 8z" />
+    <path d="M20 30c1.5-2.5 5-4.5 5-8 0 3.5-3.5 5.5-5 8z" />
+  </svg>
+)
+
+const FinanceIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="6" y1="34" x2="6" y2="6" />
+    <line x1="6" y1="34" x2="36" y2="34" />
+    <rect x="10" y="24" width="5" height="10" rx="0.5" />
+    <rect x="18" y="18" width="5" height="16" rx="0.5" />
+    <rect x="26" y="12" width="5" height="22" rx="0.5" />
+    <path d="M10 20l8-6 8-4 6-4" />
+    <path d="M28 6h6v6" />
+  </svg>
+)
+
+const ResearchIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="18" cy="18" r="12" />
+    <line x1="27" y1="27" x2="36" y2="36" />
+    <circle cx="14" cy="16" r="1.5" />
+    <circle cx="20" cy="14" r="1.5" />
+    <circle cx="22" cy="20" r="1.5" />
+    <circle cx="16" cy="22" r="1.5" />
+  </svg>
+)
+
+const DocumentIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10 4h14l8 8v24a2 2 0 01-2 2H10a2 2 0 01-2-2V6a2 2 0 012-2z" />
+    <path d="M24 4v8h8" />
+    <line x1="14" y1="20" x2="28" y2="20" />
+    <line x1="14" y1="25" x2="28" y2="25" />
+    <line x1="14" y1="30" x2="22" y2="30" />
+  </svg>
+)
+
+const MonitoringIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="4" width="32" height="32" rx="2" />
+    <line x1="4" y1="14" x2="36" y2="14" strokeWidth="0.75" strokeDasharray="2 2" />
+    <line x1="4" y1="24" x2="36" y2="24" strokeWidth="0.75" strokeDasharray="2 2" />
+    <line x1="14" y1="4" x2="14" y2="36" strokeWidth="0.75" strokeDasharray="2 2" />
+    <line x1="24" y1="4" x2="24" y2="36" strokeWidth="0.75" strokeDasharray="2 2" />
+    <polyline points="8,28 14,20 20,24 26,12 32,16" strokeWidth="2" />
+  </svg>
+)
+
+const LightbulbIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M15 30v2a5 5 0 0010 0v-2" />
+    <path d="M20 4a12 12 0 00-7 21.7V30h14v-4.3A12 12 0 0020 4z" />
+    <line x1="16" y1="34" x2="24" y2="34" />
+    <line x1="20" y1="16" x2="20" y2="24" />
+    <line x1="16" y1="20" x2="24" y2="20" />
+  </svg>
+)
+
+const TeamIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="14" cy="12" r="5" />
+    <circle cx="26" cy="12" r="5" />
+    <path d="M4 32c0-6 4-10 10-10 2 0 3.5.5 5 1.5" />
+    <path d="M36 32c0-6-4-10-10-10-2 0-3.5.5-5 1.5" />
+    <path d="M4 32h32" />
+  </svg>
+)
+
+interface Service {
+  title: string
+  description: string
+  icon: React.ReactNode
+  gradient: string
+  details: string[]
+}
+
+const services: Service[] = [
   {
     title: 'Policy, Strategy & Institutional Advisory',
     description: 'For governments, donors, and agencies seeking evidence-based direction.',
-    icon: '🏛️',
+    icon: <PolicyIcon />,
     gradient: 'from-sage-500 to-eucalyptus-400',
     details: [
       'Policy analysis',
@@ -24,7 +131,7 @@ const services = [
   {
     title: 'Climate, Environment & Natural Resources',
     description: 'Mitigation, adaptation, resilience, biodiversity, and landscape management.',
-    icon: '🌍',
+    icon: <GlobeIcon />,
     gradient: 'from-sky-400 to-sage-400',
     details: [
       'Climate vulnerability assessments',
@@ -38,7 +145,7 @@ const services = [
   {
     title: 'Agriculture, Livelihoods & Rural Development',
     description: 'Market-linked, inclusive, and resilient rural systems.',
-    icon: '🌾',
+    icon: <AgricultureIcon />,
     gradient: 'from-amber-400 to-sage-400',
     details: [
       'Integrated rural development',
@@ -52,7 +159,7 @@ const services = [
   {
     title: 'Finance, Investment & Economic Advisory',
     description: 'Mobilizing and structuring finance for development impact.',
-    icon: '💰',
+    icon: <FinanceIcon />,
     gradient: 'from-sage-500 to-sky-400',
     details: [
       'Blended and climate finance',
@@ -65,7 +172,7 @@ const services = [
   {
     title: 'Research, Analytics & Policy Frameworks',
     description: 'Evidence systems that inform decisions and policy choices.',
-    icon: '🔍',
+    icon: <ResearchIcon />,
     gradient: 'from-eucalyptus-400 to-mint-400',
     details: [
       'Research design',
@@ -78,7 +185,7 @@ const services = [
   {
     title: 'Project Preparation, Documentation & Compliance',
     description: 'Decision-ready documentation for donors and governments.',
-    icon: '📋',
+    icon: <DocumentIcon />,
     gradient: 'from-amber-400 to-eucalyptus-400',
     details: [
       'Project preparation documents',
@@ -91,7 +198,7 @@ const services = [
   {
     title: 'Monitoring, Evaluation, Learning & Digital Systems',
     description: 'Accountability, learning, and adaptive management at scale.',
-    icon: '📊',
+    icon: <MonitoringIcon />,
     gradient: 'from-mint-400 to-sage-500',
     details: [
       'Results frameworks',
@@ -105,7 +212,7 @@ const services = [
   {
     title: 'Capacity Building & Institutional Strengthening',
     description: 'Building the skills, systems, and structures that sustain results beyond the project cycle.',
-    icon: '🎓',
+    icon: <LightbulbIcon />,
     gradient: 'from-sky-400 to-mint-400',
     details: [
       'Training for government and implementing agencies',
@@ -118,7 +225,7 @@ const services = [
   {
     title: 'On-Ground Implementation & Staffing',
     description: 'The differentiator many firms lack.',
-    icon: '🤝',
+    icon: <TeamIcon />,
     gradient: 'from-sage-500 to-eucalyptus-400',
     details: [
       'Field-level coordination',
@@ -138,7 +245,7 @@ function ServiceCard({
   onToggle,
   reducedMotion = false,
 }: {
-  service: typeof services[0]
+  service: Service
   index: number
   isExpanded: boolean
   onToggle: () => void
@@ -164,9 +271,8 @@ function ServiceCard({
         tabIndex={0}
         aria-expanded={isExpanded}
         aria-label={`${service.title} - ${isExpanded ? 'collapse' : 'expand'} details`}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        layout
+        whileHover={reducedMotion ? {} : { scale: 1.02 }}
+        whileTap={reducedMotion ? {} : { scale: 0.98 }}
       >
         {/* Gradient background on hover */}
         <div
@@ -176,7 +282,7 @@ function ServiceCard({
         {/* Content */}
         <div className="relative z-section flex flex-col">
           {/* Icon */}
-          <div className="text-4xl md:text-5xl mb-4">
+          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sage-100 to-eucalyptus-50 flex items-center justify-center text-sage-700 mb-4">
             {service.icon}
           </div>
 
@@ -277,7 +383,8 @@ export default function ServicesSection() {
       id="services"
       ref={sectionRef}
       aria-label="Our services"
-      className="relative py-12 md:py-16 lg:py-24 overflow-hidden section-cream"
+      className="relative py-12 md:py-16 lg:py-24 overflow-hidden"
+      style={{ backgroundColor: '#FAF8F5' }}
     >
       {/* Background pattern */}
       <motion.div

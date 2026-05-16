@@ -1,7 +1,7 @@
 'use client'
 
-import { Suspense, useMemo, useState, useCallback } from 'react'
-import { Canvas } from '@react-three/fiber'
+import { Suspense, useMemo, useState, useCallback, useRef, useEffect } from 'react'
+import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import ParticleField from './ParticleField'
 import EarthGlobe from './EarthGlobe'
@@ -13,7 +13,7 @@ interface GlobeSceneProps {
   selectedProjectId: number | null
 }
 
-// Static star field — always visible, provides depth to space
+// Static star field
 function StarField() {
   const { geometry, material } = useMemo(() => {
     const count = 3000
@@ -66,21 +66,53 @@ function StarField() {
   return <points geometry={geometry} material={material} />
 }
 
+// Camera zooms in slightly during morph, then hands off to OrbitControls
+function CameraAnimator({ phase }: { phase: string }) {
+  const { camera } = useThree()
+  const targetRef = useRef(new THREE.Vector3(0, 0, 8.5))
+  const activeRef = useRef(true)
+
+  useEffect(() => {
+    if (phase === 'particles') {
+      // Pull back to wide view
+      targetRef.current.set(0, 0, 8.5)
+      activeRef.current = true
+    } else if (phase === 'morphing') {
+      // Gentle zoom in, slight upward tilt — same direction, no u-turn
+      targetRef.current.set(0, 0.8, 7)
+      activeRef.current = true
+    } else if (phase === 'globe') {
+      // Stop animating, OrbitControls takes over
+      activeRef.current = false
+    }
+  }, [phase])
+
+  useFrame((_, delta) => {
+    if (!activeRef.current) return
+    camera.position.lerp(targetRef.current, Math.min(delta * 1.2, 0.03))
+    camera.lookAt(0, 0, 0)
+  })
+
+  return null
+}
+
 export default function GlobeScene({ phase, onPinClick, selectedProjectId }: GlobeSceneProps) {
-  // Pins only appear after earth is fully loaded
   const [pinsReady, setPinsReady] = useState(false)
 
   const handleEarthReady = useCallback(() => {
-    // Delay pins slightly after earth is fully opaque for organic feel
     setTimeout(() => setPinsReady(true), 400)
   }, [])
 
-  // Reset pins when leaving globe phase
   const showPins = phase === 'globe' && pinsReady
+
+  // Reset pins when leaving globe
+  useEffect(() => {
+    if (phase !== 'globe') setPinsReady(false)
+  }, [phase])
 
   return (
     <Canvas
-      camera={{ position: [1.7, 2.9, -7.7], fov: 45 }}
+      camera={{ position: [0, 0, 8.5], fov: 45 }}
       gl={{ antialias: true, alpha: true }}
       dpr={[1, 2]}
       style={{ position: 'absolute', inset: 0 }}
@@ -89,22 +121,20 @@ export default function GlobeScene({ phase, onPinClick, selectedProjectId }: Glo
       <pointLight position={[10, 10, 10]} intensity={0.5} color="#14b8a6" />
       <pointLight position={[-10, -5, -10]} intensity={0.3} color="#c9a84c" />
 
+      <CameraAnimator phase={phase} />
       <StarField />
 
       <Suspense fallback={null}>
-        {/* Particles — opacity crossfades with earth */}
         <ParticleField
           morphing={phase === 'morphing' || phase === 'globe'}
           opacity={phase === 'globe' ? 0 : 1}
         />
 
-        {/* Earth appears after particles form sphere */}
         <EarthGlobe
           visible={phase === 'globe'}
           autoRotate={!selectedProjectId}
           onReady={handleEarthReady}
         >
-          {/* Pins appear organically after earth is fully loaded */}
           <ProjectPins
             visible={showPins}
             globeRadius={2.5}

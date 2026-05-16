@@ -4,7 +4,10 @@
 
 /* ============================================
    SUVIGYA Consulting - Corporate Design System
-   Navy / Teal / Gold (matching brochure)
+
+   Color Theory: Split-complementary with warm neutrals
+   Navy (authority) + Teal (sustainability) + Gold (achievement)
+   on warm earth-toned backgrounds
    ============================================ */
 
 :root {
@@ -23,7 +26,8 @@
   --color-sky: #60a5fa;
   --color-forest: #06101e;
   --color-cream: #ffffff;
-  --color-mist: #f9fafb;
+  --color-mist: #FAF8F5;
+  --color-earth: #F5F1EB;
   --color-sky-mist: #dbeafe;
   --color-sky-haze: #eff6ff;
 
@@ -81,30 +85,20 @@ html {
 
 body {
   background-color: var(--color-mist);
-  color: #111827;
+  color: #1a202c;
   overflow-x: hidden;
   font-family: var(--font-inter), system-ui, sans-serif;
   line-height: 1.75;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image:
-    radial-gradient(circle at 1px 1px, rgba(26, 54, 93, 0.02) 1px, transparent 0),
-    linear-gradient(180deg, #f9fafb 0%, #eff6ff 50%, #f9fafb 100%);
-  background-size: 24px 24px, 100% 200vh;
-  pointer-events: none;
-}
+/* Background pattern removed — each section controls its own background.
+   The fixed pseudo-element conflicted with the dark hero/space sections. */
 
 /* ============================================
    Typography
    ============================================ */
 
 h1, h2, h3, h4, h5, h6 {
-  color: var(--color-sage-dark);
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -135,22 +129,14 @@ p {
    Custom Scrollbar
    ============================================ */
 
+/* Hide scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  background: rgba(249, 250, 251, 0.8);
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--color-sage-dark) 0%, var(--color-eucalyptus-dark) 100%);
-  border-radius: 5px;
-  border: 2px solid var(--color-mist);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--color-forest) 0%, var(--color-sage-dark) 100%);
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* ============================================
@@ -295,7 +281,7 @@ section {
    ============================================ */
 
 .gradient-text {
-  background: linear-gradient(135deg, var(--color-sage-dark) 0%, var(--color-sage) 50%, var(--color-eucalyptus-dark) 100%);
+  background: linear-gradient(135deg, var(--color-sage-dark) 0%, var(--color-eucalyptus-dark) 60%, var(--color-eucalyptus) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -405,6 +391,10 @@ section {
 
 .section-light {
   background: var(--color-mist);
+}
+
+.section-warm {
+  background: var(--color-earth);
 }
 
 .section-cream {
@@ -560,7 +550,7 @@ section {
 
 /* Nav link colors — adapt to dark/light background */
 nav[aria-label="Main navigation"]:not(.glass):not([style*="background"]) .nav-link,
-nav[aria-label="Main navigation"][style*="rgba(249"] .nav-link {
+nav[aria-label="Main navigation"][style*="rgba(250"] .nav-link {
   color: var(--color-sage-dark);
 }
 nav[aria-label="Main navigation"].bg-transparent .nav-link {

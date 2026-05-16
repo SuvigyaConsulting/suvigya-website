@@ -7,7 +7,7 @@ import * as THREE from 'three'
 const PARTICLE_COUNT = 3000
 const SPHERE_RADIUS = 8
 const TARGET_RADIUS = 2.5
-const MORPH_DURATION = 2.5
+const MORPH_DURATION = 3.5
 const UNMORPH_DURATION = 1.8
 const CENTER_PULL_STRENGTH = 0.00003
 
@@ -408,63 +408,20 @@ export default function ParticleField({ morphing, opacity = 1 }: { morphing: boo
           tz = targetPositions[i3 + 2]
         }
 
-        // SPIRAL VORTEX morph (only when morphing IN, direction === 1)
+        // Smooth convergence morph (no chaos, no spiral, just clean easing)
         if (morphState.active && morphState.direction === 1) {
-          const elapsed = morphState.elapsedSinceMorphStart
-          const totalDuration = MORPH_DURATION
+          // Each particle has a staggered start based on its index
+          // This creates a wave-like convergence rather than all-at-once
+          const stagger = (i / PARTICLE_COUNT) * 0.4 // 0-0.4s stagger
+          const adjustedT = Math.max(0, Math.min(1, (t - stagger) / (1 - stagger)))
+          // Quintic ease-in-out for ultra-smooth motion
+          const smooth = adjustedT < 0.5
+            ? 16 * adjustedT * adjustedT * adjustedT * adjustedT * adjustedT
+            : 1 - Math.pow(-2 * adjustedT + 2, 5) / 2
 
-          // Phase 1: Chaotic acceleration
-          // Phase 2: Spiral vortex inward
-          // Phase 3: Settle onto sphere surface
-          // Proportionally longer phases for slower morph
-          const phase1End = 0.25 * totalDuration
-          const phase2End = 0.75 * totalDuration
-
-          // Base lerp position
-          let lerpX = ox + (tx - ox) * eased
-          let lerpY = oy + (ty - oy) * eased
-          let lerpZ = oz + (tz - oz) * eased
-
-          if (elapsed < phase1End) {
-            // Phase 1: Gentler chaotic burst (reduced from 3.0 to 1.5)
-            const chaosIntensity = 1.0 - (elapsed / phase1End)
-            const chaos = chaosIntensity * 1.5
-            const seed = i * 1.618033988749
-            const cx = Math.sin(seed * 3.7 + elapsed * 12.0) * chaos * 0.5
-            const cy = Math.cos(seed * 2.3 + elapsed * 10.0) * chaos * 0.3
-            const cz = Math.sin(seed * 5.1 + elapsed * 14.0) * chaos * 0.5
-            lerpX += cx
-            lerpY += cy
-            lerpZ += cz
-          } else if (elapsed < phase2End) {
-            // Phase 2: Slower, wider spiral vortex
-            const phase2Progress = (elapsed - phase1End) / (phase2End - phase1End)
-            const angularSpeed = phase2Progress * 4.0 // slower max angular speed
-            const angle = angularSpeed * (elapsed - phase1End) + i * 0.002
-            const spiralRadius = (1.0 - eased) * 3.0 // wider spiral
-
-            const dx = lerpX
-            const dz = lerpZ
-            const cosA = Math.cos(angle)
-            const sinA = Math.sin(angle)
-            lerpX = dx * cosA - dz * sinA + Math.cos(angle + i * 0.01) * spiralRadius * (1.0 - phase2Progress)
-            lerpZ = dx * sinA + dz * cosA + Math.sin(angle + i * 0.01) * spiralRadius * (1.0 - phase2Progress)
-          } else {
-            // Phase 3: Settle with damped oscillation
-            const phase3Progress = (elapsed - phase2End) / (totalDuration - phase2End)
-            const settleOscillation = Math.sin(phase3Progress * Math.PI * 3 + i * 0.1) * (1.0 - phase3Progress) * 0.15
-            const residualAngle = (1.0 - phase3Progress) * 1.5 * (elapsed - phase2End)
-            const dx = lerpX
-            const dz = lerpZ
-            const cosA = Math.cos(residualAngle * 0.3)
-            const sinA = Math.sin(residualAngle * 0.3)
-            lerpX = dx * cosA - dz * sinA + settleOscillation
-            lerpZ = dx * sinA + dz * cosA + settleOscillation * 0.5
-          }
-
-          posArray[i3] = lerpX
-          posArray[i3 + 1] = lerpY
-          posArray[i3 + 2] = lerpZ
+          posArray[i3] = ox + (tx - ox) * smooth
+          posArray[i3 + 1] = oy + (ty - oy) * smooth
+          posArray[i3 + 2] = oz + (tz - oz) * smooth
         } else if (morphState.active && morphState.direction === -1) {
           // Un-morphing: simpler reverse with some spiral flair
           const elapsed = morphState.elapsedSinceMorphStart

@@ -69,42 +69,24 @@ const earthFragmentShader = `
 
   void main() {
     vec4 dayColor = texture2D(uDayMap, vUv);
-    vec4 nightColor = texture2D(uNightMap, vUv);
 
     vec3 normal = normalize(vNormal);
     float sunDot = dot(normal, uSunDirection);
 
-    // Sharper terminator for more defined day/night boundary
-    float dayFactor = smoothstep(-0.1, 0.2, sunDot);
+    // Enhance day texture
+    vec3 color = dayColor.rgb;
+    color = (color - 0.5) * 1.15 + 0.5;
+    float luma = dot(color, vec3(0.299, 0.587, 0.114));
+    color = mix(vec3(luma), color, 1.2);
 
-    // Enhance day texture — boost contrast and saturation for richer look
-    vec3 dayEnhanced = dayColor.rgb;
-    // Increase contrast
-    dayEnhanced = (dayEnhanced - 0.5) * 1.15 + 0.5;
-    // Boost saturation slightly
-    float dayLuma = dot(dayEnhanced, vec3(0.299, 0.587, 0.114));
-    dayEnhanced = mix(vec3(dayLuma), dayEnhanced, 1.2);
-    // Add slight warmth to sunlit areas
-    dayEnhanced += vec3(0.02, 0.01, 0.0) * dayFactor;
+    // Soft directional lighting for 3D depth (no dark side)
+    float diffuse = max(sunDot, 0.0) * 0.3 + 0.7;
+    color *= diffuse;
 
-    // Directional lighting — Lambert diffuse for 3D depth
-    float diffuse = max(sunDot, 0.0) * 0.4 + 0.6; // 60% ambient, 40% directional
-    dayEnhanced *= diffuse;
-
-    // City lights — warm glow
-    vec3 cityLights = nightColor.rgb * 1.4;
-    cityLights += nightColor.rgb * vec3(0.25, 0.12, 0.0) * 0.6;
-
-    // Blend — day side dominant
-    vec3 color = mix(cityLights, dayEnhanced, dayFactor);
-
-    // Dark blue ambient on night oceans
-    color += vec3(0.006, 0.01, 0.02) * (1.0 - dayFactor);
-
-    // Specular highlight for oceans — sharp, realistic
+    // Subtle specular on oceans
     float spec = pow(max(dot(reflect(-uSunDirection, normal), normalize(cameraPosition - vWorldPosition)), 0.0), 32.0);
     float oceanMask = 1.0 - smoothstep(0.08, 0.25, length(dayColor.rgb - vec3(0.05, 0.1, 0.2)));
-    color += vec3(0.4, 0.5, 0.6) * spec * oceanMask * 0.3 * dayFactor;
+    color += vec3(0.4, 0.5, 0.6) * spec * oceanMask * 0.2;
 
     gl_FragColor = vec4(color, uOpacity);
   }
@@ -295,8 +277,8 @@ export default function EarthGlobe({ visible, onReady, autoRotate = true, childr
       />
       <ambientLight intensity={0.08} />
 
-      {/* Rotating group: earth + atmosphere + pins */}
-      <group ref={groupRef} visible={false}>
+      {/* Rotating group: earth + atmosphere + pins — rotated so India faces camera */}
+      <group ref={groupRef} visible={false} rotation={[0, -1.36, 0]}>
         <mesh
           ref={earthRef}
           geometry={earthGeometry}
