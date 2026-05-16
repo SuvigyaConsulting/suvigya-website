@@ -6,6 +6,10 @@ import ParticleHero from '@/components/sections/ParticleHero'
 import SkyTransition from '@/components/sections/SkyTransition'
 import AboutSection from '@/components/sections/AboutSection'
 
+const ApproachSection = dynamic(() => import('@/components/sections/ApproachSection'), {
+  ssr: false,
+  loading: () => <div id="approach" className="min-h-[30vh]" />,
+})
 const ServicesSection = dynamic(() => import('@/components/sections/ServicesSection'), {
   ssr: false,
   loading: () => <div id="services" className="min-h-[50vh]" />,
@@ -51,10 +55,20 @@ export default function Home() {
       {/* Light sections — the organic website below the atmosphere */}
       <Suspense fallback={null}>
         <AboutSection />
+        <ApproachSection />
+        <div className="relative h-px max-w-5xl mx-auto">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-sage-200/60 to-transparent" />
+        </div>
         <ServicesSection />
         <ProjectsSection />
         <PartnersSection />
+        <div className="relative h-px max-w-5xl mx-auto">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-sage-200/60 to-transparent" />
+        </div>
         <ImpactSection />
+        <div className="relative h-px max-w-5xl mx-auto">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-sage-200/60 to-transparent" />
+        </div>
         <ContactSection />
         <Footer />
       </Suspense>

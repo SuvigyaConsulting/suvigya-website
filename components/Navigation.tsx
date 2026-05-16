@@ -3,11 +3,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useAccessibility } from '@/components/AccessibilityProvider'
 
 const navItems = [
   { name: 'Home', href: '#home' },
   { name: 'About', href: '#about' },
+  { name: 'Team', href: '/team' },
   { name: 'Services', href: '#services' },
   { name: 'Projects', href: '#projects' },
   { name: 'Impact', href: '#impact' },
@@ -16,23 +18,21 @@ const navItems = [
 
 // Animated underline component
 function NavLink({ item, onClick, isActive }: { item: typeof navItems[0]; onClick: (e: React.MouseEvent<HTMLAnchorElement>, href: string) => void; isActive?: boolean }) {
-  const [isHovered, setIsHovered] = useState(false)
-
+  const className = `relative font-medium transition-colors duration-200 py-2 px-1 min-h-[44px] inline-flex items-center nav-link ${isActive ? 'text-base font-bold' : 'text-sm'}`
+  if (item.href.startsWith('/')) {
+    return (
+      <Link href={item.href} className={className}>
+        {item.name}
+      </Link>
+    )
+  }
   return (
     <a
       href={item.href}
       onClick={(e) => onClick(e, item.href)}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={`relative font-medium transition-all py-2 px-1 min-h-[44px] inline-flex items-center nav-link ${isActive ? 'text-base font-bold' : 'text-sm'}`}
+      className={className}
     >
       {item.name}
-      <motion.span
-        className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-sage-400 to-eucalyptus-400"
-        initial={{ width: 0 }}
-        animate={{ width: isHovered ? '100%' : 0 }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      />
     </a>
   )
 }
@@ -43,6 +43,8 @@ export default function Navigation() {
   const [activeSection, setActiveSection] = useState('home')
   const { scrollY } = useScroll()
   const { reducedMotion } = useAccessibility()
+  const pathname = usePathname()
+  const onHomePage = pathname === '/'
 
   const lastSectionCheck = useRef(0)
 
@@ -110,6 +112,11 @@ export default function Navigation() {
   }, [isOpen])
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Page routes (e.g. /team) — let Next Link handle navigation, just close mobile menu
+    if (href.startsWith('/')) {
+      setIsOpen(false)
+      return
+    }
     e.preventDefault()
     const id = href.replace('#', '')
     const element = document.getElementById(id)
@@ -146,33 +153,38 @@ export default function Navigation() {
             ? 'py-3 shadow-soft backdrop-blur-xl'
             : 'py-5 bg-transparent'
         }`}
-        style={isScrolled ? { backgroundColor: 'rgba(249, 250, 251, 0.85)' } : {}}
+        style={isScrolled ? { backgroundColor: 'rgba(250, 248, 245, 0.88)' } : {}}
         initial={reducedMotion ? false : { y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 100, damping: 20, delay: 0.5 }}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="relative group">
+          {/* Logo — hidden at top (hero has SUVIGYA centered), appears on scroll */}
+          <Link href="/" className="relative">
             <motion.span
-              className={`text-2xl font-bold ${isScrolled ? 'gradient-text' : 'text-white'}`}
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: 'spring', stiffness: 400 }}
+              className={`text-xl font-bold tracking-[0.15em] transition-all duration-500 ${
+                isScrolled
+                  ? 'gradient-text opacity-100 translate-y-0'
+                  : 'text-white opacity-0 -translate-y-2 pointer-events-none'
+              }`}
+              style={{ fontFamily: 'var(--font-display), system-ui, sans-serif' }}
             >
               SUVIGYA
             </motion.span>
-            <motion.span
-              className="absolute -bottom-1 left-0 h-0.5 bg-sage-400 w-0 group-hover:w-full transition-all duration-300"
-            />
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <div key={item.name} className="relative">
-                <NavLink item={item} onClick={handleNavClick} isActive={activeSection === item.href.slice(1)} />
-              </div>
-            ))}
+            {navItems.map((item) => {
+              const isActive = item.href.startsWith('/')
+                ? pathname === item.href
+                : onHomePage && activeSection === item.href.slice(1)
+              return (
+                <div key={item.name} className="relative">
+                  <NavLink item={item} onClick={handleNavClick} isActive={isActive} />
+                </div>
+              )
+            })}
           </div>
 
           {/* Mobile Menu Button */}
@@ -232,24 +244,50 @@ export default function Navigation() {
 
               {/* Navigation Items */}
               <nav aria-label="Mobile navigation" className="flex flex-col items-center gap-6">
-                {navItems.map((item, index) => (
-                  <motion.a
-                    key={item.name}
-                    href={item.href}
-                    onClick={(e) => handleNavClick(e, item.href)}
-                    className={`transition-all py-2 min-h-[44px] inline-flex items-center ${
-                      activeSection === item.href.slice(1)
-                        ? 'text-3xl md:text-4xl font-extrabold text-text-heading'
-                        : 'text-2xl md:text-3xl font-bold text-text-heading hover:text-sage-600'
-                    }`}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ delay: index * 0.08, duration: 0.4 }}
-                  >
-                    {item.name}
-                  </motion.a>
-                ))}
+                {navItems.map((item, index) => {
+                  const isPageLink = item.href.startsWith('/')
+                  const isActive = isPageLink
+                    ? pathname === item.href
+                    : onHomePage && activeSection === item.href.slice(1)
+                  const linkClass = `transition-all py-2 min-h-[44px] inline-flex items-center ${
+                    isActive
+                      ? 'text-3xl md:text-4xl font-extrabold text-text-heading'
+                      : 'text-2xl md:text-3xl font-bold text-text-heading hover:text-sage-600'
+                  }`
+                  if (isPageLink) {
+                    return (
+                      <motion.div
+                        key={item.name}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ delay: index * 0.08, duration: 0.4 }}
+                      >
+                        <Link
+                          href={item.href}
+                          className={linkClass}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {item.name}
+                        </Link>
+                      </motion.div>
+                    )
+                  }
+                  return (
+                    <motion.a
+                      key={item.name}
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item.href)}
+                      className={linkClass}
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ delay: index * 0.08, duration: 0.4 }}
+                    >
+                      {item.name}
+                    </motion.a>
+                  )
+                })}
               </nav>
             </div>
           </motion.div>
