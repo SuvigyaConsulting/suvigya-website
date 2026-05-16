@@ -249,9 +249,10 @@ export default function EarthGlobe({ visible, onReady, autoRotate = true, childr
     // Group visibility
     groupRef.current.visible = t > 0.001
 
-    // Scale pop: 0.9 -> 1.0
-    const scale = 0.9 + 0.1 * t
-    groupRef.current.scale.setScalar(scale)
+    // Keep scale at 1.0 — the earth radius must match the particles' converged radius
+    // (both = 2.5) so the morph reads as "particles BECOME the globe." A scale-pop
+    // entrance breaks that illusion by making the globe appear smaller and grow.
+    groupRef.current.scale.setScalar(1)
 
     // Auto-rotation handled by OrbitControls autoRotate — no manual rotation needed
 
