@@ -13,7 +13,7 @@ interface GlobeSceneProps {
   selectedProjectId: number | null
 }
 
-// Static star field
+// Static star field — visible against the dark space backdrop during globe phase
 function StarField() {
   const { geometry, material } = useMemo(() => {
     const count = 3000
@@ -25,13 +25,15 @@ function StarField() {
       const v = Math.random()
       const theta = 2 * Math.PI * u
       const phi = Math.acos(2 * v - 1)
-      const r = 20 + Math.random() * 80
+      // Closer shell so stars resolve to more than a sub-pixel
+      const r = 15 + Math.random() * 35
       positions[i * 3] = r * Math.sin(phi) * Math.cos(theta)
       positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
       positions[i * 3 + 2] = r * Math.cos(phi)
-      sizes[i] = Math.random() < 0.1
-        ? 0.08 + Math.random() * 0.12
-        : 0.02 + Math.random() * 0.05
+      // Bigger sizes: ~12% are "bright" stars, rest are dim background
+      sizes[i] = Math.random() < 0.12
+        ? 0.25 + Math.random() * 0.35
+        : 0.08 + Math.random() * 0.14
     }
 
     const geo = new THREE.BufferGeometry()
@@ -46,7 +48,8 @@ function StarField() {
         attribute float size;
         void main() {
           vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = size * (200.0 / -mvPosition.z);
+          // Bumped pixel scale (200 → 320) so stars resolve to visible pixels
+          gl_PointSize = size * (320.0 / -mvPosition.z);
           gl_Position = projectionMatrix * mvPosition;
         }
       `,
@@ -54,7 +57,8 @@ function StarField() {
         void main() {
           float dist = length(gl_PointCoord - vec2(0.5));
           if (dist > 0.5) discard;
-          float alpha = smoothstep(0.5, 0.0, dist) * 0.85;
+          // Sharper falloff so even small stars read as crisp points, not blobs
+          float alpha = smoothstep(0.5, 0.1, dist) * 0.9;
           gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
         }
       `,

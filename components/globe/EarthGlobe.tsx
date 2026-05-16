@@ -73,20 +73,21 @@ const earthFragmentShader = `
     vec3 normal = normalize(vNormal);
     float sunDot = dot(normal, uSunDirection);
 
-    // Enhance day texture
+    // Start from the texture as-is — it's already vivid (NASA Blue Marble)
     vec3 color = dayColor.rgb;
-    color = (color - 0.5) * 1.15 + 0.5;
-    float luma = dot(color, vec3(0.299, 0.587, 0.114));
-    color = mix(vec3(luma), color, 1.2);
 
-    // Soft directional lighting for 3D depth (no dark side)
-    float diffuse = max(sunDot, 0.0) * 0.3 + 0.7;
+    // Slight desaturation toward natural — pulls back the cartoonish punch
+    float luma = dot(color, vec3(0.299, 0.587, 0.114));
+    color = mix(vec3(luma), color, 0.88);
+
+    // Soft directional lighting for 3D depth (slightly stronger directional component)
+    float diffuse = max(sunDot, 0.0) * 0.35 + 0.65;
     color *= diffuse;
 
-    // Subtle specular on oceans
-    float spec = pow(max(dot(reflect(-uSunDirection, normal), normalize(cameraPosition - vWorldPosition)), 0.0), 32.0);
+    // Specular on oceans — softened so the highlight doesn't read as a cyan stripe
+    float spec = pow(max(dot(reflect(-uSunDirection, normal), normalize(cameraPosition - vWorldPosition)), 0.0), 40.0);
     float oceanMask = 1.0 - smoothstep(0.08, 0.25, length(dayColor.rgb - vec3(0.05, 0.1, 0.2)));
-    color += vec3(0.4, 0.5, 0.6) * spec * oceanMask * 0.2;
+    color += vec3(0.35, 0.4, 0.5) * spec * oceanMask * 0.1;
 
     gl_FragColor = vec4(color, uOpacity);
   }
