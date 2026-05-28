@@ -7,134 +7,284 @@ import gsap from 'gsap'
 
 // ── Project location data ──────────────────────────────────────────────────────
 
-// Single source of truth for the project showcase. The globe pins render from
-// lat/lon/color; the ProjectDetail panel renders the rest (description, region,
-// value + label, year, focus tags). This is the full case-study record — the
-// standalone Projects carousel was retired in favour of the globe showcase.
-export const projectLocations = [
+// One pin per geography, each holding the engagements delivered there. The
+// brochure lists ~20 select projects, many clustered in NE India / Meghalaya —
+// far too close to render as individual clickable pins at globe zoom — so they
+// are grouped by location. The ProjectDetail panel lists each location's
+// projects. Some engagements have a headline value; advisory/evaluation work
+// often doesn't, so `value` is optional.
+const PIN_COLOR = '#3b82f6'
+
+export interface ProjectEntry {
+  title: string
+  client: string
+  category: string
+  description: string
+  tags: string[]
+  value?: string
+  valueLabel?: string
+}
+
+export interface ProjectLocation {
+  id: number
+  region: string
+  lat: number
+  lon: number
+  color: string
+  projects: ProjectEntry[]
+}
+
+export const projectLocations: ProjectLocation[] = [
   {
     id: 1,
-    title: 'Afghanistan Emergency Food Security',
-    client: 'World Bank / FAO',
-    region: 'Afghanistan',
-    value: '$415M',
-    valueLabel: 'Project value supported',
-    year: '2024',
-    description:
-      'Economic and financial analysis, PIM development, and PAD preparation for irrigation, agribusiness, and food security interventions across conflict-affected regions.',
-    tags: ['Economic Analysis', 'PIM Development', 'PAD Preparation'],
-    lat: 34.52,
-    lon: 69.17,
-    color: '#3b82f6',
+    region: 'North East India',
+    lat: 25.7,
+    lon: 92.3,
+    color: PIN_COLOR,
+    projects: [
+      {
+        title: 'ELEMENT — Nagaland & Tripura',
+        client: 'World Bank',
+        category: 'Agriculture, Livelihoods & Value Chains',
+        value: '$242M',
+        valueLabel: 'Project value supported',
+        description:
+          'Project design, investment planning, and operations manual for forest value chains, eco-tourism, and NTFP livelihood frameworks.',
+        tags: ['Project Design', 'NTFP Value Chains', 'Eco-Tourism'],
+      },
+      {
+        title: 'Community-Based Forest Management & Livelihoods, Meghalaya',
+        client: 'GoM / JICA',
+        category: 'Rural Development & Livelihoods',
+        value: '$124M',
+        valueLabel: 'Project value supported',
+        description:
+          'DPR and investment planning for community forestry and livelihood systems.',
+        tags: ['Community Forestry', 'DPR', 'Livelihoods'],
+      },
+      {
+        title: 'Community-Led Landscape Management, Meghalaya',
+        client: 'World Bank',
+        category: 'Biodiversity, Landscapes & Ecosystems',
+        value: '$60M',
+        valueLabel: 'Project value supported',
+        description:
+          'Community-driven landscape and NRM strategies with a full project implementation plan.',
+        tags: ['Landscape Management', 'NRM', 'Implementation Plan'],
+      },
+      {
+        title: 'Climate Adaptation — Vulnerable Catchments, Meghalaya',
+        client: 'KfW',
+        category: 'Climate, Environment & Natural Resources',
+        value: '€35M',
+        valueLabel: 'Project value supported',
+        description:
+          'DPR, investment plan, and ESMF for climate-resilient watershed and catchment restoration.',
+        tags: ['DPR', 'ESMF', 'Watershed Restoration'],
+      },
+      {
+        title: 'Watershed Development Guidelines, Meghalaya',
+        client: 'ADB',
+        category: 'Biodiversity, Landscapes & Ecosystems',
+        description:
+          'Technical frameworks for climate-resilient watershed restoration.',
+        tags: ['Watershed', 'Technical Frameworks'],
+      },
+      {
+        title: 'Livelihoods & Access to Markets, Meghalaya',
+        client: 'GoM / IFAD',
+        category: 'Rural Development & Livelihoods',
+        description:
+          'Market access and value chain strategies for smallholder producers.',
+        tags: ['Market Access', 'Value Chains'],
+      },
+      {
+        title: 'Eco-Tourism as Climate Adaptation, Meghalaya',
+        client: 'NDB',
+        category: 'Climate Finance & Emerging Themes',
+        description:
+          'Concept design, DPR, and environmental & social frameworks for sustainable tourism.',
+        tags: ['Eco-Tourism', 'DPR', 'Safeguards'],
+      },
+      {
+        title: 'North East Rural Livelihoods Project',
+        client: 'World Bank',
+        category: 'Rural Development & Livelihoods',
+        description: 'Project completion report and results assessment.',
+        tags: ['Evaluation', 'Livelihoods'],
+      },
+      {
+        title: 'Climate Change Adaptation — North East India (CCA-NER)',
+        client: 'GIZ',
+        category: 'Monitoring, Evaluation & Learning',
+        description:
+          'Final evaluation and impact assessment with sustainability and scalability analysis.',
+        tags: ['Evaluation', 'Impact Assessment'],
+      },
+    ],
   },
   {
     id: 2,
-    title: 'Kerala Climate Resilient Agri-Value Chain',
-    client: 'World Bank',
-    region: 'Kerala, India',
-    value: '$285M',
-    valueLabel: 'Project value supported',
-    year: '2024',
-    description:
-      'End-to-end project design, costing, and PIM preparation for climate-resilient value chains across rubber, coffee, and cardamom, including economic and financial analysis.',
-    tags: ['Project Design', 'Value Chains', 'Climate Resilience'],
-    lat: 10.85,
-    lon: 76.27,
-    color: '#3b82f6',
+    region: 'Central & Pan-India',
+    lat: 22.5,
+    lon: 78.8,
+    color: PIN_COLOR,
+    projects: [
+      {
+        title: 'CONSERVE — Biodiversity Conservation & Sustainable Use',
+        client: 'GEF-GBFF / UNDP / World Bank',
+        category: 'Biodiversity, Landscapes & Ecosystems',
+        value: '$12.3M',
+        valueLabel: 'GEF grant mobilized',
+        description:
+          'ProDoc, GEF CEO Endorsement, Theory of Change, Results Framework, MEL, and co-financing for a multi-state implementation design.',
+        tags: ['ProDoc', 'Results Framework', 'MEL'],
+      },
+      {
+        title: 'Umbrella Programme for Natural Resource Management',
+        client: 'GIZ / KfW / NABARD',
+        category: 'Monitoring, Evaluation & Learning',
+        value: '50+',
+        valueLabel: 'NRM projects evaluated',
+        description:
+          'Appraisal, monitoring, and evaluation of 50+ community-led NRM projects with mid-term reviews and performance assessments.',
+        tags: ['M&E', 'NRM', 'Third-Party Monitoring'],
+      },
+      {
+        title: 'Sustainable Watershed Development Fund Guidelines',
+        client: 'KfW / NABARD',
+        category: 'Biodiversity, Landscapes & Ecosystems',
+        description:
+          'Financing models and technical guidelines for watershed investments.',
+        tags: ['Watershed Finance', 'Guidelines'],
+      },
+      {
+        title: 'Climate Adaptation in Agribusiness Value Chains',
+        client: 'GIZ',
+        category: 'Agriculture, Livelihoods & Value Chains',
+        description:
+          'Climate risk assessments for agri-horticulture with adaptation and risk-mitigation strategies.',
+        tags: ['Climate Risk', 'Agribusiness', 'Adaptation'],
+      },
+      {
+        title: 'Drought, Land Degradation & Desertification Strategy — South Asia',
+        client: 'ADB',
+        category: 'Climate, Environment & Natural Resources',
+        description:
+          'Regional strategy for drought resilience and land restoration with policy and investment frameworks.',
+        tags: ['Drought Resilience', 'Land Restoration', 'Policy'],
+      },
+    ],
   },
   {
     id: 3,
-    title: 'ELEMENT Project: Nagaland & Tripura',
-    client: 'World Bank',
-    region: 'North East India',
-    value: '$242M',
-    valueLabel: 'Project value supported',
-    year: '2023',
-    description:
-      'Project design, investment planning, and operations manual for NTFP value chains, eco-tourism, and private sector frameworks in biodiversity-rich landscapes.',
-    tags: ['NTFP Value Chains', 'Eco-Tourism', 'Private Sector'],
-    lat: 25.67,
-    lon: 94.11,
-    color: '#3b82f6',
+    region: 'Himachal Pradesh',
+    lat: 31.1,
+    lon: 77.2,
+    color: PIN_COLOR,
+    projects: [
+      {
+        title: 'Climate Proofing of Forest Ecosystems',
+        client: 'KfW',
+        category: 'Climate, Environment & Natural Resources',
+        description:
+          'DPR and investment plan with mid-term review and performance assessment.',
+        tags: ['DPR', 'Forest Ecosystems', 'Review'],
+      },
+    ],
   },
   {
     id: 4,
-    title: 'GCF Hindu Kush Himalayan Region',
-    client: 'GCF',
-    region: '8 Countries',
-    value: '72M',
-    valueLabel: 'People across 8 countries',
-    year: '2024',
-    description:
-      'Blended finance facility concept benefiting 72 million people across the Hindu Kush Himalayan region, structuring climate finance at a transboundary scale.',
-    tags: ['Climate Finance', 'Blended Finance', 'Regional'],
-    lat: 27.98,
-    lon: 86.92,
-    color: '#3b82f6',
+    region: 'Kerala',
+    lat: 10.5,
+    lon: 76.3,
+    color: PIN_COLOR,
+    projects: [
+      {
+        title: 'Kerala Climate-Resilient Agri-Value Chain (KERA)',
+        client: 'World Bank',
+        category: 'Agriculture, Livelihoods & Value Chains',
+        value: '$285M',
+        valueLabel: 'Project value supported',
+        description:
+          'End-to-end project design, costing, and PIM for climate-resilient value chains across rubber, coffee, and cardamom, with economic and financial analysis.',
+        tags: ['Project Design', 'Value Chains', 'Economic Analysis'],
+      },
+    ],
   },
   {
     id: 5,
-    title: 'Community Forest Management',
-    client: 'JICA',
-    region: 'Meghalaya, India',
-    value: '$124M',
-    valueLabel: 'Project value supported',
-    year: '2023',
-    description:
-      'DPR and investment planning for community forestry and livelihood systems, integrating forest conservation with income generation for indigenous communities.',
-    tags: ['Forestry', 'Livelihoods', 'DPR Preparation'],
-    lat: 25.47,
-    lon: 91.88,
-    color: '#3b82f6',
+    region: 'Coastal Karnataka',
+    lat: 14.5,
+    lon: 74.3,
+    color: PIN_COLOR,
+    projects: [
+      {
+        title: 'Blue Economy — Plastic Waste Management',
+        client: 'GoK / World Bank',
+        category: 'Climate Finance & Emerging Themes',
+        description:
+          'Concept note and investment framework for plastic waste management and blue economy transformation.',
+        tags: ['Blue Economy', 'Waste Management', 'Investment Framework'],
+      },
+    ],
   },
   {
     id: 6,
-    title: 'CONSERVE Biodiversity',
-    client: 'GEF / UNDP',
-    region: 'India',
-    value: '$12.3M',
-    valueLabel: 'GEF grant mobilized',
-    year: '2024',
-    description:
-      'ProDoc development, CEO Endorsement, Theory of Change, Results Framework, MEL, and co-financing for a multi-state biodiversity implementation design.',
-    tags: ['Biodiversity', 'ProDoc', 'Results Framework'],
-    lat: 20.59,
-    lon: 78.96,
-    color: '#3b82f6',
+    region: 'Afghanistan',
+    lat: 34.52,
+    lon: 69.17,
+    color: PIN_COLOR,
+    projects: [
+      {
+        title: 'Afghanistan Emergency Food Security',
+        client: 'World Bank / FAO',
+        category: 'Agriculture, Livelihoods & Value Chains',
+        value: '$415M',
+        valueLabel: 'Project value supported',
+        description:
+          'Economic and financial analysis, PAD inputs, and PIM components for agriculture resilience and food security interventions.',
+        tags: ['Economic Analysis', 'Food Security', 'PAD / PIM'],
+      },
+    ],
   },
   {
     id: 7,
-    title: 'Umbrella NRM Programme',
-    client: 'GIZ / KfW',
-    region: 'India',
-    value: '50+',
-    valueLabel: 'Community NRM projects evaluated',
-    year: '2023',
-    description:
-      'Appraisal, monitoring, and evaluation of 50+ community-led NRM projects, with mid-term reviews and performance assessments across multiple states.',
-    tags: ['M&E', 'NRM', 'Third-Party Monitoring'],
-    lat: 23.26,
-    lon: 77.41,
-    color: '#3b82f6',
+    region: 'Lao PDR',
+    lat: 17.97,
+    lon: 102.63,
+    color: PIN_COLOR,
+    projects: [
+      {
+        title: 'Hand-in-Hand Initiative',
+        client: 'FAO',
+        category: 'Agriculture, Livelihoods & Value Chains',
+        description:
+          'Integrated agriculture, commodity value chains, and enterprise development with investment-ready model projects.',
+        tags: ['Agriculture', 'Value Chains', 'Enterprise'],
+      },
+    ],
   },
   {
     id: 8,
-    title: 'Blue Economy: Plastic Waste',
-    client: 'World Bank',
-    region: 'Coastal Karnataka, India',
-    value: '$60M',
-    valueLabel: 'Investment framework designed',
-    year: '2024',
-    description:
-      'Concept note and investment framework for plastic waste management and blue economy transformation along the Karnataka coastline.',
-    tags: ['Blue Economy', 'Waste Management', 'Investment Design'],
-    lat: 14.55,
-    lon: 74.35,
-    color: '#3b82f6',
+    region: 'Hindu Kush Himalaya',
+    lat: 28.5,
+    lon: 84.5,
+    color: PIN_COLOR,
+    projects: [
+      {
+        title: 'GCF Regional Programme — Hindu Kush Himalaya',
+        client: 'GCF · 8 Countries',
+        category: 'Climate Finance & Emerging Themes',
+        value: '72M',
+        valueLabel: 'People across 8 countries',
+        description:
+          'Blended finance facility concept benefiting 72 million people across the Hindu Kush Himalayan region.',
+        tags: ['Climate Finance', 'Blended Finance', 'Regional'],
+      },
+    ],
   },
-] as const
-
-export type ProjectLocation = (typeof projectLocations)[number]
+]
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 

@@ -17,32 +17,29 @@ const inter = Inter({
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://suvigya.com'),
+  metadataBase: new URL('https://suvigya.org'),
   title: {
-    default: 'SUVIGYA CONSULTING - Natural Resources Management & Policy',
-    template: '%s | Suvigya Consulting',
+    default: 'SUVIGYA',
+    template: '%s | SUVIGYA',
   },
   description:
-    'Expert consulting in GIS, natural resources management, policy generation, and grassroots actions. Working with KFW, UN, ADB, WB and more.',
+    'Expert consulting in GIS, natural resources management, policy generation, and grassroots action with leading international and government organisations.',
   keywords: [
     'consulting',
     'GIS',
     'natural resources',
     'policy',
     'environment',
-    'KFW',
-    'UN',
-    'ADB',
-    'World Bank',
+    'climate',
     'sustainability',
   ],
   authors: [{ name: 'Suvigya Consulting' }],
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://suvigya.com',
+    url: 'https://suvigya.org',
     siteName: 'Suvigya Consulting',
-    title: 'SUVIGYA CONSULTING - Natural Resources Management & Policy',
+    title: 'SUVIGYA',
     description:
       'Expert consulting in GIS, natural resources management, policy generation, and grassroots actions.',
     images: [
@@ -56,7 +53,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SUVIGYA CONSULTING - Natural Resources Management & Policy',
+    title: 'SUVIGYA',
     description:
       'Expert consulting in GIS, natural resources management, policy generation, and grassroots actions.',
     images: ['/og-image.png'],
