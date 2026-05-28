@@ -6,14 +6,14 @@ import { useAccessibility } from '@/components/AccessibilityProvider'
 
 // Stats data
 const stats = [
-  { value: 13, suffix: '+', label: 'Years Experience', color: 'sage' },
-  { value: 50, suffix: '+', label: 'Projects Completed', color: 'eucalyptus' },
-  { value: 20, suffix: '+', label: 'Sectors Served', color: 'sky' },
-  { value: 2, suffix: 'M+', label: 'Lives Impacted', color: 'amber' },
+  { value: 13, prefix: '', suffix: '+', label: 'Years Experience', color: 'sage' },
+  { value: 1, prefix: '$', suffix: 'B+', label: 'Project Value Supported', color: 'eucalyptus' },
+  { value: 20, prefix: '', suffix: '+', label: 'Sectors Served', color: 'sky' },
+  { value: 2, prefix: '', suffix: 'M+', label: 'Lives Impacted', color: 'amber' },
 ]
 
 // Animated counter component
-function AnimatedCounter({ value, suffix = '', inView, reducedMotion = false }: { value: number; suffix?: string; inView: boolean; reducedMotion?: boolean }) {
+function AnimatedCounter({ value, prefix = '', suffix = '', inView, reducedMotion = false }: { value: number; prefix?: string; suffix?: string; inView: boolean; reducedMotion?: boolean }) {
   const [displayValue, setDisplayValue] = useState(0)
 
   useEffect(() => {
@@ -46,7 +46,7 @@ function AnimatedCounter({ value, suffix = '', inView, reducedMotion = false }: 
 
   return (
     <span>
-      {displayValue}{suffix}
+      {prefix}{displayValue}{suffix}
     </span>
   )
 }
@@ -115,7 +115,7 @@ export default function AboutSection() {
           transition={reducedMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
         >
           <p className="text-text-body leading-relaxed text-base md:text-lg">
-            Suvigya is a specialist consulting firm that turns policy into practice. Since 2013, we have worked alongside the World Bank, ADB, FAO, GCF, GIZ, KfW, and NABARD to deliver results in natural resource management, rural livelihoods, climate resilience, and sustainable development.
+            Suvigya is a specialist consulting firm that turns policy into practice. Since 2013, we have worked alongside leading international and government organisations to deliver results in natural resource management, rural livelihoods, climate resilience, and sustainable development.
           </p>
           <p className="text-text-body leading-relaxed text-base md:text-lg">
             We own every stage of a project, from strategy and design through field execution and evaluation. Our teams embed directly in the geographies we serve, ensuring accountability, speed, and outcomes that hold up long after we leave.
@@ -142,7 +142,7 @@ export default function AboutSection() {
               whileHover={reducedMotion ? {} : { y: -8, scale: 1.02 }}
             >
               <div className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 gradient-text">
-                <AnimatedCounter value={stat.value} suffix={stat.suffix} inView={statsInView} reducedMotion={reducedMotion} />
+                <AnimatedCounter value={stat.value} prefix={stat.prefix} suffix={stat.suffix} inView={statsInView} reducedMotion={reducedMotion} />
               </div>
               <div className="text-text-muted font-medium">{stat.label}</div>
 

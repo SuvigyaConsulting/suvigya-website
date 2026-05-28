@@ -63,6 +63,28 @@ export default function SkyTransition() {
     [],
   )
 
+  /* ── Warm the cloud image decode cache on mount ──
+     The cloud PNGs are large; decoding them on the main thread the first time
+     they paint (as the user scrolls into the transition) causes a one-off frame
+     hitch. Decoding them up front — while the hero is still on screen and no
+     scroll is happening — keeps the first scroll-through smooth. */
+  useEffect(() => {
+    const cloudSrcs = [
+      '/textures/clouds/cloud4.png',
+      '/textures/clouds/cloud5.png',
+      '/textures/clouds/cloud-wide.png',
+      '/textures/clouds/cloud2.png',
+      '/textures/clouds/cloud1.png',
+      '/textures/clouds/cloud3.png',
+      '/textures/clouds/cloud-panoramic.png',
+    ]
+    cloudSrcs.forEach((src) => {
+      const img = new Image()
+      img.src = src
+      img.decode?.().catch(() => {})
+    })
+  }, [])
+
   /* ── Scroll-driven animation ── */
   useEffect(() => {
     const section = sectionRef.current
@@ -205,6 +227,7 @@ export default function SkyTransition() {
         <img
           src="/textures/clouds/cloud4.png"
           alt=""
+          decoding="async"
           className="absolute pointer-events-none"
           style={{
             top: '0%',
@@ -219,6 +242,7 @@ export default function SkyTransition() {
         <img
           src="/textures/clouds/cloud5.png"
           alt=""
+          decoding="async"
           className="absolute pointer-events-none"
           style={{
             top: '5%',
@@ -235,6 +259,7 @@ export default function SkyTransition() {
         <img
           src="/textures/clouds/cloud-wide.png"
           alt=""
+          decoding="async"
           className="absolute pointer-events-none"
           style={{
             top: '12%',
@@ -251,6 +276,7 @@ export default function SkyTransition() {
         <img
           src="/textures/clouds/cloud2.png"
           alt=""
+          decoding="async"
           className="absolute pointer-events-none"
           style={{
             top: '20%',
@@ -267,6 +293,7 @@ export default function SkyTransition() {
         <img
           src="/textures/clouds/cloud1.png"
           alt=""
+          decoding="async"
           className="absolute pointer-events-none"
           style={{
             top: '28%',
@@ -281,6 +308,7 @@ export default function SkyTransition() {
         <img
           src="/textures/clouds/cloud3.png"
           alt=""
+          decoding="async"
           className="absolute pointer-events-none"
           style={{
             top: '32%',
@@ -297,6 +325,7 @@ export default function SkyTransition() {
         <img
           src="/textures/clouds/cloud-panoramic.png"
           alt=""
+          decoding="async"
           className="absolute pointer-events-none"
           style={{
             top: '40%',

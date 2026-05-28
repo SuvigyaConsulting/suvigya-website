@@ -7,15 +7,131 @@ import gsap from 'gsap'
 
 // ── Project location data ──────────────────────────────────────────────────────
 
+// Single source of truth for the project showcase. The globe pins render from
+// lat/lon/color; the ProjectDetail panel renders the rest (description, region,
+// value + label, year, focus tags). This is the full case-study record — the
+// standalone Projects carousel was retired in favour of the globe showcase.
 export const projectLocations = [
-  { id: 1, title: 'Afghanistan Emergency Food Security', client: 'World Bank / FAO', value: '$415M', lat: 34.52, lon: 69.17, color: '#14b8a6' },
-  { id: 2, title: 'Kerala Climate Resilient Agri-Value Chain', client: 'World Bank', value: '$285M', lat: 10.85, lon: 76.27, color: '#c9a84c' },
-  { id: 3, title: 'ELEMENT Project: Nagaland & Tripura', client: 'World Bank', value: '$242M', lat: 25.67, lon: 94.11, color: '#14b8a6' },
-  { id: 4, title: 'GCF Hindu Kush Himalayan Region', client: 'GCF', value: '72M people', lat: 27.98, lon: 86.92, color: '#c9a84c' },
-  { id: 5, title: 'Community Forest Management', client: 'JICA', value: '$124M', lat: 25.47, lon: 91.88, color: '#14b8a6' },
-  { id: 6, title: 'CONSERVE Biodiversity', client: 'GEF / UNDP', value: '$12.3M', lat: 20.59, lon: 78.96, color: '#c9a84c' },
-  { id: 7, title: 'Umbrella NRM Programme', client: 'GIZ / KfW', value: '50+ projects', lat: 23.26, lon: 77.41, color: '#14b8a6' },
-  { id: 8, title: 'Blue Economy: Plastic Waste', client: 'World Bank', value: '$60M', lat: 14.55, lon: 74.35, color: '#c9a84c' },
+  {
+    id: 1,
+    title: 'Afghanistan Emergency Food Security',
+    client: 'World Bank / FAO',
+    region: 'Afghanistan',
+    value: '$415M',
+    valueLabel: 'Project value supported',
+    year: '2024',
+    description:
+      'Economic and financial analysis, PIM development, and PAD preparation for irrigation, agribusiness, and food security interventions across conflict-affected regions.',
+    tags: ['Economic Analysis', 'PIM Development', 'PAD Preparation'],
+    lat: 34.52,
+    lon: 69.17,
+    color: '#3b82f6',
+  },
+  {
+    id: 2,
+    title: 'Kerala Climate Resilient Agri-Value Chain',
+    client: 'World Bank',
+    region: 'Kerala, India',
+    value: '$285M',
+    valueLabel: 'Project value supported',
+    year: '2024',
+    description:
+      'End-to-end project design, costing, and PIM preparation for climate-resilient value chains across rubber, coffee, and cardamom, including economic and financial analysis.',
+    tags: ['Project Design', 'Value Chains', 'Climate Resilience'],
+    lat: 10.85,
+    lon: 76.27,
+    color: '#3b82f6',
+  },
+  {
+    id: 3,
+    title: 'ELEMENT Project: Nagaland & Tripura',
+    client: 'World Bank',
+    region: 'North East India',
+    value: '$242M',
+    valueLabel: 'Project value supported',
+    year: '2023',
+    description:
+      'Project design, investment planning, and operations manual for NTFP value chains, eco-tourism, and private sector frameworks in biodiversity-rich landscapes.',
+    tags: ['NTFP Value Chains', 'Eco-Tourism', 'Private Sector'],
+    lat: 25.67,
+    lon: 94.11,
+    color: '#3b82f6',
+  },
+  {
+    id: 4,
+    title: 'GCF Hindu Kush Himalayan Region',
+    client: 'GCF',
+    region: '8 Countries',
+    value: '72M',
+    valueLabel: 'People across 8 countries',
+    year: '2024',
+    description:
+      'Blended finance facility concept benefiting 72 million people across the Hindu Kush Himalayan region, structuring climate finance at a transboundary scale.',
+    tags: ['Climate Finance', 'Blended Finance', 'Regional'],
+    lat: 27.98,
+    lon: 86.92,
+    color: '#3b82f6',
+  },
+  {
+    id: 5,
+    title: 'Community Forest Management',
+    client: 'JICA',
+    region: 'Meghalaya, India',
+    value: '$124M',
+    valueLabel: 'Project value supported',
+    year: '2023',
+    description:
+      'DPR and investment planning for community forestry and livelihood systems, integrating forest conservation with income generation for indigenous communities.',
+    tags: ['Forestry', 'Livelihoods', 'DPR Preparation'],
+    lat: 25.47,
+    lon: 91.88,
+    color: '#3b82f6',
+  },
+  {
+    id: 6,
+    title: 'CONSERVE Biodiversity',
+    client: 'GEF / UNDP',
+    region: 'India',
+    value: '$12.3M',
+    valueLabel: 'GEF grant mobilized',
+    year: '2024',
+    description:
+      'ProDoc development, CEO Endorsement, Theory of Change, Results Framework, MEL, and co-financing for a multi-state biodiversity implementation design.',
+    tags: ['Biodiversity', 'ProDoc', 'Results Framework'],
+    lat: 20.59,
+    lon: 78.96,
+    color: '#3b82f6',
+  },
+  {
+    id: 7,
+    title: 'Umbrella NRM Programme',
+    client: 'GIZ / KfW',
+    region: 'India',
+    value: '50+',
+    valueLabel: 'Community NRM projects evaluated',
+    year: '2023',
+    description:
+      'Appraisal, monitoring, and evaluation of 50+ community-led NRM projects, with mid-term reviews and performance assessments across multiple states.',
+    tags: ['M&E', 'NRM', 'Third-Party Monitoring'],
+    lat: 23.26,
+    lon: 77.41,
+    color: '#3b82f6',
+  },
+  {
+    id: 8,
+    title: 'Blue Economy: Plastic Waste',
+    client: 'World Bank',
+    region: 'Coastal Karnataka, India',
+    value: '$60M',
+    valueLabel: 'Investment framework designed',
+    year: '2024',
+    description:
+      'Concept note and investment framework for plastic waste management and blue economy transformation along the Karnataka coastline.',
+    tags: ['Blue Economy', 'Waste Management', 'Investment Design'],
+    lat: 14.55,
+    lon: 74.35,
+    color: '#3b82f6',
+  },
 ] as const
 
 export type ProjectLocation = (typeof projectLocations)[number]
@@ -211,7 +327,7 @@ function Pin({ project, globeRadius, onPinClick, selectedProjectId }: PinProps) 
   )
 
   // All pins same color — clean teal
-  const pinColor = '#14b8a6'
+  const pinColor = '#3b82f6'
   const color = useMemo(() => new THREE.Color(pinColor), [])
 
   const isSelected = selectedProjectId === project.id
@@ -336,7 +452,14 @@ function Pin({ project, globeRadius, onPinClick, selectedProjectId }: PinProps) 
         visible={false}
         onPointerOver={() => { hoveredRef.current = true; document.body.style.cursor = 'pointer' }}
         onPointerOut={() => { hoveredRef.current = false; document.body.style.cursor = 'auto' }}
-        onClick={(e) => { e.stopPropagation(); onPinClick(project.id) }}
+        onClick={(e) => {
+          e.stopPropagation()
+          // The detail panel covers the canvas on open, so this pin's pointerOut
+          // won't fire — reset hover/cursor here to avoid a stuck pointer cursor.
+          hoveredRef.current = false
+          document.body.style.cursor = 'auto'
+          onPinClick(project.id)
+        }}
       >
         <sphereGeometry args={[0.15, 8, 8]} />
         <meshBasicMaterial transparent opacity={0} />

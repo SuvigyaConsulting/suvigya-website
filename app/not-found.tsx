@@ -39,7 +39,7 @@ export default function NotFound() {
         x: 15 + seededRandom(i * 17) * 70,
         y: 15 + seededRandom(i * 17 + 1) * 70,
         size: 220 + seededRandom(i * 19) * 220,
-        color: ['#14b8a6', '#5fc4b8', '#7a9c8c', '#c9a84c'][i % 4],
+        color: ['#3b82f6', '#60a5fa', '#2c5282', '#1d4ed8'][i % 4],
         opacity: 0.04 + seededRandom(i * 23) * 0.06,
         driftDuration: 22 + seededRandom(i * 29) * 24,
         driftDelay: seededRandom(i * 31) * 10,

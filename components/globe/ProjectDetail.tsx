@@ -11,32 +11,6 @@ interface ProjectDetailProps {
   onNavigate: (projectId: number) => void
 }
 
-// ── Descriptions keyed by project ID ──────────────────────────────────────────
-
-const projectDescriptions: Record<number, string> = {
-  1: 'Economic and financial analysis, PIM development, PAD preparation for irrigation, agribusiness, and food security interventions across conflict-affected regions.',
-  2: 'End-to-end project design, costing, and PIM preparation for climate-resilient value chains across rubber, coffee, and cardamom.',
-  3: 'Project design, investment planning, and operations manual for NTFP value chains, eco-tourism, and private sector frameworks in biodiversity-rich landscapes.',
-  4: 'Blended finance facility concept benefiting 72 million people across the Hindu Kush Himalayan region, structuring climate finance at transboundary scale.',
-  5: 'DPR and investment planning for community forestry and livelihood systems, integrating forest conservation with income generation.',
-  6: 'ProDoc development, CEO Endorsement, Theory of Change, Results Framework, MEL, and co-financing for multi-state biodiversity implementation.',
-  7: 'Appraisal, monitoring, and evaluation of 50+ community-led NRM projects. Mid-term reviews and performance assessments across multiple states.',
-  8: 'Concept note and investment framework for plastic waste management and blue economy transformation along the Karnataka coastline.',
-}
-
-// ── Region info keyed by project ID ───────────────────────────────────────────
-
-const projectRegions: Record<number, string> = {
-  1: 'Afghanistan',
-  2: 'Kerala, India',
-  3: 'North East India',
-  4: '8 Countries',
-  5: 'Meghalaya, India',
-  6: 'India',
-  7: 'India',
-  8: 'Coastal Karnataka, India',
-}
-
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export default function ProjectDetail({ project, onClose, onNavigate }: ProjectDetailProps) {
@@ -79,13 +53,9 @@ export default function ProjectDetail({ project, onClose, onNavigate }: ProjectD
     [onClose],
   )
 
-  // Determine gradient based on project color
-  const getValueGradient = (color: string) => {
-    if (color === '#14b8a6') {
-      return 'linear-gradient(135deg, #14b8a6, #06b6d4, #22d3ee)'
-    }
-    return 'linear-gradient(135deg, #c9a84c, #d4a843, #e2c06b)'
-  }
+  // Single-hue blue gradient for the value figure — teal/gold retired.
+  const getValueGradient = (_color: string) =>
+    'linear-gradient(135deg, #60a5fa, #3b82f6, #2563eb)'
 
   const isOpen = project !== null
 
@@ -134,7 +104,7 @@ export default function ProjectDetail({ project, onClose, onNavigate }: ProjectD
         <div
           className="w-full h-[2px]"
           style={{
-            background: 'linear-gradient(90deg, #14b8a6, #0d9488, #14b8a6)',
+            background: 'linear-gradient(90deg, #3b82f6, #2c5282, #3b82f6)',
           }}
         />
 
@@ -174,12 +144,12 @@ export default function ProjectDetail({ project, onClose, onNavigate }: ProjectD
               {project.client}
             </span>
 
-            {/* Region */}
-            {projectRegions[project.id] && (
-              <div
-                className="stagger-item flex items-center gap-1.5 mb-6"
-                style={{ animationDelay: '0.12s' }}
-              >
+            {/* Region + year */}
+            <div
+              className="stagger-item flex items-center gap-3 mb-6"
+              style={{ animationDelay: '0.12s' }}
+            >
+              <span className="flex items-center gap-1.5">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="14"
@@ -195,11 +165,11 @@ export default function ProjectDetail({ project, onClose, onNavigate }: ProjectD
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                   <circle cx="12" cy="10" r="3" />
                 </svg>
-                <span className="text-sm text-[#4a5568]">
-                  {projectRegions[project.id]}
-                </span>
-              </div>
-            )}
+                <span className="text-sm text-[#4a5568]">{project.region}</span>
+              </span>
+              <span className="text-[#2c3445]">•</span>
+              <span className="text-sm text-[#4a5568]">{project.year}</span>
+            </div>
 
             {/* Title */}
             <h2
@@ -228,7 +198,7 @@ export default function ProjectDetail({ project, onClose, onNavigate }: ProjectD
               className="stagger-item text-sm text-[#4a5568] mb-6"
               style={{ animationDelay: '0.3s' }}
             >
-              Project Value
+              {project.valueLabel}
             </p>
 
             {/* Description */}
@@ -236,8 +206,7 @@ export default function ProjectDetail({ project, onClose, onNavigate }: ProjectD
               className="stagger-item text-[#8892a8] leading-[1.75] mb-8"
               style={{ animationDelay: '0.35s' }}
             >
-              {projectDescriptions[project.id] ??
-                'A strategic consulting engagement delivering measurable impact through evidence-based approaches and deep sector expertise.'}
+              {project.description}
             </p>
 
             {/* Divider */}
@@ -246,35 +215,22 @@ export default function ProjectDetail({ project, onClose, onNavigate }: ProjectD
               style={{ animationDelay: '0.4s' }}
             />
 
-            {/* CTA button */}
-            <button
-              className="stagger-item inline-flex items-center gap-2 border border-[#14b8a6] text-[#14b8a6] px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300 hover:bg-[#14b8a6]/10 hover:shadow-lg"
-              style={{ animationDelay: '0.45s' }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget
-                el.style.boxShadow = '0 0 20px rgba(20, 184, 166, 0.15)'
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget
-                el.style.boxShadow = 'none'
-              }}
-            >
-              View Full Case Study
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </button>
+            {/* Focus areas */}
+            <div className="stagger-item" style={{ animationDelay: '0.45s' }}>
+              <p className="text-xs uppercase tracking-[0.15em] text-[#4a5568] mb-3">
+                Focus Areas
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-white/[0.05] border border-white/[0.08] text-[#8892a8]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
 
             {/* Prev / Next navigation */}
             {(() => {

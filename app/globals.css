@@ -19,10 +19,10 @@
   --color-sage: #2c5282;
   --color-sage-dark: #1a365d;
   --color-sage-light: #8dabc9;
-  --color-eucalyptus: #14b8a6;
-  --color-eucalyptus-dark: #0d9488;
+  --color-eucalyptus: #2c5282;
+  --color-eucalyptus-dark: #1a365d;
   --color-mint: #cbd5e1;
-  --color-amber: #d97706;
+  --color-amber: #2c5282;
   --color-sky: #60a5fa;
   --color-forest: #06101e;
   --color-cream: #ffffff;
@@ -280,26 +280,22 @@ section {
    Gradient Text Effects
    ============================================ */
 
+/* Flat solid blue — the multi-hue gradient scheme was retired for a clean,
+   authoritative blue + white palette. Kept the class names so existing markup
+   (gradient-text on emphasised words) needs no changes. */
 .gradient-text {
-  background: linear-gradient(135deg, var(--color-sage-dark) 0%, var(--color-eucalyptus-dark) 60%, var(--color-eucalyptus) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--color-forest); /* Fallback */
+  color: #2c5282;            /* royal blue — emphasis on light backgrounds */
+  -webkit-text-fill-color: #2c5282;
 }
 
 .gradient-text-light {
-  background: linear-gradient(135deg, var(--color-mint) 0%, var(--color-eucalyptus) 50%, var(--color-sky) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #60a5fa;            /* bright blue — emphasis on dark backgrounds */
+  -webkit-text-fill-color: #60a5fa;
 }
 
 .gradient-text-warm {
-  background: linear-gradient(135deg, var(--color-sage-dark) 0%, var(--color-amber) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #2c5282;
+  -webkit-text-fill-color: #2c5282;
 }
 
 /* ============================================

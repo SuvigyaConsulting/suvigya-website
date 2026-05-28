@@ -14,8 +14,13 @@ interface GlobeSceneProps {
   selectedProjectId: number | null
 }
 
-// Static star field — visible against the dark space backdrop during globe phase
-function StarField() {
+// Star field — dims INTO view as the earth materialises and dims OUT when we
+// return to the particle field. Always-on static stars fight the particle
+// illusion while particles are moving, so the field is gated on the globe phase
+// and crossfades on uOpacity (matched to the earth's own ~1.5s fade).
+function StarField({ visible }: { visible: boolean }) {
+  const fadeRef = useRef(0)
+
   const { geometry, material } = useMemo(() => {
     const count = 3000
     const positions = new Float32Array(count * 3)
@@ -45,6 +50,9 @@ function StarField() {
       transparent: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
+      uniforms: {
+        uOpacity: { value: 0 },
+      },
       vertexShader: `
         attribute float size;
         void main() {
@@ -55,11 +63,12 @@ function StarField() {
         }
       `,
       fragmentShader: `
+        uniform float uOpacity;
         void main() {
           float dist = length(gl_PointCoord - vec2(0.5));
           if (dist > 0.5) discard;
           // Sharper falloff so even small stars read as crisp points, not blobs
-          float alpha = smoothstep(0.5, 0.1, dist) * 0.9;
+          float alpha = smoothstep(0.5, 0.1, dist) * 0.9 * uOpacity;
           gl_FragColor = vec4(1.0, 1.0, 1.0, alpha);
         }
       `,
@@ -67,6 +76,19 @@ function StarField() {
 
     return { geometry: geo, material: mat }
   }, [])
+
+  useFrame((_, delta) => {
+    const target = visible ? 1 : 0
+    const speed = 1.0 / 1.5 // match EarthGlobe's fade so stars rise with the earth
+    if (fadeRef.current < target) {
+      fadeRef.current = Math.min(fadeRef.current + delta * speed, target)
+    } else if (fadeRef.current > target) {
+      fadeRef.current = Math.max(fadeRef.current - delta * speed, target)
+    }
+    material.uniforms.uOpacity.value = fadeRef.current
+    // Skip drawing entirely once fully faded out
+    material.visible = fadeRef.current > 0.001
+  })
 
   return <points geometry={geometry} material={material} />
 }
@@ -169,7 +191,12 @@ function CameraAnimator({ phase }: { phase: string }) {
       targetRef.current.set(0, 0.8, 7)
       activeRef.current = true
     } else if (phase === 'globe') {
-      // Stop animating, OrbitControls takes over
+      // Snap to the EXACT overview position so first-entry framing is identical
+      // to the post-explore reset (CameraStateReset also targets 0,0.8,7).
+      // Relying on lerp convergence alone can leave a sub-pixel residual that
+      // reads as the globe sitting "slightly further away" after exploring.
+      camera.position.set(0, 0.8, 7)
+      camera.lookAt(0, 0, 0)
       activeRef.current = false
     }
   }, [phase])
@@ -214,7 +241,7 @@ export default function GlobeScene({ phase, onPinClick, selectedProjectId }: Glo
 
       <CameraAnimator phase={phase} />
       <CameraStateReset selectedProjectId={selectedProjectId} phase={phase} />
-      <StarField />
+      <StarField visible={phase === 'globe'} />
 
       <Suspense fallback={null}>
         <ParticleField

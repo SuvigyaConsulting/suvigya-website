@@ -332,9 +332,10 @@ export default function ContactSection() {
                 </form>
               )}
 
-              {/* Contact Info */}
+              {/* Contact Info — mobile only; on lg+ the "Get in Touch" card on the
+                  left already shows email/phone, so hide here to avoid repetition. */}
               <motion.div
-                className="mt-8 flex flex-wrap items-center justify-center gap-8 text-center"
+                className="mt-8 flex lg:hidden flex-wrap items-center justify-center gap-8 text-center"
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
                 transition={{ delay: 0.6 }}

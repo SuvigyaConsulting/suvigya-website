@@ -36,18 +36,18 @@ module.exports = {
           800: '#0a1930',
           900: '#06101e',
         },
-        // Secondary - Teal
+        // Secondary - remapped to royal blue (teal retired for a cleaner blue + white palette)
         eucalyptus: {
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',         // Main teal bright
-          500: '#14b8a6',
-          600: '#0d9488',         // Brochure teal
-          700: '#0f766e',
-          800: '#115e59',
-          900: '#134e4a',
+          50: '#f0f4fa',
+          100: '#d9e3f0',
+          200: '#b3c7e0',
+          300: '#8dabc9',
+          400: '#5c84ad',
+          500: '#2c5282',
+          600: '#1a365d',
+          700: '#0f2442',
+          800: '#0a1930',
+          900: '#06101e',
         },
         // Neutral Cool - Slate
         mint: {
@@ -62,18 +62,18 @@ module.exports = {
           800: '#1e293b',
           900: '#0f172a',
         },
-        // Accent - Burnished Gold
+        // Accent - remapped to royal blue (gold retired for a cleaner blue + white palette)
         amber: {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          300: '#fcd34d',
-          400: '#fbbf24',         // Main gold bright
-          500: '#f59e0b',
-          600: '#d97706',         // Brochure gold
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f',
+          50: '#f0f4fa',
+          100: '#d9e3f0',
+          200: '#b3c7e0',
+          300: '#8dabc9',
+          400: '#5c84ad',
+          500: '#2c5282',
+          600: '#1a365d',
+          700: '#0f2442',
+          800: '#0a1930',
+          900: '#06101e',
         },
         // Blue accent (sky elements)
         sky: {

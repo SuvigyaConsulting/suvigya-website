@@ -218,9 +218,12 @@ export default function ParticleHero() {
 
             {/* Hint */}
             {globeReady && !selectedProject && (
-              <div className="absolute bottom-8 left-0 right-0 text-center">
-                <p className="text-[11px] tracking-[0.15em] text-white/20" style={{ animation: 'fadeIn 1.5s ease forwards' }}>
-                  Select a location to explore
+              <div
+                className="absolute bottom-8 left-0 right-0 text-center px-6"
+                style={{ animation: 'fadeIn 1.5s ease forwards' }}
+              >
+                <p className="text-[11px] tracking-[0.15em] text-white/20">
+                  Projects delivered by Suvigya and its directors · Select a location to explore
                 </p>
               </div>
             )}
