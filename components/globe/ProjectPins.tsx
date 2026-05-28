@@ -144,8 +144,6 @@ export const projectLocations: ProjectLocation[] = [
         title: 'Umbrella Programme for Natural Resource Management',
         client: 'GIZ / KfW / NABARD',
         category: 'Monitoring, Evaluation & Learning',
-        value: '50+',
-        valueLabel: 'NRM projects evaluated',
         description:
           'Appraisal, monitoring, and evaluation of 50+ community-led NRM projects with mid-term reviews and performance assessments.',
         tags: ['M&E', 'NRM', 'Third-Party Monitoring'],
