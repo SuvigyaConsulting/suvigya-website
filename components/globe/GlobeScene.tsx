@@ -18,11 +18,11 @@ interface GlobeSceneProps {
 // return to the particle field. Always-on static stars fight the particle
 // illusion while particles are moving, so the field is gated on the globe phase
 // and crossfades on uOpacity (matched to the earth's own ~1.5s fade).
-function StarField({ visible }: { visible: boolean }) {
+function StarField({ visible, isMobile }: { visible: boolean; isMobile: boolean }) {
   const fadeRef = useRef(0)
 
   const { geometry, material } = useMemo(() => {
-    const count = 3000
+    const count = isMobile ? 1200 : 3000
     const positions = new Float32Array(count * 3)
     const sizes = new Float32Array(count)
 
@@ -75,7 +75,7 @@ function StarField({ visible }: { visible: boolean }) {
     })
 
     return { geometry: geo, material: mat }
-  }, [])
+  }, [isMobile])
 
   useFrame((_, delta) => {
     const target = visible ? 1 : 0
@@ -212,6 +212,10 @@ function CameraAnimator({ phase }: { phase: string }) {
 
 export default function GlobeScene({ phase, onPinClick, selectedProjectId }: GlobeSceneProps) {
   const [pinsReady, setPinsReady] = useState(false)
+  const isMobile = useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches,
+    [],
+  )
 
   const handleEarthReady = useCallback(() => {
     setTimeout(() => setPinsReady(true), 400)
@@ -228,7 +232,7 @@ export default function GlobeScene({ phase, onPinClick, selectedProjectId }: Glo
     <Canvas
       camera={{ position: [0, 0, 8.5], fov: 45 }}
       gl={{ antialias: true, alpha: true }}
-      dpr={[1, 2]}
+      dpr={[1, isMobile ? 1.5 : 2]}
       style={{
         position: 'absolute',
         inset: 0,
@@ -241,7 +245,7 @@ export default function GlobeScene({ phase, onPinClick, selectedProjectId }: Glo
 
       <CameraAnimator phase={phase} />
       <CameraStateReset selectedProjectId={selectedProjectId} phase={phase} />
-      <StarField visible={phase === 'globe'} />
+      <StarField visible={phase === 'globe'} isMobile={isMobile} />
 
       <Suspense fallback={null}>
         <ParticleField

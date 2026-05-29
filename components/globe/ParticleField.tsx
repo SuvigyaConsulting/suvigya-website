@@ -4,7 +4,13 @@ import { useRef, useMemo, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
-const PARTICLE_COUNT = 3000
+const IS_MOBILE =
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(max-width: 767px)').matches
+
+// Fewer particles on phones — the per-frame loop is the dominant mobile CPU cost
+const PARTICLE_COUNT = IS_MOBILE ? 1400 : 3000
 const SPHERE_RADIUS = 8
 const TARGET_RADIUS = 2.5
 const MORPH_DURATION = 3.5
@@ -12,7 +18,7 @@ const UNMORPH_DURATION = 1.8
 const CENTER_PULL_STRENGTH = 0.00003
 
 // Star field constants
-const STAR_COUNT = 1000
+const STAR_COUNT = IS_MOBILE ? 400 : 1000
 const STAR_MIN_RADIUS = 40
 const STAR_MAX_RADIUS = 80
 
@@ -477,6 +483,9 @@ export default function ParticleField({ morphing, opacity = 1 }: { morphing: boo
           posArray[i3 + 2] += tempVec.z / dist * push
         }
       }
+
+      // Touch devices have no pointer — skip the per-particle cursor-repulsion math
+      if (IS_MOBILE) continue
 
       // Cursor repulsion (applied regardless of morph state)
       tempVec.set(posArray[i3], posArray[i3 + 1], posArray[i3 + 2])
