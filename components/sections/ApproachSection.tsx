@@ -29,13 +29,13 @@ export default function ApproachSection() {
     <section
       id="approach"
       aria-label="How we work"
-      className="relative py-12 md:py-16 lg:py-24 overflow-hidden section-warm"
+      className="relative py-12 md:py-16 lg:py-20 overflow-hidden section-warm"
     >
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           ref={headerRef}
-          className="text-center mb-10 md:mb-14"
+          className="text-center mb-8 md:mb-12"
           initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={headerInView ? { opacity: 1, y: 0 } : {}}
           transition={reducedMotion ? { duration: 0 } : { duration: 0.8 }}
@@ -48,10 +48,10 @@ export default function ApproachSection() {
           >
             How We Work
           </motion.span>
-          <h2 className="text-title font-bold mb-6">
+          <h2 className="text-title font-bold mb-4">
             One Partner, <span className="gradient-text">Every Stage</span>
           </h2>
-          <p className="text-text-body leading-relaxed max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-text-muted max-w-2xl mx-auto leading-relaxed">
             We stay with engagements from concept through completion. No handoffs, no gaps.
           </p>
         </motion.div>

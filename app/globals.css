@@ -390,7 +390,11 @@ section {
 }
 
 .section-warm {
-  background: var(--color-earth);
+  /* Deepened from the --color-earth token (#F5F1EB) to #F1EBE1 so the
+     cream/sand section alternation is actually perceptible once the ad-hoc
+     hairline dividers are removed. Still warm + on-brand; contrast-checked
+     (muted body text 6.37:1, eyebrow 10.24:1 — both pass WCAG AA). */
+  background: #F1EBE1;
 }
 
 .section-cream {

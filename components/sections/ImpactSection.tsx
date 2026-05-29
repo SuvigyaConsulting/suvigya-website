@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef } from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion'
 import { useAccessibility } from '@/components/AccessibilityProvider'
 
@@ -169,43 +169,9 @@ function MetricCard({
   inView: boolean
   reducedMotion?: boolean
 }) {
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    if (!inView) return
-    if (reducedMotion) {
-      setCount(metric.value)
-      return
-    }
-
-    let startTime: number
-    let animationFrame: number
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp
-      const progress = Math.min((timestamp - startTime) / 2000, 1)
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4)
-      setCount(Math.floor(easeOutQuart * metric.value))
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate)
-      }
-    }
-
-    animationFrame = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(animationFrame)
-  }, [inView, metric.value, reducedMotion])
-
-  // Format large numbers
-  const formatNumber = (n: number) => {
-    if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
-    if (n >= 1000) return `${(n / 1000).toFixed(0)}K`
-    return n.toString()
-  }
-
   return (
     <motion.div
-      className="glass p-8 rounded-panel text-center relative overflow-hidden group"
+      className="glass p-6 md:p-8 rounded-panel text-center relative overflow-hidden group"
       initial={reducedMotion ? false : { opacity: 0, y: 50 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={reducedMotion ? { duration: 0 } : { delay: index * 0.15, duration: 0.6 }}
@@ -260,8 +226,7 @@ export default function ImpactSection() {
       id="impact"
       ref={sectionRef}
       aria-label="Our impact"
-      className="relative py-8 md:py-12 lg:py-16 overflow-hidden"
-      style={{ backgroundColor: '#FAF8F5' }}
+      className="relative py-12 md:py-16 lg:py-20 overflow-hidden section-warm"
     >
       {/* Background with parallax */}
       <motion.div
@@ -285,10 +250,10 @@ export default function ImpactSection() {
           >
             Our Track Record
           </motion.span>
-          <h2 className="text-title font-bold mb-6">
+          <h2 className="text-title font-bold mb-4">
             <span className="gradient-text">Impact</span> at Scale
           </h2>
-          <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-text-muted max-w-2xl mx-auto leading-relaxed">
             Numbers that tell the story of transformation and positive change
           </p>
         </motion.div>

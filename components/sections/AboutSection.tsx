@@ -9,7 +9,7 @@ const stats = [
   { value: 11, prefix: '', suffix: '+', label: 'Years Experience', color: 'sage' },
   { value: 1, prefix: '$', suffix: 'B+', label: 'Project Value Supported', color: 'eucalyptus' },
   { value: 20, prefix: '', suffix: '+', label: 'Sectors Served', color: 'sky' },
-  { value: 2, prefix: '', suffix: 'M+', label: 'Lives Impacted', color: 'amber' },
+  { value: 12, prefix: '', suffix: '+', label: 'Global Partners', color: 'amber' },
 ]
 
 // Animated counter component
@@ -71,7 +71,7 @@ export default function AboutSection() {
       id="about"
       ref={sectionRef}
       aria-label="About us"
-      className="relative py-12 md:py-16 lg:py-24 overflow-hidden"
+      className="relative py-12 md:py-16 lg:py-20 overflow-hidden"
       style={{ backgroundColor: '#FAF8F5' }}
     >
       {/* Background decoration */}
@@ -98,17 +98,17 @@ export default function AboutSection() {
           >
             Who We Are
           </motion.span>
-          <h2 className="text-title font-bold mb-6">
+          <h2 className="text-title font-bold mb-4">
             <span className="gradient-text">A Decade of Impact</span>
           </h2>
-          <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-text-muted max-w-2xl mx-auto leading-relaxed">
             Built on deep sector expertise and trusted partnerships with the world&apos;s leading development institutions.
           </p>
         </motion.div>
 
         {/* About Description */}
         <motion.div
-          className="max-w-3xl mx-auto mb-10 md:mb-14 space-y-4 text-center"
+          className="max-w-3xl mx-auto mb-8 md:mb-10 space-y-4 text-center"
           initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           whileInView={reducedMotion ? {} : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -134,7 +134,7 @@ export default function AboutSection() {
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
-              className="glass p-8 text-center group cursor-default"
+              className="glass p-6 md:p-8 text-center group cursor-default"
               initial={reducedMotion ? false : { opacity: 0, scale: 0.9 }}
               whileInView={reducedMotion ? {} : { opacity: 1, scale: 1 }}
               viewport={{ once: true }}

@@ -383,7 +383,7 @@ export default function ServicesSection() {
       id="services"
       ref={sectionRef}
       aria-label="Our services"
-      className="relative py-12 md:py-16 lg:py-24 overflow-hidden"
+      className="relative py-12 md:py-16 lg:py-20 overflow-hidden"
       style={{ backgroundColor: '#FAF8F5' }}
     >
       {/* Background pattern */}
@@ -409,10 +409,10 @@ export default function ServicesSection() {
           >
             What We Do
           </motion.span>
-          <h2 className="text-title font-bold mb-6">
+          <h2 className="text-title font-bold mb-4">
             Our <span className="gradient-text">Expertise</span>
           </h2>
-          <p className="text-subtitle text-text-body max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-text-muted max-w-2xl mx-auto leading-relaxed">
             Policy to Practice. Strategy to Scale. Real world insights for outcomes that last.
           </p>
         </motion.div>

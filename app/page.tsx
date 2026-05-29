@@ -33,19 +33,14 @@ export default function Home() {
           Rendered statically (not lazy) so their full height exists up front;
           lazy-mounting these mid-scroll caused the page to lurch as placeholder
           heights were replaced by taller real content. */}
+      {/* Light sections. Separation is carried by a clean cream/sand
+          background alternation (About cream · Approach sand · Services cream ·
+          Impact sand · Contact cream) — the previous ad-hoc hairline dividers
+          (present only between some sections) were removed for a consistent rhythm. */}
       <AboutSection />
       <ApproachSection />
-      <div className="relative h-px max-w-5xl mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-sage-200/60 to-transparent" />
-      </div>
       <ServicesSection />
-      <div className="relative h-px max-w-5xl mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-sage-200/60 to-transparent" />
-      </div>
       <ImpactSection />
-      <div className="relative h-px max-w-5xl mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-sage-200/60 to-transparent" />
-      </div>
       <ContactSection />
       <Footer />
     </>

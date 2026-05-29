@@ -108,7 +108,8 @@ export default function ContactSection() {
     <section
       id="contact"
       aria-label="Contact us"
-      className="relative py-8 md:py-12 lg:py-16 section-cream overflow-hidden"
+      className="relative py-12 md:py-16 lg:py-20 overflow-hidden"
+      style={{ backgroundColor: '#FAF8F5' }}
     >
       {/* Background decoration */}
       <div className="absolute inset-0 topographic-bg opacity-20 pointer-events-none" />
@@ -131,10 +132,10 @@ export default function ContactSection() {
             >
               Start a Conversation
             </motion.span>
-            <h2 className="text-title font-bold mb-6">
+            <h2 className="text-title font-bold mb-4">
               Let&apos;s <span className="gradient-text">Build Something</span> Lasting
             </h2>
-            <p className="text-subtitle text-text-body leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-text-muted max-w-2xl mx-auto leading-relaxed">
               Have a project in mind? We bring the expertise, the networks, and the field presence to turn ambition into measurable outcomes.
             </p>
           </div>
@@ -143,7 +144,7 @@ export default function ContactSection() {
           <div className="grid lg:grid-cols-2 gap-12 items-stretch">
             {/* Left: Contact info + credentials */}
             <motion.div
-              className="hidden lg:flex flex-col justify-start pt-12 glass rounded-panel p-10"
+              className="hidden lg:flex flex-col justify-center glass rounded-panel p-10"
               initial={{ opacity: 0, x: -50 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.3, duration: 0.8 }}
@@ -181,7 +182,7 @@ export default function ContactSection() {
                   </div>
                 </div>
               </div>
-              <div className="mt-auto pt-6 border-t border-sage-100">
+              <div className="mt-8 pt-6 border-t border-sage-100">
                 <p className="text-sm text-text-muted leading-relaxed">
                   We respond within 24 hours on business days.
                 </p>
