@@ -254,7 +254,7 @@ export default function ImpactSection() {
             <span className="gradient-text">Impact</span> at Scale
           </h2>
           <p className="text-base md:text-lg text-text-muted max-w-2xl mx-auto leading-relaxed">
-            Numbers that tell the story of transformation and positive change
+            Real outcomes for the people, landscapes, communities, and institutions we serve.
           </p>
         </motion.div>
 
