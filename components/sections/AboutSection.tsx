@@ -6,7 +6,7 @@ import { useAccessibility } from '@/components/AccessibilityProvider'
 
 // Stats data
 const stats = [
-  { value: 13, prefix: '', suffix: '+', label: 'Years Experience', color: 'sage' },
+  { value: 11, prefix: '', suffix: '+', label: 'Years Experience', color: 'sage' },
   { value: 1, prefix: '$', suffix: 'B+', label: 'Project Value Supported', color: 'eucalyptus' },
   { value: 20, prefix: '', suffix: '+', label: 'Sectors Served', color: 'sky' },
   { value: 2, prefix: '', suffix: 'M+', label: 'Lives Impacted', color: 'amber' },
@@ -115,7 +115,7 @@ export default function AboutSection() {
           transition={reducedMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
         >
           <p className="text-text-body leading-relaxed text-base md:text-lg">
-            Suvigya is a specialist consulting firm that turns policy into practice. Since 2013, we have worked alongside leading international and government organisations to deliver results in natural resource management, rural livelihoods, climate resilience, and sustainable development.
+            Suvigya is a specialist consulting firm that turns policy into practice. Since 2015, we have worked alongside leading international and government organisations to deliver results in natural resource management, rural livelihoods, climate resilience, and sustainable development.
           </p>
           <p className="text-text-body leading-relaxed text-base md:text-lg">
             We own every stage of a project, from strategy and design through field execution and evaluation. Our teams embed directly in the geographies we serve, ensuring accountability, speed, and outcomes that hold up long after we leave.
