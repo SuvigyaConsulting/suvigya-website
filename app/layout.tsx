@@ -1,7 +1,10 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
 import Navigation from '@/components/Navigation'
+import JsonLd from '@/components/JsonLd'
 import MotionProvider from '@/components/MotionProvider'
 import AccessibilityProvider from '@/components/AccessibilityProvider'
 import KeyboardNavigation from '@/components/KeyboardNavigation'
@@ -23,17 +26,43 @@ export const metadata: Metadata = {
     template: '%s | SUVIGYA',
   },
   description:
-    'Expert consulting in GIS, natural resources management, policy generation, and grassroots action with leading international and government organisations.',
+    'Natural resource management consultancy delivering GIS, climate, policy, and grassroots solutions across India and Asia. Based in Bengaluru.',
   keywords: [
-    'consulting',
-    'GIS',
-    'natural resources',
-    'policy',
-    'environment',
-    'climate',
-    'sustainability',
+    'natural resource management',
+    'environmental consulting',
+    'GIS consulting',
+    'remote sensing',
+    'climate adaptation',
+    'watershed management',
+    'biodiversity conservation',
+    'environmental policy',
+    'sustainable development',
+    'consulting India',
+    'Bengaluru',
   ],
   authors: [{ name: 'Suvigya Consulting' }],
+  creator: 'Suvigya Consulting',
+  publisher: 'Suvigya Management Consultants Private Limited',
+  category: 'Environmental Consulting',
+  alternates: {
+    canonical: '/',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  formatDetection: {
+    email: false,
+    telephone: false,
+    address: false,
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -41,7 +70,7 @@ export const metadata: Metadata = {
     siteName: 'Suvigya Consulting',
     title: 'SUVIGYA',
     description:
-      'Expert consulting in GIS, natural resources management, policy generation, and grassroots actions.',
+      "Shaping tomorrow's earth — GIS, climate, and natural resource management consulting across India and Asia.",
     images: [
       {
         url: '/og-image.png',
@@ -55,7 +84,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'SUVIGYA',
     description:
-      'Expert consulting in GIS, natural resources management, policy generation, and grassroots actions.',
+      "Shaping tomorrow's earth — GIS, climate, and natural resource management consulting across India and Asia.",
     images: ['/og-image.png'],
   },
   icons: {
@@ -66,7 +95,45 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
+}
+
+export const viewport: Viewport = {
   themeColor: '#1a365d',
+  width: 'device-width',
+  initialScale: 1,
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': 'https://suvigya.org/#organization',
+  name: 'Suvigya Management Consultants Private Limited',
+  alternateName: 'Suvigya Consulting',
+  url: 'https://suvigya.org',
+  logo: 'https://suvigya.org/icon-512.png',
+  image: 'https://suvigya.org/og-image.png',
+  description:
+    'Natural resource management consultancy delivering GIS, climate, policy, and grassroots solutions across India and Asia.',
+  email: 'contact@suvigya.org',
+  foundingLocation: 'Bengaluru, India',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Bengaluru',
+    addressRegion: 'Karnataka',
+    addressCountry: 'IN',
+  },
+  areaServed: ['India', 'Afghanistan', 'Laos', 'South Asia', 'Hindu Kush Himalaya'],
+  knowsAbout: [
+    'Natural Resource Management',
+    'Geographic Information Systems (GIS)',
+    'Remote Sensing',
+    'Climate Change Adaptation',
+    'Watershed Management',
+    'Biodiversity Conservation',
+    'Environmental Policy',
+    'Sustainable Development',
+  ],
+  slogan: 'Inspiring Solutions',
 }
 
 export default function RootLayout({
@@ -77,6 +144,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
+        <JsonLd data={jsonLd} />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-sage-600 focus:text-white focus:rounded-md focus:outline-none"
@@ -96,6 +164,8 @@ export default function RootLayout({
             </main>
           </MotionProvider>
         </AccessibilityProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

@@ -1,11 +1,11 @@
 {
   "name": "Suvigya Consulting",
   "short_name": "Suvigya",
-  "description": "Natural Resources Management & Policy Consulting",
+  "description": "Natural Resource Management & Policy Consulting",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#4A7C59",
-  "background_color": "#F4F7F5",
+  "theme_color": "#1a365d",
+  "background_color": "#0f1629",
   "icons": [
     {
       "src": "/icon-192.png",
