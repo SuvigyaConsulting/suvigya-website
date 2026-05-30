@@ -294,6 +294,19 @@ export default function ParticleField({ morphing, opacity = 1 }: { morphing: boo
     }
   }, [morphing, originalPositions, targetPositions])
 
+  // Performance only: pause the heavy per-particle loop when the hero is
+  // scrolled fully off-screen. The particles look/behave identically when
+  // visible — this just stops wasting the main thread so the page scrolls smooth.
+  const visibleRef = useRef(true)
+  useEffect(() => {
+    const onScroll = () => {
+      visibleRef.current = window.scrollY < (window.innerHeight || 1) * 0.98
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   // Pre-allocate temp vectors for frame loop (avoid GC pressure)
   const tempVec = useMemo(() => new THREE.Vector3(), [])
   const tempVec2 = useMemo(() => new THREE.Vector3(), [])
@@ -316,6 +329,9 @@ export default function ParticleField({ morphing, opacity = 1 }: { morphing: boo
     const currentOp = particleMaterial.uniforms.uGlobalOpacity.value
     const targetOp = opacityRef.current
     particleMaterial.uniforms.uGlobalOpacity.value += (targetOp - currentOp) * Math.min(delta * 3, 0.15)
+
+    // Perf: skip the heavy per-particle work while scrolled fully off-screen.
+    if (!morphing && !visibleRef.current) return
 
     const geometry = pointsRef.current.geometry
     const posAttr = geometry.getAttribute('position') as THREE.BufferAttribute
