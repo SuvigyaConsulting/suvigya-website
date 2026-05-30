@@ -298,13 +298,20 @@ export default function ParticleField({ morphing, opacity = 1 }: { morphing: boo
   // scrolled fully off-screen. The particles look/behave identically when
   // visible — this just stops wasting the main thread so the page scrolls smooth.
   const visibleRef = useRef(true)
+  const scrollingRef = useRef(false)
   useEffect(() => {
+    let t: ReturnType<typeof setTimeout>
     const onScroll = () => {
       visibleRef.current = window.scrollY < (window.innerHeight || 1) * 0.98
+      // Mark "actively scrolling" and clear it shortly after scrolling stops, so
+      // autonomous particle motion (drift + rotation) holds still during scroll.
+      scrollingRef.current = true
+      clearTimeout(t)
+      t = setTimeout(() => { scrollingRef.current = false }, 120)
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => { window.removeEventListener('scroll', onScroll); clearTimeout(t) }
   }, [])
 
   // Pre-allocate temp vectors for frame loop (avoid GC pressure)
@@ -317,8 +324,9 @@ export default function ParticleField({ morphing, opacity = 1 }: { morphing: boo
   useFrame((state, delta) => {
     if (!pointsRef.current) return
 
-    // Slow night-sky rotation
-    if (groupRef.current) {
+    // Slow night-sky rotation — paused while scrolling so the field holds still
+    // (motion then comes only from the cursor).
+    if (groupRef.current && !scrollingRef.current) {
       groupRef.current.rotation.y += delta * 0.008
       groupRef.current.rotation.x += delta * 0.002
     }
@@ -464,15 +472,19 @@ export default function ParticleField({ morphing, opacity = 1 }: { morphing: boo
         posArray[i3 + 1] += velocities[i3 + 1]
         posArray[i3 + 2] += velocities[i3 + 2]
 
-        // Very slight random perturbation (5x less)
-        velocities[i3] += (Math.random() - 0.5) * 0.00008
-        velocities[i3 + 1] += (Math.random() - 0.5) * 0.00008
-        velocities[i3 + 2] += (Math.random() - 0.5) * 0.00008
+        // Autonomous Brownian drift is paused during scroll — only the cursor
+        // moves particles then. Off-scroll, the gentle drift resumes.
+        if (!scrollingRef.current) {
+          velocities[i3] += (Math.random() - 0.5) * 0.00008
+          velocities[i3 + 1] += (Math.random() - 0.5) * 0.00008
+          velocities[i3 + 2] += (Math.random() - 0.5) * 0.00008
+        }
 
-        // Less damping for smoother drift
-        velocities[i3] *= 0.995
-        velocities[i3 + 1] *= 0.995
-        velocities[i3 + 2] *= 0.995
+        // Damp — harder while scrolling so any residual drift settles fast.
+        const damp = scrollingRef.current ? 0.85 : 0.995
+        velocities[i3] *= damp
+        velocities[i3 + 1] *= damp
+        velocities[i3 + 2] *= damp
 
         // Soft boundary: pull back toward sphere
         tempVec.set(posArray[i3], posArray[i3 + 1], posArray[i3 + 2])
