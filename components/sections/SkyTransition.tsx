@@ -229,7 +229,7 @@ export default function SkyTransition() {
             top: '0%',
             left: '15%',
             width: '40%',
-            opacity: 0.15,
+            opacity: 0.24,
             maskImage: 'radial-gradient(ellipse 90% 80% at center, black 20%, transparent 60%)',
             WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at center, black 20%, transparent 60%)',
           }}
@@ -244,7 +244,7 @@ export default function SkyTransition() {
             top: '5%',
             right: '5%',
             width: '35%',
-            opacity: 0.12,
+            opacity: 0.2,
             maskImage: 'radial-gradient(ellipse 85% 75% at center, black 25%, transparent 65%)',
             WebkitMaskImage: 'radial-gradient(ellipse 85% 75% at center, black 25%, transparent 65%)',
           }}
@@ -261,7 +261,7 @@ export default function SkyTransition() {
             top: '12%',
             left: '-10%',
             width: '120%',
-            opacity: 0.4,
+            opacity: 0.55,
             maskImage: 'linear-gradient(0deg, transparent 0%, black 20%, black 60%, transparent 85%), linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)',
             WebkitMaskImage: 'linear-gradient(0deg, transparent 0%, black 20%, black 60%, transparent 85%), linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)',
             maskComposite: 'intersect',
@@ -278,7 +278,7 @@ export default function SkyTransition() {
             top: '20%',
             right: '-10%',
             width: '55%',
-            opacity: 0.35,
+            opacity: 0.48,
             maskImage: 'radial-gradient(ellipse 90% 80% at center, black 30%, transparent 65%)',
             WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at center, black 30%, transparent 65%)',
           }}
@@ -295,7 +295,7 @@ export default function SkyTransition() {
             top: '28%',
             left: '-5%',
             width: '65%',
-            opacity: 0.5,
+            opacity: 0.66,
             maskImage: 'radial-gradient(ellipse 90% 80% at center, black 30%, transparent 70%)',
             WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at center, black 30%, transparent 70%)',
           }}
@@ -310,7 +310,7 @@ export default function SkyTransition() {
             top: '32%',
             right: '0%',
             width: '70%',
-            opacity: 0.5,
+            opacity: 0.66,
             maskImage: 'radial-gradient(ellipse 85% 75% at center, black 30%, transparent 70%)',
             WebkitMaskImage: 'radial-gradient(ellipse 85% 75% at center, black 30%, transparent 70%)',
           }}
@@ -327,7 +327,7 @@ export default function SkyTransition() {
             top: '40%',
             left: '-5%',
             width: '110%',
-            opacity: 0.65,
+            opacity: 0.8,
             maskImage: 'linear-gradient(0deg, transparent 0%, black 15%, black 70%, transparent 90%), linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)',
             WebkitMaskImage: 'linear-gradient(0deg, transparent 0%, black 15%, black 70%, transparent 90%), linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)',
             maskComposite: 'intersect',
