@@ -156,7 +156,7 @@ export default function Navigation() {
         animate={{ y: 0, opacity: 1 }}
         transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 100, damping: 20, delay: 0.5 }}
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex items-center justify-between">
+        <div className="max-w-[1700px] mx-auto px-5 md:px-8 lg:px-14 flex items-center justify-between">
           {/* Logo — hidden at top (hero has SUVIGYA centered), appears on scroll */}
           <Link href="/" className="relative">
             <motion.span
